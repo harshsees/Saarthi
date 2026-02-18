@@ -1,0 +1,340 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Post Request — Saarthi</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --red:#e53935;
+  --red-dark:#b71c1c;
+  --rose:#fff0f0;
+  --gray:#6b7280;
+  --border:#e5e7eb;
+  --radius:16px;
+  --shadow:0 12px 32px rgba(0,0,0,0.12);
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:'Inter',sans-serif;
+  background:linear-gradient(180deg,#fff,#fff0f0);
+}
+
+.container{
+  max-width:1100px;
+  margin:36px auto;
+  padding:24px;
+}
+
+.header{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:28px;
+}
+
+.logo{
+  width:54px;
+  height:54px;
+  border-radius:var(--radius);
+  background:linear-gradient(135deg,var(--red),var(--red-dark));
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:20px;
+}
+
+.page-title{
+  font-size:20px;
+  font-weight:700;
+}
+
+.page-sub{
+  font-size:13px;
+  color:var(--gray);
+}
+
+/* MAIN CARD */
+.main-card{
+  background:#fff;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:28px;
+  max-width:920px;
+  margin:auto;
+}
+
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 320px;
+  gap:28px;
+}
+
+
+.field{
+  margin-bottom:20px;
+}
+
+label{
+  font-size:13px;
+  color:var(--gray);
+}
+
+.input,
+select,
+textarea{
+  width:100%;
+  height:48px;
+  padding:12px 14px;
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+  margin-top:6px;
+  font-size:14px;
+  background:#fff;
+}
+
+textarea{
+  height:100px;
+  resize:none;
+}
+
+
+.row{
+  display:flex;
+  gap:16px;
+}
+
+
+.btn{
+  background:var(--red);
+  color:#fff;
+  border:none;
+  padding:14px 22px;
+  border-radius:var(--radius);
+  font-weight:600;
+  cursor:pointer;
+}
+
+.btn-outline{
+  background:#fff;
+  border:1px dashed #f3bcbc;
+  padding:14px 22px;
+  border-radius:var(--radius);
+  cursor:pointer;
+}
+
+
+.side-card{
+  background:#fff;
+  border-radius:var(--radius);
+  padding:22px;
+  box-shadow:var(--shadow);
+  height:fit-content;
+}
+
+.side-card + .side-card{
+  margin-top:22px;
+}
+
+.side-title{
+  font-weight:700;
+  margin-bottom:10px;
+}
+
+.side-card ol{
+  padding-left:16px;
+  margin:0;
+}
+
+.side-card li{
+  font-size:13px;
+  color:var(--gray);
+  margin-bottom:8px;
+}
+
+.preview-item{
+  font-size:14px;
+  margin-bottom:10px;
+}
+
+.badge{
+  background:var(--rose);
+  color:var(--red-dark);
+  padding:4px 10px;
+  border-radius:999px;
+  font-weight:600;
+  font-size:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+
+  <div class="header">
+    <div class="logo">S</div>
+    <div>
+      <div class="page-title">Post Urgent Request</div>
+      <div class="page-sub">Fill details carefully</div>
+    </div>
+  </div>
+
+
+  <div class="main-card">
+
+    <div class="grid">
+        <!-- FORM -->
+      <div>
+
+        <div class="field">
+          <label>Blood Group</label>
+          <select id="blood" onchange="updatePreview()">
+            <option value="">Choose blood group</option>
+            <option>O+</option><option>O-</option><option>A+</option>
+            <option>B+</option><option>AB+</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <div class="field" style="flex:1">
+            <label>Units Required</label>
+            <input id="units" placeholder="No. of units" oninput="updatePreview()">
+          </div>
+
+          <div class="field" style="flex:1">
+            <label>Urgency</label>
+            <select id="urgency" onchange="updatePreview()">
+              <option>Normal</option>
+              <option selected>Urgent</option>
+              <option>Immediate</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Hospital / Location</label>
+         <input id="location" placeholder="Hospital or location" oninput="updatePreview()"/>
+
+        </div>
+
+        <div class="field">
+          <label>Contact Number</label>
+          <input id="phone" placeholder="+91 *********">
+        </div>
+
+        <div class="field">
+          <label>Additional Notes</label>
+          <textarea id="notes" placeholder="Any special notes"></textarea>
+        </div>
+
+        <div class="row">
+          <button type="button" class="btn" onclick="postRequest()">Post Request</button>
+          <button type="button" class="btn-outline" onclick="cancelRequest()">Cancel</button>
+
+        </div>
+
+      </div>
+
+      <!-- RIGHT: INFO + PREVIEW -->
+      <div>
+
+        <div class="side-card">
+          <div class="side-title">How matching works</div>
+          <ol>
+            <li>Filters donors by blood group</li>
+            <li>Finds nearby eligible donors</li>
+            <li>Ranks donors by distance</li>
+          </ol>
+        </div>
+
+        <div class="side-card">
+          <div class="side-title">Live Preview</div>
+          <div class="preview-item" id="pBlood">Blood Group: —</div>
+          <div class="preview-item" id="pUnits">Units: —</div>
+          <div class="preview-item" id="pUrgency">Urgency: —</div>
+          <div class="preview-item" id="pLocation">Location: —</div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function updatePreview(){
+  document.getElementById("pBlood").innerText =
+    "Blood Group: " + (document.getElementById("blood").value || "—");
+
+  document.getElementById("pUnits").innerText =
+    "Units: " + (document.getElementById("units").value || "—");
+
+  document.getElementById("pUrgency").innerHTML =
+    "Urgency: <span class='badge'>" +
+    document.getElementById("urgency").value +
+    "</span>";
+
+  document.getElementById("pLocation").innerText =
+    "Location: " + (document.getElementById("location").value || "—");
+}
+
+function postRequest(){
+  const blood = document.getElementById("blood").value.trim();
+  const units = document.getElementById("units").value.trim();
+  const urgency = document.getElementById("urgency").value;
+  const location = document.getElementById("location").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const notes = document.getElementById("notes").value.trim();
+
+  if(blood === "" || units === "" || location === "" || phone === ""){
+    alert("Please fill all required fields");
+    return;
+  }
+
+  const request = {
+    id: Date.now(),
+    blood,
+    units,
+    urgency,
+    location,
+    phone,
+    notes
+  };
+
+  const requests = JSON.parse(localStorage.getItem("requests")) || [];
+  requests.push(request);
+  localStorage.setItem("requests", JSON.stringify(requests));
+
+  alert("Request posted successfully!");
+  window.location.href = "dashboard.html";
+}
+function cancelRequest() {
+  
+  document.getElementById("blood").value = "";
+  document.getElementById("units").value = "";
+  document.getElementById("urgency").value = "Urgent";
+  document.getElementById("location").value = "";
+  document.getElementById("phone").value = "";
+  document.getElementById("notes").value = "";
+
+  // Reset preview
+  document.getElementById("pBlood").innerText = "Blood Group: —";
+  document.getElementById("pUnits").innerText = "Units: —";
+  document.getElementById("pUrgency").innerText = "Urgency: —";
+  document.getElementById("pLocation").innerText = "Location: —";
+}
+
+</script>
+
+
+</body>
+</html>

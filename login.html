@@ -167,9 +167,6 @@ body{
   <span class="logo-text">Saarthi</span>
 </div>
 
-
-
-
     <nav class="nav-links">
       <a href="index.html">Home</a>
       <a href="about.html">About</a>
@@ -195,32 +192,27 @@ body{
           </div>
         </div>
 
-        <h2>Welcome back</h2>
+        <h2>Login</h2>
         <p class="small">Sign in to continue and help save lives.</p>
 
         <label class="small">Mobile number or email</label>
         <input id="loginInput" class="input" placeholder="Enter phone or email">
         
-        <div id="recaptcha-container" style="margin-top:10px;"></div>
+         <!-- PASSWORD -->
+        <label class="small" style="margin-top:12px;">Password</label>
+        <input type="password" id="passwordInput" class="input" placeholder="Enter password">
 
         <div style="margin-top:12px;display:flex;gap:10px;">
-          <button id="sendOtpBtn" class="btn">Send OTP</button>
-          <button class="small-ghost">Sign In with Google</button>
+        <button id="loginBtn" class="btn">Login</button>
+        <button class="small-ghost">Sign In with Google</button>
         </div>
-
-        <!-- OTP SECTION -->
-        <div id="otpSection" style="display:none;margin-top:14px;">
-          <label class="small">Enter OTP</label>
-          <input id="otpInput" class="input" placeholder="Enter OTP">
-          <button id="verifyOtpBtn" class="btn" style="margin-top:10px;">Verify OTP</button>
-        </div>
-
+      
         <!-- MESSAGE -->
         <p id="message" class="small" style="margin-top:10px;"></p>
 
         <!-- REGISTER -->
         <div class="register">
-          Don’t have an account? <a href="#">Register</a>
+          Don’t have an account? <a href="register.html">Register</a>
         </div>
 
       </div>
@@ -244,46 +236,19 @@ body{
 </div>
 
 <script>
-const sendOtpBtn = document.getElementById("sendOtpBtn");
-const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+const loginBtn = document.getElementById("loginBtn");
 const loginInput = document.getElementById("loginInput");
-const otpSection = document.getElementById("otpSection");
-const otpInput = document.getElementById("otpInput");
+const passwordInput = document.getElementById("passwordInput");
 
-sendOtpBtn.addEventListener("click", async () => {
-
-  const email = loginInput.value.trim();
-
-  if (!email.includes("@")) {
-    alert("Enter valid email address");
-    return;
-  }
-
-  const response = await fetch("http://localhost:5000/send-otp", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email })
-  });
-
-  const data = await response.json();
-
-  if (data.success) {
-    alert("OTP sent to your email!");
-    otpSection.style.display = "block";
-  } else {
-    alert("Failed to send OTP");
-  }
-});
-
-verifyOtpBtn.addEventListener("click", async () => {
+loginBtn.addEventListener("click", async () => {
 
   const email = loginInput.value.trim();
-  const otp = otpInput.value.trim();
+  const password = passwordInput.value.trim();
 
-  const response = await fetch("http://localhost:5000/verify-otp", {
+  const response = await fetch("http://localhost:5000/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, otp })
+    body: JSON.stringify({ email, password })
   });
 
   const data = await response.json();
@@ -292,7 +257,7 @@ verifyOtpBtn.addEventListener("click", async () => {
     localStorage.setItem("isLoggedIn", "true");
     window.location.href = "dashboard.html";
   } else {
-    alert(data.message);
+    alert(data.message || "Login failed");
   }
 });
 </script>

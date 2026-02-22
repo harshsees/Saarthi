@@ -5,6 +5,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <!-- paste the common CSS here -->
    <!-- Save as saarthi-styles.html; include in each page or embed in <head> -->
+    <link rel="stylesheet" href="style.css">
+
 <style>
 :root{
   --saarthi-red-700:#b71c1c;
@@ -41,7 +43,7 @@ body{
 .header{
   display:flex;align-items:center;gap:16px;margin-bottom:18px;
 }
-.logo{
+.logo1{
   width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--saarthi-red-500),var(--saarthi-red-700));
   display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px;
   box-shadow:0 8px 20px rgba(229,57,53,0.12);
@@ -127,11 +129,36 @@ body{
 </head>
 <body>
 
+<header class="navbar">
+  <div class="nav-container">
+
+<div class="logo">
+  <div class="logo-mark">
+    <div class="cross-vertical"></div>
+    <div class="cross-horizontal"></div>
+  </div>
+  <span class="logo-text">Saarthi</span>
+</div>
+
+
+
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="post-request.html">Request Blood</a>
+      <a href="login.html">Donate Blood</a>
+      <a href="about.html">About</a>
+    </nav>
+
+  </div>
+</header>
+
+
+
 <div class="container">
 
   <!-- HEADER -->
   <div class="header">
-    <div class="logo">S</div>
+    <div class="logo1">S</div>
     <div>
       <div><strong>Saarthi</strong></div>
       <div class="small">Welcome, <strong id="userName"></strong></div>

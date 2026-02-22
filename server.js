@@ -1,18 +1,21 @@
+// 1️⃣ Imports
 require("dotenv").config();
 console.log("EMAIL:", process.env.EMAIL_USER);
 console.log("PASS:", process.env.EMAIL_PASS);
 const express = require("express");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
+const db = require("./db");
 
+// 2️⃣ Create App
 const app = express();
-app.use(cors());
+// 3️⃣ Middleware
 app.use(express.json());
+app.use(cors());
+
 
 const PORT = 5000;
 
-// Store OTP temporarily in memory
-let otpStore = {};
 
 // Configure Gmail transporter
 const transporter = nodemailer.createTransport({
@@ -26,64 +29,97 @@ const transporter = nodemailer.createTransport({
 });
 
 
-// Send OTP
 
-  app.post("/send-otp", async (req, res) => {
-  console.log("SEND OTP HIT");
-  console.log("BODY:", req.body);
-  const { email } = req.body;
 
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-  otpStore[email] = {
-    otp,
-    expires: Date.now() + 5 * 60 * 1000  // 5 minutes
-  };
 
-  try {
+
+// Registration with OTP verification 
+const bcrypt = require("bcrypt");
+
+let tempUsers = {};
+
+app.post("/register", (req, res) => {
+  const { name, email, password } = req.body;
+
+  db.query("SELECT * FROM users WHERE email = ?", [email], async (err, result) => {
+
+    if (err) {
+      console.log(err);
+      return res.json({ success: false });
+    }
+
+    if (result.length > 0) {
+      return res.json({ success: false, message: "User already exists" });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000);
+
+    tempUsers[email] = { name, password, otp };
+
     await transporter.sendMail({
-      from: `"Saarthi" <${process.env.EMAIL_USER}>`,
+      from: '"Saarthi" shah001harsh@gmail.com',
       to: email,
-      subject: "Your Saarthi OTP",
-      html: `
-        <h2>Welcome to Saarthi</h2>
-        <p>Your OTP is:</p>
-        <h1>${otp}</h1>
-        <p>This OTP is valid for 5 minutes.</p>
-      `
+      subject: "Verify Your Account",
+      html: `<h2>Your OTP is ${otp}</h2>`
     });
 
     res.json({ success: true });
-
-  } catch (error) {
-    console.log("EMAIL ERROR:", error.message);
-    res.json({ success: false });
-  }
+  });
 });
 
-// Verify OTP
-app.post("/verify-otp", (req, res) => {
+// Verify OTP and create user
+app.post("/verify-otp", async (req, res) => {
   const { email, otp } = req.body;
 
-  const record = otpStore[email];
-
-  if (!record) {
-    return res.json({ success: false, message: "No OTP found" });
+  if (!tempUsers[email] || tempUsers[email].otp != otp) {
+    return res.json({ success: false, message: "Invalid OTP" });
   }
 
-  if (Date.now() > record.expires) {
-    delete otpStore[email];
-    return res.json({ success: false, message: "OTP expired" });
-  }
+  const hashedPassword = await bcrypt.hash(tempUsers[email].password, 10);
 
-  if (record.otp === otp) {
-    delete otpStore[email];
-    return res.json({ success: true });
-  }
+  db.query(
+    "INSERT INTO users (name, email, password, is_verified) VALUES (?, ?, ?, ?)",
+    [tempUsers[email].name, email, hashedPassword, true],
+    (err) => {
+      if (err) {
+        console.log(err);
+        return res.json({ success: false });
+      }
 
-  res.json({ success: false, message: "Invalid OTP" });
+      delete tempUsers[email];
+      res.json({ success: true });
+    }
+  );
 });
 
+
+// Login
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+
+  db.query("SELECT * FROM users WHERE email = ?", [email], async (err, result) => {
+
+    if (err) {
+      console.log(err);
+      return res.json({ success: false });
+    }
+
+    if (result.length === 0) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
+    const user = result[0];
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.json({ success: false, message: "Wrong password" });
+    }
+
+    res.json({ success: true });
+  });
+});
 app.listen(PORT, () => {
   console.log("Server running on port", PORT);
 });

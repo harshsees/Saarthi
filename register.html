@@ -1,0 +1,269 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Saarthi — Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+<style>
+:root{
+  --saarthi-red-700:#b71c1c;
+  --saarthi-red-500:#e53935;
+  --saarthi-rose-100:#fff0f0;
+  --saarthi-gray-900:#121212;
+  --saarthi-gray-700:#374151;
+  --saarthi-gray-400:#9ca3af;
+  --white:#ffffff;
+  --radius:12px;
+  --shadow: 0 8px 24px rgba(0,0,0,0.08);
+  --font: 'Inter', Arial, sans-serif;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:var(--font);
+  background: linear-gradient(180deg, #fff 0%, var(--saarthi-rose-100) 100%);
+}
+
+.container{
+  max-width:1100px;
+  margin:28px auto;
+  padding:24px;
+}
+
+.card{
+  background:#fff;
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:28px;
+}
+
+.header{
+  display:flex;
+  gap:16px;
+  margin-bottom:18px;
+}
+
+.logo1{
+  width:56px;
+  height:56px;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--saarthi-red-500),var(--saarthi-red-700));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-weight:700;
+  font-size:20px;
+}
+
+.btn{
+  padding:10px 16px;
+  border-radius:10px;
+  background:var(--saarthi-red-500);
+  color:#fff;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.input{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #eee;
+}
+
+.small{
+  font-size:13px;
+  color:var(--saarthi-gray-400);
+}
+
+.small-ghost{
+  background:#fff;
+  border:1px dashed #f6dada;
+  padding:10px 16px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+
+.main-flex{
+  display:flex;
+  gap:30px;
+  align-items:center;
+}
+
+.left{
+  flex:1;
+}
+
+.right{
+  width:260px;
+}
+
+.urgent-card{
+  background:linear-gradient(135deg,var(--saarthi-red-500),var(--saarthi-red-700));
+  color:#fff;
+  border-radius:16px;
+  padding:22px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  height:100%;
+}
+
+.urgent-title{
+  font-size:18px;
+  font-weight:700;
+}
+
+.urgent-desc{
+  margin-top:8px;
+  font-size:14px;
+  opacity:0.95;
+}
+
+.urgent-btn{
+  align-self:flex-end;
+  margin-top:20px;
+  background:#fff;
+  color:var(--saarthi-red-700);
+  padding:8px 16px;
+  border:none;
+  border-radius:10px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.register{
+  margin-top:14px;
+  font-size:13px;
+  color:var(--saarthi-gray-700);
+}
+
+.register a{
+  color:var(--saarthi-red-500);
+  font-weight:600;
+  text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="left">
+
+  <div class="header">
+    <div class="logo1">S</div>
+    <div>
+      <strong>Saarthi</strong><br>
+      <span class="small">Hyperlocal Blood Donation Connector</span>
+    </div>
+  </div>
+
+  <h2 style="margin-top:10px;">Create Account</h2>
+  <p class="small">Join Saarthi and become a lifesaver in your community.</p>
+
+  <!-- NAME -->
+  <label class="small" style="margin-top:18px;display:block;">Full Name</label>
+  <input id="nameInput" class="input" placeholder="Enter your full name">
+
+  <!-- EMAIL -->
+  <label class="small" style="margin-top:14px;display:block;">Email Address</label>
+  <input id="emailInput" class="input" placeholder="Enter your email">
+
+  <!-- PASSWORD -->
+  <label class="small" style="margin-top:14px;display:block;">Create Password</label>
+  <input type="password" id="passwordInput" class="input" placeholder="Create a strong password">
+
+  <!-- REGISTER BUTTON -->
+  <div style="margin-top:18px;">
+    <button id="registerBtn" class="btn" style="width:100%;">Send OTP</button>
+  </div>
+
+  <!-- OTP SECTION -->
+  <div id="otpSection" style="display:none;margin-top:20px;padding:16px;background:#fff6f6;border-radius:12px;border:1px solid #ffd6d6;">
+    
+    <label class="small" style="display:block;margin-bottom:6px;">Enter OTP</label>
+    <input id="otpInput" class="input" placeholder="Enter the 6-digit OTP">
+
+    <button id="verifyOtpBtn" class="btn" style="margin-top:12px;width:100%;">
+      Verify & Complete Registration
+    </button>
+
+  </div>
+
+  <p id="message" class="small" style="margin-top:12px;"></p>
+
+  <div class="register" style="margin-top:18px;">
+    Already have an account? 
+    <a href="login.html">Login</a>
+  </div>
+
+</div>
+<script>
+const registerBtn = document.getElementById("registerBtn");
+const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+
+const nameInput = document.getElementById("nameInput");
+const emailInput = document.getElementById("emailInput");
+const passwordInput = document.getElementById("passwordInput");
+const otpInput = document.getElementById("otpInput");
+const otpSection = document.getElementById("otpSection");
+const message = document.getElementById("message");
+
+registerBtn.addEventListener("click", async () => {
+
+  const name = nameInput.value.trim();
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+
+  if (!name || !email || !password) {
+    message.innerText = "Please fill all fields.";
+    return;
+  }
+
+  const response = await fetch("http://localhost:5000/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, password })
+  });
+
+  const data = await response.json();
+
+  if (data.success) {
+    message.innerText = "OTP sent to your email.";
+    otpSection.style.display = "block";
+  } else {
+    message.innerText = data.message || "Registration failed.";
+  }
+});
+
+verifyOtpBtn.addEventListener("click", async () => {
+
+  const email = emailInput.value.trim();
+  const otp = otpInput.value.trim();
+
+  const response = await fetch("http://localhost:5000/verify-otp", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, otp })
+  });
+
+  const data = await response.json();
+
+  if (data.success) {
+    alert("Registration successful!");
+    window.location.href = "login.html";
+  } else {
+    message.innerText = data.message || "Invalid OTP.";
+  }
+});
+</script>
+
+</body>
+</html>

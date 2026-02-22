@@ -5,6 +5,8 @@
   <title>Saarthi — Login</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
+<link rel="stylesheet" href="style.css">
+
 <style>
 :root{
   --saarthi-red-700:#b71c1c;
@@ -46,7 +48,7 @@ body{
   margin-bottom:18px;
 }
 
-.logo{
+.logo1{
   width:56px;
   height:56px;
   border-radius:12px;
@@ -154,6 +156,29 @@ body{
 
 <body>
 
+<header class="navbar">
+  <div class="nav-container">
+
+ <div class="logo">
+  <div class="logo-mark">
+    <div class="cross-vertical"></div>
+    <div class="cross-horizontal"></div>
+  </div>
+  <span class="logo-text">Saarthi</span>
+</div>
+
+
+
+
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+    </nav>
+
+  </div>
+</header>
+
+
 <div class="container">
   <div class="card" style="max-width:900px;margin:40px auto;">
 
@@ -163,7 +188,7 @@ body{
       <div class="left">
 
         <div class="header">
-          <div class="logo">S</div>
+          <div class="logo1">S</div>
           <div>
             <strong>Saarthi</strong><br>
             <span class="small">Hyperlocal Blood Donation Connector</span>
@@ -175,6 +200,8 @@ body{
 
         <label class="small">Mobile number or email</label>
         <input id="loginInput" class="input" placeholder="Enter phone or email">
+        
+        <div id="recaptcha-container" style="margin-top:10px;"></div>
 
         <div style="margin-top:12px;display:flex;gap:10px;">
           <button id="sendOtpBtn" class="btn">Send OTP</button>
@@ -222,55 +249,54 @@ const verifyOtpBtn = document.getElementById("verifyOtpBtn");
 const loginInput = document.getElementById("loginInput");
 const otpSection = document.getElementById("otpSection");
 const otpInput = document.getElementById("otpInput");
-const message = document.getElementById("message");
 
-let generatedOtp = "";
+sendOtpBtn.addEventListener("click", async () => {
 
-function isValidInput(input) {
-  const mobileRegex = /^[6-9]\d{9}$/;
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return mobileRegex.test(input) || emailRegex.test(input);
-}
+  const email = loginInput.value.trim();
 
-sendOtpBtn.addEventListener("click", () => {
-  const userInput = loginInput.value.trim();
-
-  if (!isValidInput(userInput)) {
-    message.style.color = "red";
-    message.innerText = "Please enter a valid mobile number or email.";
+  if (!email.includes("@")) {
+    alert("Enter valid email address");
     return;
   }
 
-  generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
-  console.log("OTP (demo):", generatedOtp);
+  const response = await fetch("http://localhost:5000/send-otp", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email })
+  });
 
-  message.style.color = "green";
-  message.innerText = "OTP sent successfully!";
-  otpSection.style.display = "block";
-});
+  const data = await response.json();
 
-verifyOtpBtn.addEventListener("click", () => {
-  if (otpInput.value.trim() === generatedOtp) {
-    message.style.color = "green";
-    message.innerText = "Login successful! Redirecting...";
-    // SAVE USER SESSION
-localStorage.setItem("isLoggedIn", "true");
-localStorage.setItem("userName", "Harsh Shah");
-localStorage.setItem("bloodGroup", "B+");
-
-setTimeout(() => {
-  window.location.href = "dashboard.html";
-},1500);
-
+  if (data.success) {
+    alert("OTP sent to your email!");
+    otpSection.style.display = "block";
   } else {
-    message.style.color = "red";
-    message.innerText = "Invalid OTP. Try again.";
+    alert("Failed to send OTP");
   }
 });
-function goToPostRequest() {
-  window.location.href = "post-request.html";
-}
+
+verifyOtpBtn.addEventListener("click", async () => {
+
+  const email = loginInput.value.trim();
+  const otp = otpInput.value.trim();
+
+  const response = await fetch("http://localhost:5000/verify-otp", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, otp })
+  });
+
+  const data = await response.json();
+
+  if (data.success) {
+    localStorage.setItem("isLoggedIn", "true");
+    window.location.href = "dashboard.html";
+  } else {
+    alert(data.message);
+  }
+});
 </script>
+
 
 </body>
 </html>

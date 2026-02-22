@@ -57,8 +57,9 @@ app.post("/register", (req, res) => {
 
     tempUsers[email] = { name, password, otp };
 
+// Send OTP email transporter 
     await transporter.sendMail({
-      from: '"Saarthi" shah001harsh@gmail.com',
+      from: '"Saarthi" <shah001harsh@gmail.com>',
       to: email,
       subject: "Verify Your Account",
       html: `<h2>Your OTP is ${otp}</h2>`
@@ -66,6 +67,13 @@ app.post("/register", (req, res) => {
 
     res.json({ success: true });
   });
+});
+transporter.verify(function (error, success) {
+  if (error) {
+    console.log("SMTP ERROR:", error);
+  } else {
+    console.log("SMTP Server is ready to send messages");
+  }
 });
 
 // Verify OTP and create user

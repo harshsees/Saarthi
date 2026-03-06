@@ -1,0 +1,186 @@
+<!doctype html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<title>Saarthi — Complete Profile</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+  --saarthi-red-700:#b71c1c;
+  --saarthi-red-500:#e53935;
+  --saarthi-rose-100:#fff0f0;
+  --saarthi-gray-900:#121212;
+  --saarthi-gray-700:#374151;
+  --saarthi-gray-400:#9ca3af;
+}
+
+body{
+  margin:0;
+  font-family:Inter;
+  background:linear-gradient(180deg,#fff 0%,#fff0f0 100%);
+}
+
+.container{
+  max-width:900px;
+  margin:60px auto;
+}
+
+.card{
+  background:#fff;
+  border-radius:16px;
+  padding:30px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.input{
+  width:100%;
+  padding:12px;
+  margin-top:6px;
+  margin-bottom:16px;
+  border-radius:10px;
+  border:1px solid #eee;
+}
+
+.btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#e53935;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.small{
+  font-size:13px;
+  color:#6b7280;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Complete Your Profile</h2>
+
+<p class="small">
+Add your donor details so people can find you during emergencies.
+</p>
+
+
+<label class="small">Phone Number</label>
+<input id="phone" class="input" placeholder="Enter phone number">
+
+
+<label class="small">Blood Group</label>
+<select id="bloodGroup" class="input">
+
+<option value="">Select Blood Group</option>
+<option>A+</option>
+<option>A-</option>
+<option>B+</option>
+<option>B-</option>
+<option>O+</option>
+<option>O-</option>
+<option>AB+</option>
+<option>AB-</option>
+
+</select>
+
+
+<label class="small">City</label>
+<input id="city" class="input" placeholder="Enter your city">
+
+
+<label class="small">Last Donation Date</label>
+<input id="lastDonation" type="date" class="input">
+
+
+<label class="small">Total Donations Made</label>
+<input id="totalDonations" type="number" class="input" value="0">
+
+
+<label class="small">Are you currently available to donate?</label>
+<select id="availability" class="input">
+
+<option value="true">Yes, I am available</option>
+<option value="false">Not right now</option>
+
+</select>
+
+
+<button id="saveProfileBtn" class="btn">
+Save Profile
+</button>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+document.getElementById("saveProfileBtn").addEventListener("click", async () => {
+
+const userId = localStorage.getItem("userId");
+
+const phone = document.getElementById("phone").value;
+const bloodGroup = document.getElementById("bloodGroup").value;
+const city = document.getElementById("city").value;
+const lastDonation = document.getElementById("lastDonation").value;
+const totalDonations = document.getElementById("totalDonations").value;
+const availability = document.getElementById("availability").value;
+
+
+const response = await fetch("http://localhost:5000/complete-profile",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+userId,
+phone,
+bloodGroup,
+city,
+lastDonation,
+totalDonations,
+availability
+
+})
+
+});
+
+
+const data = await response.json();
+
+if(data.success){
+
+window.location.href = "dashboard.html";
+
+}else{
+
+alert("Failed to save profile");
+
+}
+
+});
+
+</script>
+
+</body>
+</html>

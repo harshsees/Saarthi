@@ -173,6 +173,62 @@ textarea{
   font-weight:600;
   font-size:12px;
 }
+.form-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:16px;
+margin-top:20px;
+}
+
+.form-group{
+display:flex;
+flex-direction:column;
+gap:6px;
+}
+
+.form-group.full{
+grid-column:1 / span 2;
+}
+
+.btn-row{
+margin-top:20px;
+display:flex;
+gap:10px;
+}
+.request-layout{
+display:grid;
+grid-template-columns:1fr 320px;
+gap:28px;
+align-items:start;
+}
+
+.card{
+background:#fff;
+border-radius:var(--radius);
+box-shadow:var(--shadow);
+padding:28px;
+}
+.badge{
+  padding:4px 10px;
+  border-radius:999px;
+  font-weight:600;
+  font-size:12px;
+}
+
+.badge-normal{
+  background:#f3f4f6;
+  color:#374151;
+}
+
+.badge-urgent{
+  background:#fff7ed;
+  color:#ea580c;
+}
+
+.badge-critical{
+  background:#fee2e2;
+  color:#b91c1c;
+}
 </style>
 </head>
 
@@ -192,7 +248,7 @@ textarea{
 
     <nav class="nav-links">
       <a href="index.html">Home</a>
-      <a href="login.html">Donate Blood</a>
+      <a href="login.html">Login</a>
       <a href="about.html">About</a>
     </nav>
 
@@ -200,124 +256,120 @@ textarea{
 </header>
 
 
+<div class="request-layout">
 
-<div class="container">
+  <!-- LEFT : POST REQUEST FORM -->
+  <div class="card">
 
+    <h2>Post Blood Request</h2>
+    <p class="small">Create an urgent blood request for nearby donors.</p>
 
-  <div class="header">
-    <div class="logo1">S</div>
-    <div>
-      <div class="page-title">Post Urgent Request</div>
-      <div class="page-sub">Fill details carefully</div>
-    </div>
-  </div>
+    <div class="form-grid">
 
-
-  <div class="main-card">
-
-    <div class="grid">
-        <!-- FORM -->
-      <div>
-
-        <div class="field">
-          <label>Blood Group</label>
-          <select id="blood" onchange="updatePreview()">
-            <option value="">Choose blood group</option>
-            <option>O+</option><option>O-</option><option>A+</option>
-            <option>B+</option><option>AB+</option>
-          </select>
-        </div>
-
-        <div class="row">
-          <div class="field" style="flex:1">
-            <label>Units Required</label>
-            <input id="units" placeholder="No. of units" oninput="updatePreview()">
-          </div>
-
-          <div class="field" style="flex:1">
-            <label>Urgency</label>
-            <select id="urgency" onchange="updatePreview()">
-              <option>Normal</option>
-              <option selected>Urgent</option>
-              <option>Immediate</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Hospital / Location</label>
-         <input id="location" placeholder="Hospital or location" oninput="updatePreview()"/>
-
-        </div>
-
-        <div class="field">
-          <label>Contact Number</label>
-          <input id="phone" placeholder="+91 *********">
-        </div>
-
-        <div class="field">
-          <label>Additional Notes</label>
-          <textarea id="notes" placeholder="Any special notes"></textarea>
-        </div>
-
-        <div class="row">
-          <button type="button" class="btn" onclick="postRequest()">Post Request</button>
-          <button type="button" class="btn-outline" onclick="cancelRequest()">Cancel</button>
-
-        </div>
-
+      <div class="form-group">
+        <label>Blood Group</label>
+        <select class="input" id="bloodGroup">
+          <option value="">Choose blood group</option>
+          <option>A+</option>
+          <option>A-</option>
+          <option>B+</option>
+          <option>B-</option>
+          <option>AB+</option>
+          <option>AB-</option>
+          <option>O+</option>
+          <option>O-</option>
+        </select>
       </div>
 
-      <!-- RIGHT: INFO + PREVIEW -->
-      <div>
+      <div class="form-group">
+        <label>Units Required</label>
+        <input type="number" class="input" id="units" placeholder="No. of units">
+      </div>
 
-        <div class="side-card">
-          <div class="side-title">How matching works</div>
-          <ol>
-            <li>Filters donors by blood group</li>
-            <li>Finds nearby eligible donors</li>
-            <li>Ranks donors by distance</li>
-          </ol>
-        </div>
+      <div class="form-group">
+        <label>Urgency</label>
+        <select class="input" id="urgency">
+          <option>Normal</option>
+          <option>Urgent</option>
+          <option>Critical</option>
+        </select>
+      </div>
 
-        <div class="side-card">
-          <div class="side-title">Live Preview</div>
-          <div class="preview-item" id="pBlood">Blood Group: —</div>
-          <div class="preview-item" id="pUnits">Units: —</div>
-          <div class="preview-item" id="pUrgency">Urgency: —</div>
-          <div class="preview-item" id="pLocation">Location: —</div>
-        </div>
+      <div class="form-group">
+        <label>Hospital / Location</label>
+        <input class="input" id="location" placeholder="Hospital or location">
+      </div>
 
+      <div class="form-group">
+        <label>Contact Number</label>
+        <input class="input" id="phone" placeholder="+91">
+      </div>
+
+      <div class="form-group full">
+        <label>Additional Notes</label>
+        <textarea class="input" id="notes" placeholder="Any special notes"></textarea>
       </div>
 
     </div>
+
+    <div class="btn-row">
+      <button class="btn" onclick="postRequest()">Post Request</button>
+      <button class="btn-outline" onclick="cancelRequest()">Cancel</button>
+    </div>
+
   </div>
+
+
+  <!-- RIGHT : LIVE PREVIEW -->
+  <div class="side-card">
+
+    <div class="side-title">Live Preview</div>
+
+    <div class="preview-item" id="pBlood">Blood Group: —</div>
+    <div class="preview-item" id="pUnits">Units: —</div>
+    <div class="preview-item" id="pUrgency">Urgency: —</div>
+    <div class="preview-item" id="pLocation">Location: —</div>
+
+  </div>
+
 </div>
-
 <script>
 function updatePreview(){
-  document.getElementById("pBlood").innerText =
-    "Blood Group: " + (document.getElementById("blood").value || "—");
 
-  document.getElementById("pUnits").innerText =
-    "Units: " + (document.getElementById("units").value || "—");
+const blood = document.getElementById("bloodGroup").value;
+const units = document.getElementById("units").value;
+const urgency = document.getElementById("urgency").value;
+const location = document.getElementById("location").value;
 
-  document.getElementById("pUrgency").innerHTML =
-    "Urgency: <span class='badge'>" +
-    document.getElementById("urgency").value +
-    "</span>";
+document.getElementById("pBlood").innerText =
+"Blood Group: " + (blood || "—");
 
-  document.getElementById("pLocation").innerText =
-    "Location: " + (document.getElementById("location").value || "—");
+document.getElementById("pUnits").innerText =
+"Units: " + (units || "—");
+
+let urgencyClass = "badge-normal";
+
+if(urgency === "Urgent"){
+  urgencyClass = "badge-urgent";
+}
+else if(urgency === "Critical"){
+  urgencyClass = "badge-critical";
 }
 
+document.getElementById("pUrgency").innerHTML =
+"Urgency: <span class='badge " + urgencyClass + "'>" + urgency + "</span>";
+
+document.getElementById("pLocation").innerText =
+"Location: " + (location || "—");
+
+}
 function postRequest(){
-  const blood = document.getElementById("blood").value.trim();
-  const units = document.getElementById("units").value.trim();
-  const urgency = document.getElementById("urgency").value;
-  const location = document.getElementById("location").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const notes = document.getElementById("notes").value.trim();
+    const blood = document.getElementById("bloodGroup").value.trim();
+    const units = document.getElementById("units").value.trim();
+    const urgency = document.getElementById("urgency").value;
+    const location = document.getElementById("location").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const notes = document.getElementById("notes").value.trim();
 
   if(blood === "" || units === "" || location === "" || phone === ""){
     alert("Please fill all required fields");
@@ -337,9 +389,10 @@ function postRequest(){
   const requests = JSON.parse(localStorage.getItem("requests")) || [];
   requests.push(request);
   localStorage.setItem("requests", JSON.stringify(requests));
+  localStorage.setItem("currentRequest", JSON.stringify(request));
 
   alert("Request posted successfully!");
-  window.location.href = "dashboard.html";
+  window.location.href = "request-status.html";
 }
 function cancelRequest() {
   
@@ -356,7 +409,12 @@ function cancelRequest() {
   document.getElementById("pUrgency").innerText = "Urgency: —";
   document.getElementById("pLocation").innerText = "Location: —";
 }
+document.getElementById("bloodGroup").addEventListener("change", updatePreview);
+document.getElementById("units").addEventListener("input", updatePreview);
+document.getElementById("urgency").addEventListener("change", updatePreview);
+document.getElementById("location").addEventListener("input", updatePreview);
 
+updatePreview();
 </script>
 
 

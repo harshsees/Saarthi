@@ -1,155 +1,233 @@
 <!doctype html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>Saarthi — Login</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
+<meta charset="utf-8">
+<title>Post Request — Saarthi</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 
 <style>
 :root{
-  --saarthi-red-700:#b71c1c;
-  --saarthi-red-500:#e53935;
-  --saarthi-rose-100:#fff0f0;
-  --saarthi-gray-900:#121212;
-  --saarthi-gray-700:#374151;
-  --saarthi-gray-400:#9ca3af;
-  --white:#ffffff;
-  --radius:12px;
-  --shadow: 0 8px 24px rgba(0,0,0,0.08);
-  --font: 'Inter', Arial, sans-serif;
+  --red:#e53935;
+  --red-dark:#b71c1c;
+  --rose:#fff0f0;
+  --gray:#6b7280;
+  --border:#e5e7eb;
+  --radius:16px;
+  --shadow:0 12px 32px rgba(0,0,0,0.12);
 }
 
 *{box-sizing:border-box}
 
 body{
   margin:0;
-  font-family:var(--font);
-  background: linear-gradient(180deg, #fff 0%, var(--saarthi-rose-100) 100%);
+  font-family:'Inter',sans-serif;
+  background:linear-gradient(180deg,#fff,#fff0f0);
 }
 
 .container{
   max-width:1100px;
-  margin:28px auto;
+  margin:36px auto;
   padding:24px;
-}
-
-.card{
-  background:#fff;
-  border-radius:16px;
-  box-shadow:var(--shadow);
-  padding:28px;
 }
 
 .header{
   display:flex;
+  align-items:center;
   gap:16px;
-  margin-bottom:18px;
+  margin-bottom:28px;
 }
 
 .logo1{
-  width:56px;
-  height:56px;
-  border-radius:12px;
-  background:linear-gradient(135deg,var(--saarthi-red-500),var(--saarthi-red-700));
+  width:54px;
+  height:54px;
+  border-radius:var(--radius);
+  background:linear-gradient(135deg,var(--red),var(--red-dark));
+  color:#fff;
   display:flex;
   align-items:center;
   justify-content:center;
-  color:#fff;
   font-weight:700;
   font-size:20px;
 }
 
-.btn{
-  padding:10px 16px;
-  border-radius:10px;
-  background:var(--saarthi-red-500);
-  color:#fff;
-  border:none;
-  font-weight:600;
-  cursor:pointer;
-}
-
-.input{
-  width:100%;
-  padding:12px;
-  border-radius:10px;
-  border:1px solid #eee;
-}
-
-.small{
-  font-size:13px;
-  color:var(--saarthi-gray-400);
-}
-
-.small-ghost{
-  background:#fff;
-  border:1px dashed #f6dada;
-  padding:10px 16px;
-  border-radius:10px;
-  cursor:pointer;
-}
-
-
-.main-flex{
-  display:flex;
-  gap:30px;
-  align-items:center;
-}
-
-.left{
-  flex:1;
-}
-
-.right{
-  width:260px;
-}
-
-.urgent-card{
-  background:linear-gradient(135deg,var(--saarthi-red-500),var(--saarthi-red-700));
-  color:#fff;
-  border-radius:16px;
-  padding:22px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  height:100%;
-}
-
-.urgent-title{
-  font-size:18px;
+.page-title{
+  font-size:20px;
   font-weight:700;
 }
 
-.urgent-desc{
-  margin-top:8px;
-  font-size:14px;
-  opacity:0.95;
+.page-sub{
+  font-size:13px;
+  color:var(--gray);
 }
 
-.urgent-btn{
-  align-self:flex-end;
-  margin-top:20px;
+/* MAIN CARD */
+.main-card{
   background:#fff;
-  color:var(--saarthi-red-700);
-  padding:8px 16px;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:28px;
+  max-width:920px;
+  margin:auto;
+}
+
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 320px;
+  gap:28px;
+}
+
+
+.field{
+  margin-bottom:20px;
+}
+
+label{
+  font-size:13px;
+  color:var(--gray);
+}
+
+.input,
+select,
+textarea{
+  width:100%;
+  height:48px;
+  padding:12px 14px;
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+  margin-top:6px;
+  font-size:14px;
+  background:#fff;
+}
+
+textarea{
+  height:100px;
+  resize:none;
+}
+
+
+.row{
+  display:flex;
+  gap:16px;
+}
+
+
+.btn{
+  background:var(--red);
+  color:#fff;
   border:none;
-  border-radius:10px;
+  padding:14px 22px;
+  border-radius:var(--radius);
   font-weight:600;
   cursor:pointer;
 }
 
-.register{
-  margin-top:14px;
-  font-size:13px;
-  color:var(--saarthi-gray-700);
+.btn-outline{
+  background:#fff;
+  border:1px dashed #f3bcbc;
+  padding:14px 22px;
+  border-radius:var(--radius);
+  cursor:pointer;
 }
 
-.register a{
-  color:var(--saarthi-red-500);
+
+.side-card{
+  background:#fff;
+  border-radius:var(--radius);
+  padding:22px;
+  box-shadow:var(--shadow);
+  height:fit-content;
+}
+
+.side-card + .side-card{
+  margin-top:22px;
+}
+
+.side-title{
+  font-weight:700;
+  margin-bottom:10px;
+}
+
+.side-card ol{
+  padding-left:16px;
+  margin:0;
+}
+
+.side-card li{
+  font-size:13px;
+  color:var(--gray);
+  margin-bottom:8px;
+}
+
+.preview-item{
+  font-size:14px;
+  margin-bottom:10px;
+}
+
+.badge{
+  background:var(--rose);
+  color:var(--red-dark);
+  padding:4px 10px;
+  border-radius:999px;
   font-weight:600;
-  text-decoration:none;
+  font-size:12px;
+}
+.form-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:16px;
+margin-top:20px;
+}
+
+.form-group{
+display:flex;
+flex-direction:column;
+gap:6px;
+}
+
+.form-group.full{
+grid-column:1 / span 2;
+}
+
+.btn-row{
+margin-top:20px;
+display:flex;
+gap:10px;
+}
+.request-layout{
+display:grid;
+grid-template-columns:1fr 320px;
+gap:28px;
+align-items:start;
+}
+
+.card{
+background:#fff;
+border-radius:var(--radius);
+box-shadow:var(--shadow);
+padding:28px;
+}
+.badge{
+  padding:4px 10px;
+  border-radius:999px;
+  font-weight:600;
+  font-size:12px;
+}
+
+.badge-normal{
+  background:#f3f4f6;
+  color:#374151;
+}
+
+.badge-urgent{
+  background:#fff7ed;
+  color:#ea580c;
+}
+
+.badge-critical{
+  background:#fee2e2;
+  color:#b91c1c;
 }
 </style>
 </head>
@@ -159,7 +237,7 @@ body{
 <header class="navbar">
   <div class="nav-container">
 
- <div class="logo">
+<div class="logo">
   <div class="logo-mark">
     <div class="cross-vertical"></div>
     <div class="cross-horizontal"></div>
@@ -167,8 +245,10 @@ body{
   <span class="logo-text">Saarthi</span>
 </div>
 
+
     <nav class="nav-links">
       <a href="index.html">Home</a>
+      <a href="login.html">Login</a>
       <a href="about.html">About</a>
     </nav>
 
@@ -176,101 +256,165 @@ body{
 </header>
 
 
-<div class="container">
-  <div class="card" style="max-width:900px;margin:40px auto;">
+<div class="request-layout">
 
-    <div class="main-flex">
+  <!-- LEFT : POST REQUEST FORM -->
+  <div class="card">
 
-      <!-- LEFT SECTION -->
-      <div class="left">
+    <h2>Post Blood Request</h2>
+    <p class="small">Create an urgent blood request for nearby donors.</p>
 
-        <div class="header">
-          <div class="logo1">S</div>
-          <div>
-            <strong>Saarthi</strong><br>
-            <span class="small">Hyperlocal Blood Donation Connector</span>
-          </div>
-        </div>
+    <div class="form-grid">
 
-        <h2>Login</h2>
-        <p class="small">Sign in to continue and help save lives.</p>
-
-        <label class="small">Mobile number or email</label>
-        <input id="loginInput" class="input" placeholder="Enter phone or email">
-        
-         <!-- PASSWORD -->
-        <label class="small" style="margin-top:12px;">Password</label>
-        <input type="password" id="passwordInput" class="input" placeholder="Enter password">
-
-        <div style="margin-top:12px;display:flex;gap:10px;">
-        <button id="loginBtn" class="btn">Login</button>
-        <button class="small-ghost">Sign In with Google</button>
-        </div>
-      
-        <!-- MESSAGE -->
-        <p id="message" class="small" style="margin-top:10px;"></p>
-
-        <!-- REGISTER -->
-        <div class="register">
-          Don’t have an account? <a href="register.html">Register</a>
-        </div>
-
+      <div class="form-group">
+        <label>Blood Group</label>
+        <select class="input" id="bloodGroup">
+          <option value="">Choose blood group</option>
+          <option>A+</option>
+          <option>A-</option>
+          <option>B+</option>
+          <option>B-</option>
+          <option>AB+</option>
+          <option>AB-</option>
+          <option>O+</option>
+          <option>O-</option>
+        </select>
       </div>
 
-      <!-- RIGHT SECTION -->
-      <div class="right">
-        <div class="urgent-card">
-          <div>
-            <div class="urgent-title">Urgent Help</div>
-            <div class="urgent-desc">
-              Post an emergency request and find nearby donors instantly.
-            </div>
-          </div>
-          <button class="urgent-btn" onclick="goToPostRequest()">Post Request</button>
+      <div class="form-group">
+        <label>Units Required</label>
+        <input type="number" class="input" id="units" placeholder="No. of units">
+      </div>
 
-        </div>
+      <div class="form-group">
+        <label>Urgency</label>
+        <select class="input" id="urgency">
+          <option>Normal</option>
+          <option>Urgent</option>
+          <option>Critical</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Hospital / Location</label>
+        <input class="input" id="location" placeholder="Hospital or location">
+      </div>
+
+      <div class="form-group">
+        <label>Contact Number</label>
+        <input class="input" id="phone" placeholder="+91">
+      </div>
+
+      <div class="form-group full">
+        <label>Additional Notes</label>
+        <textarea class="input" id="notes" placeholder="Any special notes"></textarea>
       </div>
 
     </div>
+
+    <div class="btn-row">
+      <button class="btn" onclick="postRequest()">Post Request</button>
+      <button class="btn-outline" onclick="cancelRequest()">Cancel</button>
+    </div>
+
   </div>
+
+
+  <!-- RIGHT : LIVE PREVIEW -->
+  <div class="side-card">
+
+    <div class="side-title">Live Preview</div>
+
+    <div class="preview-item" id="pBlood">Blood Group: —</div>
+    <div class="preview-item" id="pUnits">Units: —</div>
+    <div class="preview-item" id="pUrgency">Urgency: —</div>
+    <div class="preview-item" id="pLocation">Location: —</div>
+
+  </div>
+
 </div>
-
 <script>
-const loginBtn = document.getElementById("loginBtn");
-const loginInput = document.getElementById("loginInput");
-const passwordInput = document.getElementById("passwordInput");
+function updatePreview(){
 
-loginBtn.addEventListener("click", async () => {
+const blood = document.getElementById("bloodGroup").value;
+const units = document.getElementById("units").value;
+const urgency = document.getElementById("urgency").value;
+const location = document.getElementById("location").value;
 
-  const email = loginInput.value.trim();
-  const password = passwordInput.value.trim();
+document.getElementById("pBlood").innerText =
+"Blood Group: " + (blood || "—");
 
-  const response = await fetch("http://localhost:5000/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  });
+document.getElementById("pUnits").innerText =
+"Units: " + (units || "—");
 
-  const data = await response.json();
+let urgencyClass = "badge-normal";
 
- if (data.success) {
-
-  localStorage.setItem("userId", data.user.id);
-  localStorage.setItem("userName", data.user.name);
-  localStorage.setItem("userEmail", data.user.email);
-
-  if(data.profileCompleted){
-  window.location.href = "dashboard.html";
-}else{
-  window.location.href = "complete-profile.html";
+if(urgency === "Urgent"){
+  urgencyClass = "badge-urgent";
 }
-} else {
-    alert(data.message || "Login failed");
+else if(urgency === "Critical"){
+  urgencyClass = "badge-critical";
+}
+
+document.getElementById("pUrgency").innerHTML =
+"Urgency: <span class='badge " + urgencyClass + "'>" + urgency + "</span>";
+
+document.getElementById("pLocation").innerText =
+"Location: " + (location || "—");
+
+}
+function postRequest(){
+    const blood = document.getElementById("bloodGroup").value.trim();
+    const units = document.getElementById("units").value.trim();
+    const urgency = document.getElementById("urgency").value;
+    const location = document.getElementById("location").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const notes = document.getElementById("notes").value.trim();
+
+  if(blood === "" || units === "" || location === "" || phone === ""){
+    alert("Please fill all required fields");
+    return;
   }
-});
-function goToPostRequest() {
-    window.location.href = "post-request.html";
-  }
+
+  const request = {
+    id: Date.now(),
+    blood,
+    units,
+    urgency,
+    location,
+    phone,
+    notes
+  };
+
+  const requests = JSON.parse(localStorage.getItem("requests")) || [];
+  requests.push(request);
+  localStorage.setItem("requests", JSON.stringify(requests));
+  localStorage.setItem("currentRequest", JSON.stringify(request));
+
+  alert("Request posted successfully!");
+  window.location.href = "request-status.html";
+}
+function cancelRequest() {
+  
+  document.getElementById("blood").value = "";
+  document.getElementById("units").value = "";
+  document.getElementById("urgency").value = "Urgent";
+  document.getElementById("location").value = "";
+  document.getElementById("phone").value = "";
+  document.getElementById("notes").value = "";
+
+  // Reset preview
+  document.getElementById("pBlood").innerText = "Blood Group: —";
+  document.getElementById("pUnits").innerText = "Units: —";
+  document.getElementById("pUrgency").innerText = "Urgency: —";
+  document.getElementById("pLocation").innerText = "Location: —";
+}
+document.getElementById("bloodGroup").addEventListener("change", updatePreview);
+document.getElementById("units").addEventListener("input", updatePreview);
+document.getElementById("urgency").addEventListener("change", updatePreview);
+document.getElementById("location").addEventListener("input", updatePreview);
+
+updatePreview();
 </script>
 
 

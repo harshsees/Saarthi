@@ -253,13 +253,24 @@ loginBtn.addEventListener("click", async () => {
 
   const data = await response.json();
 
-  if (data.success) {
-    localStorage.setItem("isLoggedIn", "true");
-    window.location.href = "dashboard.html";
-  } else {
+ if (data.success) {
+
+  localStorage.setItem("userId", data.user.id);
+  localStorage.setItem("userName", data.user.name);
+  localStorage.setItem("userEmail", data.user.email);
+
+  if(data.profileCompleted){
+  window.location.href = "dashboard.html";
+}else{
+  window.location.href = "complete-profile.html";
+}
+} else {
     alert(data.message || "Login failed");
   }
 });
+function goToPostRequest() {
+    window.location.href = "post-request.html";
+  }
 </script>
 
 

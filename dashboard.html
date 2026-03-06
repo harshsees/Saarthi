@@ -123,12 +123,22 @@ body{
   opacity: 0;
   transition: opacity 0.4s ease;
 }
+.profile-info{
+  margin-bottom:10px;
+}
 
+.profile-info h3{
+  margin:0 0 8px 0;
+}
+
+.profile-info .small{
+  margin-bottom:4px;
+}
 </style>
 
 </head>
 <body>
-
+<h2 id="welcomeUser" style="display:none;"></h2>
 <header class="navbar">
   <div class="nav-container">
 
@@ -243,56 +253,102 @@ body{
 
         <div class="small">Home donor required</div>
       </div>
-    </div>
+    
 
-    <div class="card">
-      <h4>Profile</h4>
+<div class="card">
 
-      <div>
-        <strong id="profileName"></strong>
-        <div class="small">Blood Group: <span id="bloodGroup"></span></div>
-        <div class="small">Last donation: 120 days</div>
-      </div>
+  <h4>Profile</h4>
 
-      <hr>
+  <div class="profile-info">
+    <h3 id="profileName"></h3>
 
-      <div class="kpi">
-        <div class="kpi-title">Availability</div>
-        <div style="flex:1"></div>
-        <div class="switch" id="availabilityToggle">
-          <div class="knob"></div>
-        </div>
-      </div>
-
-      <div class="kpi">
-        <div class="kpi-title">Completed Donations</div>
-        <div class="kpi-value">6</div>
-      </div>
-
-      <div class="kpi">
-        <div class="kpi-title">Response Rate</div>
-        <div class="kpi-value">86%</div>
-      </div>
-    </div>
-
+    <div class="small">Blood Group: <span id="bloodGroup"></span></div>
+    <div class="small">City: <span id="userCity"></span></div>
+    <div class="small">Phone: <span id="userPhone"></span></div>
+    <div class="small">Last Donation: <span id="lastDonation"></span></div>
   </div>
-</div>
 
+  <hr>
+
+  <div class="kpi">
+    <div class="kpi-title">Availability</div>
+    <div style="flex:1"></div>
+
+    <div class="switch" id="availabilityToggle">
+      <div class="knob"></div>
+    </div>
+  </div>
+
+  <div class="kpi">
+    <div class="kpi-title">Completed Donations</div>
+    <div class="kpi-value" id="totalDonations">0</div>
+  </div>
+
+  <div class="kpi">
+    <div class="kpi-title">Response Rate</div>
+    <div class="kpi-value" id="responseRate">0%</div>
+  </div>
+
+</div>
+</div>
 <script>
-// ===== AUTH CHECK =====
-if (localStorage.getItem("isLoggedIn") !== "true") {
+const userId = localStorage.getItem("userId");
+const userName = localStorage.getItem("userName");
+
+if(!userId){
   window.location.href = "login.html";
 }
 
-// ===== LOAD USER DATA =====
-document.getElementById("userName").innerText = localStorage.getItem("userName");
-document.getElementById("profileName").innerText = localStorage.getItem("userName");
-document.getElementById("bloodGroup").innerText = localStorage.getItem("bloodGroup");
+// show name in header
+document.getElementById("userName").innerText = userName;
+document.getElementById("profileName").innerText = userName;
+document.getElementById("welcomeUser").innerText = "Welcome " + userName;
+
+
+// ===== LOAD PROFILE FROM DATABASE =====
+
+async function loadProfile(){
+
+const res = await fetch(`http://localhost:5000/get-profile/${userId}`);
+const data = await res.json();
+
+if(data.success){
+
+const profile = data.profile;
+
+document.getElementById("bloodGroup").innerText = profile.blood_group;
+
+document.getElementById("userCity").innerText = profile.city;
+
+document.getElementById("userPhone").innerText = profile.phone;
+
+if(profile.last_donation_date){
+
+const date = new Date(profile.last_donation_date);
+
+document.getElementById("lastDonation").innerText =
+date.toLocaleDateString();
+
+}else{
+
+document.getElementById("lastDonation").innerText = "Not donated yet";
+
+}
+
+document.getElementById("totalDonations").innerText =
+profile.total_donations || 0;
+
+}
+
+}
+
+loadProfile();
+
 
 // ===== AVAILABILITY TOGGLE =====
+
 const toggle = document.getElementById("availabilityToggle");
 
-// Load saved state
 if (localStorage.getItem("available") === "true") {
   toggle.classList.add("on");
 }
@@ -382,7 +438,6 @@ function loadRequests() {
 }
 
 loadRequests();
-
 </script>
 </body>
 </html>

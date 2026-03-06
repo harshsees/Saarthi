@@ -57,23 +57,24 @@ app.post("/register", (req, res) => {
 
     tempUsers[email] = { name, password, otp };
 
+    console.log("SENDING FROM:", process.env.EMAIL_USER);
+    
 // Send OTP email transporter 
+    try {
     await transporter.sendMail({
       from: '"Saarthi" <shah001harsh@gmail.com>',
       to: email,
       subject: "Verify Your Account",
       html: `<h2>Your OTP is ${otp}</h2>`
     });
-
+    console.log("OTP EMAIL SENT TO:", email);
     res.json({ success: true });
+
+    } catch (error) {
+  console.log("EMAIL SEND ERROR:", error);
+  res.json({ success: false, message: "Email sending failed" });
+    }
   });
-});
-transporter.verify(function (error, success) {
-  if (error) {
-    console.log("SMTP ERROR:", error);
-  } else {
-    console.log("SMTP Server is ready to send messages");
-  }
 });
 
 // Verify OTP and create user
@@ -101,9 +102,9 @@ app.post("/verify-otp", async (req, res) => {
   );
 });
 
-
 // Login
 app.post("/login", (req, res) => {
+
   const { email, password } = req.body;
 
   db.query("SELECT * FROM users WHERE email = ?", [email], async (err, result) => {
@@ -125,9 +126,135 @@ app.post("/login", (req, res) => {
       return res.json({ success: false, message: "Wrong password" });
     }
 
-    res.json({ success: true });
+    // Check if profile exists
+    db.query(
+      "SELECT * FROM donor_profiles WHERE user_id = ?",
+      [user.id],
+      (err, profileResult) => {
+
+        if (err) {
+          console.log(err);
+          return res.json({ success: false });
+        }
+
+        res.json({
+          success: true,
+          user: {
+            id: user.id,
+            name: user.name,
+            email: user.email
+          },
+          profileCompleted: profileResult.length > 0
+        });
+
+      }
+    );
+
   });
+
 });
+// Complete Profile
+app.post("/complete-profile", (req,res)=>{
+
+const {
+userId,
+phone,
+bloodGroup,
+city,
+lastDonation,
+totalDonations,
+availability
+} = req.body;
+
+const available = availability === "true" ? 1 : 0;
+
+db.query(
+
+"INSERT INTO donor_profiles (user_id, phone, blood_group, city, last_donation_date, total_donations, available_for_donation) VALUES (?, ?, ?, ?, ?, ?, ?)",
+
+[
+userId,
+phone,
+bloodGroup,
+city,
+lastDonation,
+totalDonations,
+available
+],
+
+(err)=>{
+
+if(err){
+
+console.log(err);
+return res.json({success:false});
+
+}
+
+res.json({success:true});
+
+}
+
+);
+
+});
+app.get("/get-profile/:userId", (req, res) => {
+
+  const userId = req.params.userId;
+
+  db.query(
+    "SELECT users.name, users.email, donor_profiles.phone, donor_profiles.blood_group, donor_profiles.city, donor_profiles.last_donation_date, donor_profiles.total_donations, donor_profiles.available_for_donation FROM users JOIN donor_profiles ON users.id = donor_profiles.user_id WHERE users.id = ?",
+    [userId],
+    (err, result) => {
+
+      if (err) {
+        console.log(err);
+        return res.json({ success: false });
+      }
+
+      res.json({
+        success: true,
+        profile: result[0]
+      });
+
+    }
+  );
+
+// New endpoint to get profile by user ID
+app.get("/get-profile/:userId", (req,res)=>{
+
+const userId = req.params.userId;
+
+db.query(
+`SELECT users.name,
+donor_profiles.phone,
+donor_profiles.city,
+donor_profiles.blood_group,
+donor_profiles.last_donation_date,
+donor_profiles.total_donations
+FROM users
+JOIN donor_profiles
+ON users.id = donor_profiles.user_id
+WHERE users.id = ?`,
+[userId],
+(err,result)=>{
+
+if(err){
+console.log(err);
+return res.json({success:false});
+}
+
+res.json({
+success:true,
+profile: result[0]
+});
+
+});
+
+});
+});
+
 app.listen(PORT, () => {
   console.log("Server running on port", PORT);
 });
+

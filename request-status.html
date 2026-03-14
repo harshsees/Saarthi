@@ -1,261 +1,380 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Saarthi — Login</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
+  <!doctype html>
+  <html>
+  <head>
+    <meta charset="utf-8">
+    <title>Saarthi — Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
 
-.status-container{
-display:flex;
-align-items:center;
-justify-content:center;
-height:80vh;
-}
-
-.status-card{
-background:#fff;
-padding:40px;
-border-radius:16px;
-box-shadow:0 12px 30px rgba(0,0,0,0.12);
-text-align:center;
-max-width:420px;
-}
-
-.loader{
-width:50px;
-height:50px;
-border-radius:50%;
-border:4px solid #eee;
-border-top:4px solid #e53935;
-animation:spin 1s linear infinite;
-margin:0 auto 20px;
-}
-
-@keyframes spin{
-0%{transform:rotate(0deg)}
-100%{transform:rotate(360deg)}
-}
-
-.status-wait{
-color:#6b7280;
-margin-top:10px;
-}
-.status-title{
-font-size:28px;
-font-weight:700;
-margin-bottom:10px;
-}
-
-.status-desc{
-color:#374151;
-margin-bottom:6px;
-}
-
-.status-wait{
-color:#6b7280;
-font-weight:500;
-margin-bottom:20px;
-}
-
-.request-info{
-background:#fff7f7;
-padding:18px;
-border-radius:12px;
-margin-top:10px;
-}
-
-.info-row{
-display:flex;
-justify-content:space-between;
-margin-bottom:10px;
-}
-
-.info-label{
-font-weight:600;
-color:#6b7280;
-}
-
-.info-value{
-font-weight:700;
-color:#b71c1c;
-}
-body{
-margin:0;
-font-family:'Inter',sans-serif;
-background:linear-gradient(180deg,#fff,#fff0f0);
-
-display:flex;
-flex-direction:column;
-min-height:100vh;
-}
-
-.status-wrapper{
-flex:1;
-display:flex;
-justify-content:center;
-align-items:center;
-}
-
-.search-dots{
-margin-top:10px;
-display:flex;
-justify-content:center;
-gap:6px;
-}
-
-.search-dots span{
-width:8px;
-height:8px;
-background:#e53935;
-border-radius:50%;
-animation:dotPulse 1.5s infinite;
-}
-
-.search-dots span:nth-child(2){
-animation-delay:0.3s;
-}
-
-.search-dots span:nth-child(3){
-animation-delay:0.6s;
-}
-
-@keyframes dotPulse{
-0%{opacity:0.2;transform:scale(0.8);}
-50%{opacity:1;transform:scale(1.2);}
-100%{opacity:0.2;transform:scale(0.8);}
-}
-</style>
-</head>
-
-<body>
-
-  <header style="padding:20px 40px;display:flex;align-items:center;">
-  
-  <div style="
+  .status-container{
   display:flex;
   align-items:center;
-  gap:10px;
-  font-weight:700;
-  font-size:20px;
-  color:#e53935;
-  ">
+  justify-content:center;
+  height:80vh;
+  }
 
+  .status-card{
+  background:#fff;
+  padding:40px;
+  border-radius:16px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.12);
+  text-align:center;
+  max-width:420px;
+  }
+
+  .loader{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  border:4px solid #eee;
+  border-top:4px solid #e53935;
+  animation:spin 1s linear infinite;
+  margin:0 auto 20px;
+  }
+
+  @keyframes spin{
+  0%{transform:rotate(0deg)}
+  100%{transform:rotate(360deg)}
+  }
+
+  .status-wait{
+  color:#6b7280;
+  margin-top:10px;
+  }
+  .status-title{
+  font-size:28px;
+  font-weight:700;
+  margin-bottom:10px;
+  }
+
+  .status-desc{
+  color:#374151;
+  margin-bottom:6px;
+  }
+
+  .status-wait{
+  color:#6b7280;
+  font-weight:500;
+  margin-bottom:20px;
+  }
+
+  .request-info{
+  background:#fff7f7;
+  padding:18px;
+  border-radius:12px;
+  margin-top:10px;
+  }
+
+  .info-row{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:10px;
+  }
+
+  .info-label{
+  font-weight:600;
+  color:#6b7280;
+  }
+
+  .info-value{
+  font-weight:700;
+  color:#b71c1c;
+  }
+  body{
+  margin:0;
+  font-family:'Inter',sans-serif;
+  background:linear-gradient(180deg,#fff,#fff0f0);
+
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+  }
+
+  .status-wrapper{
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  }
+
+  .search-dots{
+  margin-top:10px;
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  }
+
+  .search-dots span{
+  width:8px;
+  height:8px;
+  background:#e53935;
+  border-radius:50%;
+  animation:dotPulse 1.5s infinite;
+  }
+
+  .search-dots span:nth-child(2){
+  animation-delay:0.3s;
+  }
+
+  .search-dots span:nth-child(3){
+  animation-delay:0.6s;
+  }
+
+  @keyframes dotPulse{
+  0%{opacity:0.2;transform:scale(0.8);}
+  50%{opacity:1;transform:scale(1.2);}
+  100%{opacity:0.2;transform:scale(0.8);}
+  }
+
+  .tick-icon{
+  display:none;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  background:#22c55e;
+  color:white;
+  font-size:28px;
+  font-weight:bold;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 20px;
+  }
+
+  .loader{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  border:4px solid #eee;
+  border-top:4px solid #e53935;
+  animation:spin 1s linear infinite;
+  margin:0 auto 20px;
+  }
+  </style>
+  </head>
+
+  <body>
+
+    <header style="padding:20px 40px;display:flex;align-items:center;">
+    
     <div style="
-    width:28px;
-    height:28px;
-    background:#e53935;
-    border-radius:6px;
     display:flex;
     align-items:center;
-    justify-content:center;
-    color:#fff;
+    gap:10px;
     font-weight:700;
-    ">S</div>
+    font-size:20px;
+    color:#e53935;
+    ">
 
-    Saarthi
+      <div style="
+      width:28px;
+      height:28px;
+      background:#e53935;
+      border-radius:6px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-weight:700;
+      ">S</div>
+
+      Saarthi
+
+    </div>
+
+  </header>
+  <div class="status-wrapper">
+  <div class="status-card">
+
+  <div id="loaderIcon" class="loader"></div>
+  <div id="tickIcon" class="tick-icon">✓</div>
+
+  <h2 class="status-title">Request Sent</h2>
+
+  <p class="status-desc">
+  Your blood request has been sent to nearby donors.
+  </p>
+
+  <div class="status-wait">
+
+  <div id="statusText">Matching nearby donors</div>
+
+  <div id="statusSubText" style="font-size:13px;margin-top:6px;">
+  Preparing request broadcast...
+  </div>
+
+  <div class="search-dots">
+  <span></span>
+  <span></span>
+  <span></span>
+  </div>
+
+  </div>
+  <div class="request-info">
+
+  <div class="info-row">
+  <span class="info-label">Blood Group</span>
+  <span id="reqBlood" class="info-value"></span>
+  </div>
+
+  <div class="info-row">
+  <span class="info-label">Units Required</span>
+  <span id="reqUnits" class="info-value"></span>
+  </div>
+
+  <div class="info-row">
+  <span class="info-label">Location</span>
+  <span id="reqLocation" class="info-value"></span>
+  </div>
+    <div id="donorFoundCard" style="display:none;margin-top:20px;">
+
+  <h3 style="color:#16a34a;margin-bottom:10px;">Donor Found</h3>
+
+  <p style="color:#6b7280;margin-bottom:12px;">
+  Waiting for the donor to accept the request...
+  </p>
+
+  <div class="request-info">
+
+  <div class="info-row">
+  <span class="info-label">Donor Name</span>
+  <span id="donorName" class="info-value"></span>
+  </div>
+
+  <div class="info-row">
+  <span class="info-label">Blood Group</span>
+  <span id="donorBlood" class="info-value"></span>
+  </div>
+
+  <div class="info-row">
+  <span class="info-label">City</span>
+  <span id="donorCity" class="info-value"></span>
+  </div>
+
+  <div class="info-row">
+  <span class="info-label">Phone</span>
+  <span id="donorPhone" class="info-value"></span>
+  </div>
 
   </div>
 
-</header>
-<div class="status-wrapper">
-<div class="status-card">
+  </div>
+  </div>
 
-<div class="loader"></div>
+  </div>
+  </div>
+  <script>
+  const request = JSON.parse(localStorage.getItem("currentRequest"));
 
-<h2 class="status-title">Request Sent</h2>
+  if(request){
 
-<p class="status-desc">
-Your blood request has been sent to nearby donors.
-</p>
+  document.getElementById("reqBlood").innerText = request.blood;
+  document.getElementById("reqUnits").innerText = request.units;
+  document.getElementById("reqLocation").innerText = request.location;
 
-<div class="status-wait">
+  }
+  const statusText = document.getElementById("statusText");
+  const statusSubText = document.getElementById("statusSubText");
 
-<div id="statusText">Matching nearby donors</div>
+  const messages = [
+  {
+  title: "Matching nearby donors",
+  sub: "Preparing request broadcast..."
+  },
+  {
+  title: "Searching compatible donors",
+  sub: "Checking blood group and availability"
+  },
+  {
+  title: "Request broadcasted successfully",
+  sub: "Nearby eligible donors are being notified"
+  },
+  {
+  title: "Awaiting donor response",
+  sub: "You will be notified once a donor accepts"
+  }
+  ];
 
-<div id="statusSubText" style="font-size:13px;margin-top:6px;">
-Preparing request broadcast...
-</div>
+  let index = 0;
 
-<div class="search-dots">
-<span></span>
-<span></span>
-<span></span>
-</div>
 
-</div>
-<div class="request-info">
+  function updateStatus(){
 
-<div class="info-row">
-<span class="info-label">Blood Group</span>
-<span id="reqBlood" class="info-value"></span>
-</div>
+  statusText.innerText = messages[index].title;
+  statusSubText.innerText = messages[index].sub;
 
-<div class="info-row">
-<span class="info-label">Units Required</span>
-<span id="reqUnits" class="info-value"></span>
-</div>
+  index++;
 
-<div class="info-row">
-<span class="info-label">Location</span>
-<span id="reqLocation" class="info-value"></span>
-</div>
+  if(index >= messages.length){
+  index = 0;
+  }
 
-</div>
+  }
 
-</div>
-</div>
-<script>
-const request = JSON.parse(localStorage.getItem("currentRequest"));
+  updateStatus();
 
-if(request){
+ const statusInterval = setInterval(updateStatus, 3500);
+const matched = JSON.parse(localStorage.getItem("matchedDonors"));
 
-document.getElementById("reqBlood").innerText = request.blood;
-document.getElementById("reqUnits").innerText = request.units;
-document.getElementById("reqLocation").innerText = request.location;
+if(matched && matched.length > 0){
+
+const donorId = matched[0];
+
+setTimeout(()=>{
+
+fetch(`http://localhost:5000/donor/${donorId}`)
+.then(res => res.json())
+.then(data => {
+
+if(data.success){
+
+const donor = data.donor;
+
+/* STOP LOADER */
+document.getElementById("loaderIcon").style.display = "none";
+
+/* SHOW GREEN TICK */
+document.getElementById("tickIcon").style.display = "flex";
+
+/* STOP LOADING TEXT ANIMATION */
+clearInterval(statusInterval);
+
+/* CHANGE TITLE */
+document.querySelector(".status-title").innerText = "Donor Found";
+
+/* HIDE LOADING SECTION */
+document.querySelector(".status-wait").style.display = "none";
+
+/* SHOW DONOR CARD */
+document.getElementById("donorFoundCard").style.display = "block";
+
+/* FILL DONOR DETAILS */
+document.getElementById("donorName").innerText = donor.name;
+document.getElementById("donorBlood").innerText = donor.blood_group;
+document.getElementById("donorCity").innerText = donor.city;
+document.getElementById("donorPhone").innerText = donor.phone;
 
 }
-const statusText = document.getElementById("statusText");
-const statusSubText = document.getElementById("statusSubText");
 
-const messages = [
-{
-title: "Matching nearby donors",
-sub: "Preparing request broadcast..."
-},
-{
-title: "Searching compatible donors",
-sub: "Checking blood group and availability"
-},
-{
-title: "Request broadcasted successfully",
-sub: "Nearby eligible donors are being notified"
-},
-{
-title: "Awaiting donor response",
-sub: "You will be notified once a donor accepts"
-}
-];
+});
 
-let index = 0;
-
-function updateStatus(){
-
-statusText.innerText = messages[index].title;
-statusSubText.innerText = messages[index].sub;
-
-index++;
-
-if(index >= messages.length){
-index = 0;
-}
+},6000);
 
 }
+else{
 
-updateStatus();
+/* stop loader */
+document.getElementById("loaderIcon").style.display = "none";
 
-setInterval(updateStatus, 3500);
+/* show message */
+document.querySelector(".status-title").innerText = "No Donor Found";
 
-</script>
-</body>
-</html>
+document.querySelector(".status-desc").innerText =
+"No compatible donor is currently available nearby.";
+
+document.querySelector(".status-wait").style.display = "none";
+
+}
+  </script>
+  </body>
+  </html>

@@ -6,6 +6,7 @@ const express = require("express");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
 const db = require("./db");
+const {trainKNN, findBestDonors} = require("./ml-model");
 
 // 2️⃣ Create App
 const app = express();
@@ -252,6 +253,74 @@ profile: result[0]
 });
 
 });
+});
+
+app.post("/match-donors", (req,res)=>{
+
+const {blood_group, city} = req.body;
+
+db.query(
+"SELECT * FROM donor_profiles WHERE blood_group = ? AND available_for_donation = 1",
+[blood_group],
+(err, donors)=>{
+
+if(err){
+console.log(err);
+return res.json({success:false});
+}
+
+/* If no donor found */
+if(donors.length === 0){
+return res.json({
+success:true,
+donors:[]
+});
+}
+
+const {trainKNN, findBestDonors} = require("./ml-model");
+
+const knn = trainKNN(donors);
+
+const matched = findBestDonors(knn,{blood_group});
+
+/* Ensure IDs are numbers */
+const matchedDonors = matched.map(id => Number(id));
+
+console.log("Matched donor IDs:", matchedDonors);
+
+res.json({
+success:true,
+donors: matchedDonors
+});
+
+});
+
+});
+
+app.get("/donor/:id",(req,res)=>{
+
+const donorId = req.params.id;
+
+db.query(
+`SELECT users.name, donor_profiles.phone, donor_profiles.city, donor_profiles.blood_group
+FROM users
+JOIN donor_profiles ON users.id = donor_profiles.user_id
+WHERE users.id = ?`,
+[donorId],
+(err,result)=>{
+
+if(err){
+console.log(err);
+return res.json({success:false});
+}
+
+res.json({
+success:true,
+donor: result[0]
+});
+
+});
+
 });
 
 app.listen(PORT, () => {

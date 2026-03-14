@@ -1,422 +1,461 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Post Request — Saarthi</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <!doctype html>
+  <html>
+  <head>
+  <meta charset="utf-8">
+  <title>Post Request — Saarthi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 
-<style>
-:root{
-  --red:#e53935;
-  --red-dark:#b71c1c;
-  --rose:#fff0f0;
-  --gray:#6b7280;
-  --border:#e5e7eb;
-  --radius:16px;
-  --shadow:0 12px 32px rgba(0,0,0,0.12);
-}
+  <style>
+  :root{
+    --red:#e53935;
+    --red-dark:#b71c1c;
+    --rose:#fff0f0;
+    --gray:#6b7280;
+    --border:#e5e7eb;
+    --radius:16px;
+    --shadow:0 12px 32px rgba(0,0,0,0.12);
+  }
 
-*{box-sizing:border-box}
+  *{box-sizing:border-box}
 
-body{
-  margin:0;
-  font-family:'Inter',sans-serif;
-  background:linear-gradient(180deg,#fff,#fff0f0);
-}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:linear-gradient(180deg,#fff,#fff0f0);
+  }
 
-.container{
-  max-width:1100px;
-  margin:36px auto;
-  padding:24px;
-}
+  .container{
+    max-width:1100px;
+    margin:36px auto;
+    padding:24px;
+  }
 
-.header{
-  display:flex;
-  align-items:center;
+  .header{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    margin-bottom:28px;
+  }
+
+  .logo1{
+    width:54px;
+    height:54px;
+    border-radius:var(--radius);
+    background:linear-gradient(135deg,var(--red),var(--red-dark));
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:20px;
+  }
+
+  .page-title{
+    font-size:20px;
+    font-weight:700;
+  }
+
+  .page-sub{
+    font-size:13px;
+    color:var(--gray);
+  }
+
+  /* MAIN CARD */
+  .main-card{
+    background:#fff;
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:28px;
+    max-width:920px;
+    margin:auto;
+  }
+
+
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 320px;
+    gap:28px;
+  }
+
+
+  .field{
+    margin-bottom:20px;
+  }
+
+  label{
+    font-size:13px;
+    color:var(--gray);
+  }
+
+  .input,
+  select,
+  textarea{
+    width:100%;
+    height:48px;
+    padding:12px 14px;
+    border-radius:var(--radius);
+    border:1px solid var(--border);
+    margin-top:6px;
+    font-size:14px;
+    background:#fff;
+  }
+
+  textarea{
+    height:100px;
+    resize:none;
+  }
+
+
+  .row{
+    display:flex;
+    gap:16px;
+  }
+
+
+  .btn{
+    background:var(--red);
+    color:#fff;
+    border:none;
+    padding:14px 22px;
+    border-radius:var(--radius);
+    font-weight:600;
+    cursor:pointer;
+  }
+
+  .btn-outline{
+    background:#fff;
+    border:1px dashed #f3bcbc;
+    padding:14px 22px;
+    border-radius:var(--radius);
+    cursor:pointer;
+  }
+
+
+  .side-card{
+    background:#fff;
+    border-radius:var(--radius);
+    padding:22px;
+    box-shadow:var(--shadow);
+    height:fit-content;
+  }
+
+  .side-card + .side-card{
+    margin-top:22px;
+  }
+
+  .side-title{
+    font-weight:700;
+    margin-bottom:10px;
+  }
+
+  .side-card ol{
+    padding-left:16px;
+    margin:0;
+  }
+
+  .side-card li{
+    font-size:13px;
+    color:var(--gray);
+    margin-bottom:8px;
+  }
+
+  .preview-item{
+    font-size:14px;
+    margin-bottom:10px;
+  }
+
+  .badge{
+    background:var(--rose);
+    color:var(--red-dark);
+    padding:4px 10px;
+    border-radius:999px;
+    font-weight:600;
+    font-size:12px;
+  }
+  .form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
   gap:16px;
-  margin-bottom:28px;
-}
+  margin-top:20px;
+  }
 
-.logo1{
-  width:54px;
-  height:54px;
-  border-radius:var(--radius);
-  background:linear-gradient(135deg,var(--red),var(--red-dark));
-  color:#fff;
+  .form-group{
   display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:700;
-  font-size:20px;
-}
+  flex-direction:column;
+  gap:6px;
+  }
 
-.page-title{
-  font-size:20px;
-  font-weight:700;
-}
+  .form-group.full{
+  grid-column:1 / span 2;
+  }
 
-.page-sub{
-  font-size:13px;
-  color:var(--gray);
-}
+  .btn-row{
+  margin-top:20px;
+  display:flex;
+  gap:10px;
+  }
+  .request-layout{
+  display:grid;
+  grid-template-columns:1fr 320px;
+  gap:28px;
+  align-items:start;
+  }
 
-/* MAIN CARD */
-.main-card{
+  .card{
   background:#fff;
   border-radius:var(--radius);
   box-shadow:var(--shadow);
   padding:28px;
-  max-width:920px;
-  margin:auto;
-}
-
-
-.grid{
-  display:grid;
-  grid-template-columns:1fr 320px;
-  gap:28px;
-}
-
-
-.field{
-  margin-bottom:20px;
-}
-
-label{
-  font-size:13px;
-  color:var(--gray);
-}
-
-.input,
-select,
-textarea{
-  width:100%;
-  height:48px;
-  padding:12px 14px;
-  border-radius:var(--radius);
-  border:1px solid var(--border);
-  margin-top:6px;
-  font-size:14px;
-  background:#fff;
-}
-
-textarea{
-  height:100px;
-  resize:none;
-}
-
-
-.row{
-  display:flex;
-  gap:16px;
-}
-
-
-.btn{
-  background:var(--red);
-  color:#fff;
-  border:none;
-  padding:14px 22px;
-  border-radius:var(--radius);
-  font-weight:600;
-  cursor:pointer;
-}
-
-.btn-outline{
-  background:#fff;
-  border:1px dashed #f3bcbc;
-  padding:14px 22px;
-  border-radius:var(--radius);
-  cursor:pointer;
-}
-
-
-.side-card{
-  background:#fff;
-  border-radius:var(--radius);
-  padding:22px;
-  box-shadow:var(--shadow);
-  height:fit-content;
-}
-
-.side-card + .side-card{
-  margin-top:22px;
-}
-
-.side-title{
-  font-weight:700;
-  margin-bottom:10px;
-}
-
-.side-card ol{
-  padding-left:16px;
-  margin:0;
-}
-
-.side-card li{
-  font-size:13px;
-  color:var(--gray);
-  margin-bottom:8px;
-}
-
-.preview-item{
-  font-size:14px;
-  margin-bottom:10px;
-}
-
-.badge{
-  background:var(--rose);
-  color:var(--red-dark);
-  padding:4px 10px;
-  border-radius:999px;
-  font-weight:600;
-  font-size:12px;
-}
-.form-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:16px;
-margin-top:20px;
-}
-
-.form-group{
-display:flex;
-flex-direction:column;
-gap:6px;
-}
-
-.form-group.full{
-grid-column:1 / span 2;
-}
-
-.btn-row{
-margin-top:20px;
-display:flex;
-gap:10px;
-}
-.request-layout{
-display:grid;
-grid-template-columns:1fr 320px;
-gap:28px;
-align-items:start;
-}
-
-.card{
-background:#fff;
-border-radius:var(--radius);
-box-shadow:var(--shadow);
-padding:28px;
-}
-.badge{
-  padding:4px 10px;
-  border-radius:999px;
-  font-weight:600;
-  font-size:12px;
-}
-
-.badge-normal{
-  background:#f3f4f6;
-  color:#374151;
-}
-
-.badge-urgent{
-  background:#fff7ed;
-  color:#ea580c;
-}
-
-.badge-critical{
-  background:#fee2e2;
-  color:#b91c1c;
-}
-</style>
-</head>
-
-<body>
-
-<header class="navbar">
-  <div class="nav-container">
-
-<div class="logo">
-  <div class="logo-mark">
-    <div class="cross-vertical"></div>
-    <div class="cross-horizontal"></div>
-  </div>
-  <span class="logo-text">Saarthi</span>
-</div>
-
-
-    <nav class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="login.html">Login</a>
-      <a href="about.html">About</a>
-    </nav>
-
-  </div>
-</header>
-
-
-<div class="request-layout">
-
-  <!-- LEFT : POST REQUEST FORM -->
-  <div class="card">
-
-    <h2>Post Blood Request</h2>
-    <p class="small">Create an urgent blood request for nearby donors.</p>
-
-    <div class="form-grid">
-
-      <div class="form-group">
-        <label>Blood Group</label>
-        <select class="input" id="bloodGroup">
-          <option value="">Choose blood group</option>
-          <option>A+</option>
-          <option>A-</option>
-          <option>B+</option>
-          <option>B-</option>
-          <option>AB+</option>
-          <option>AB-</option>
-          <option>O+</option>
-          <option>O-</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Units Required</label>
-        <input type="number" class="input" id="units" placeholder="No. of units">
-      </div>
-
-      <div class="form-group">
-        <label>Urgency</label>
-        <select class="input" id="urgency">
-          <option>Normal</option>
-          <option>Urgent</option>
-          <option>Critical</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Hospital / Location</label>
-        <input class="input" id="location" placeholder="Hospital or location">
-      </div>
-
-      <div class="form-group">
-        <label>Contact Number</label>
-        <input class="input" id="phone" placeholder="+91">
-      </div>
-
-      <div class="form-group full">
-        <label>Additional Notes</label>
-        <textarea class="input" id="notes" placeholder="Any special notes"></textarea>
-      </div>
-
-    </div>
-
-    <div class="btn-row">
-      <button class="btn" onclick="postRequest()">Post Request</button>
-      <button class="btn-outline" onclick="cancelRequest()">Cancel</button>
-    </div>
-
-  </div>
-
-
-  <!-- RIGHT : LIVE PREVIEW -->
-  <div class="side-card">
-
-    <div class="side-title">Live Preview</div>
-
-    <div class="preview-item" id="pBlood">Blood Group: —</div>
-    <div class="preview-item" id="pUnits">Units: —</div>
-    <div class="preview-item" id="pUrgency">Urgency: —</div>
-    <div class="preview-item" id="pLocation">Location: —</div>
-
-  </div>
-
-</div>
-<script>
-function updatePreview(){
-
-const blood = document.getElementById("bloodGroup").value;
-const units = document.getElementById("units").value;
-const urgency = document.getElementById("urgency").value;
-const location = document.getElementById("location").value;
-
-document.getElementById("pBlood").innerText =
-"Blood Group: " + (blood || "—");
-
-document.getElementById("pUnits").innerText =
-"Units: " + (units || "—");
-
-let urgencyClass = "badge-normal";
-
-if(urgency === "Urgent"){
-  urgencyClass = "badge-urgent";
-}
-else if(urgency === "Critical"){
-  urgencyClass = "badge-critical";
-}
-
-document.getElementById("pUrgency").innerHTML =
-"Urgency: <span class='badge " + urgencyClass + "'>" + urgency + "</span>";
-
-document.getElementById("pLocation").innerText =
-"Location: " + (location || "—");
-
-}
-function postRequest(){
-    const blood = document.getElementById("bloodGroup").value.trim();
-    const units = document.getElementById("units").value.trim();
-    const urgency = document.getElementById("urgency").value;
-    const location = document.getElementById("location").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const notes = document.getElementById("notes").value.trim();
-
-  if(blood === "" || units === "" || location === "" || phone === ""){
-    alert("Please fill all required fields");
-    return;
+  }
+  .badge{
+    padding:4px 10px;
+    border-radius:999px;
+    font-weight:600;
+    font-size:12px;
   }
 
-  const request = {
-    id: Date.now(),
-    blood,
-    units,
-    urgency,
-    location,
-    phone,
-    notes
-  };
+  .badge-normal{
+    background:#f3f4f6;
+    color:#374151;
+  }
 
+  .badge-urgent{
+    background:#fff7ed;
+    color:#ea580c;
+  }
+
+  .badge-critical{
+    background:#fee2e2;
+    color:#b91c1c;
+  }
+  </style>
+  </head>
+
+  <body>
+
+  <header class="navbar">
+    <div class="nav-container">
+
+  <div class="logo">
+    <div class="logo-mark">
+      <div class="cross-vertical"></div>
+      <div class="cross-horizontal"></div>
+    </div>
+    <span class="logo-text">Saarthi</span>
+  </div>
+
+
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="login.html">Login</a>
+        <a href="about.html">About</a>
+      </nav>
+
+    </div>
+  </header>
+
+
+  <div class="request-layout">
+
+    <!-- LEFT : POST REQUEST FORM -->
+    <div class="card">
+
+      <h2>Post Blood Request</h2>
+      <p class="small">Create an urgent blood request for nearby donors.</p>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Blood Group</label>
+          <select class="input" id="bloodGroup">
+            <option value="">Choose blood group</option>
+            <option>A+</option>
+            <option>A-</option>
+            <option>B+</option>
+            <option>B-</option>
+            <option>AB+</option>
+            <option>AB-</option>
+            <option>O+</option>
+            <option>O-</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Units Required</label>
+          <input type="number" class="input" id="units" placeholder="No. of units">
+        </div>
+
+        <div class="form-group">
+          <label>Urgency</label>
+          <select class="input" id="urgency">
+            <option>Normal</option>
+            <option>Urgent</option>
+            <option>Critical</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Hospital / Location</label>
+          <input class="input" id="location" placeholder="Hospital or location">
+        </div>
+
+        <div class="form-group">
+          <label>Contact Number</label>
+          <input class="input" id="phone" placeholder="+91">
+        </div>
+
+        <div class="form-group full">
+          <label>Additional Notes</label>
+          <textarea class="input" id="notes" placeholder="Any special notes"></textarea>
+        </div>
+
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" onclick="postRequest()">Post Request</button>
+        <button class="btn-outline" onclick="cancelRequest()">Cancel</button>
+      </div>
+
+    </div>
+
+
+    <!-- RIGHT : LIVE PREVIEW -->
+    <div class="side-card">
+
+      <div class="side-title">Live Preview</div>
+
+      <div class="preview-item" id="pBlood">Blood Group: —</div>
+      <div class="preview-item" id="pUnits">Units: —</div>
+      <div class="preview-item" id="pUrgency">Urgency: —</div>
+      <div class="preview-item" id="pLocation">Location: —</div>
+
+    </div>
+
+  </div>
+  <script>
+  function updatePreview(){
+
+  const blood = document.getElementById("bloodGroup").value;
+  const units = document.getElementById("units").value;
+  const urgency = document.getElementById("urgency").value;
+  const location = document.getElementById("location").value;
+
+  document.getElementById("pBlood").innerText =
+  "Blood Group: " + (blood || "—");
+
+  document.getElementById("pUnits").innerText =
+  "Units: " + (units || "—");
+
+  let urgencyClass = "badge-normal";
+
+  if(urgency === "Urgent"){
+    urgencyClass = "badge-urgent";
+  }
+  else if(urgency === "Critical"){
+    urgencyClass = "badge-critical";
+  }
+
+  document.getElementById("pUrgency").innerHTML =
+  "Urgency: <span class='badge " + urgencyClass + "'>" + urgency + "</span>";
+
+  document.getElementById("pLocation").innerText =
+  "Location: " + (location || "—");
+
+  }
+  function postRequest(){
+      console.log("Post Request button clicked");
+      const blood = document.getElementById("bloodGroup").value.trim();
+      const units = document.getElementById("units").value.trim();
+      const urgency = document.getElementById("urgency").value;
+      const location = document.getElementById("location").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const notes = document.getElementById("notes").value.trim();
+
+    if(blood === "" || units === "" || location === "" || phone === ""){
+      alert("Please fill all required fields");
+      return;
+    }
+
+  const request = {
+  id: Date.now(),
+  requesterId: localStorage.getItem("userId"),
+  requesterName: localStorage.getItem("userName"),
+  blood,
+  units,
+  urgency,
+  location,
+  phone,
+  notes,
+  status:"pending",
+  matchedDonors: []   // NEW
+  };  
+    
+    
+    console.log("Calling ML model...");
+    fetch("http://localhost:5000/match-donors",{
+
+  method:"POST",
+  headers:{
+  "Content-Type":"application/json"
+  },
+
+  body:JSON.stringify({
+  blood_group:blood,
+  city:location
+  })
+
+  })
+  .then(res=>res.json())
+  .then(data=>{
+
+  console.log("ML response:",data);
+  console.log("Matched donors:",data.donors);
+
+  /* Attach matched donors to request */
+  request.matchedDonors = data.donors.map(Number);
+
+  /* Save request */
   const requests = JSON.parse(localStorage.getItem("requests")) || [];
   requests.push(request);
   localStorage.setItem("requests", JSON.stringify(requests));
+
+  /* Save current request for status page */
   localStorage.setItem("currentRequest", JSON.stringify(request));
 
+  /* Save matched donors separately */
+  localStorage.setItem("matchedDonors", JSON.stringify(data.donors));
+
+
   alert("Request posted successfully!");
-  window.location.href = "request-status.html";
-}
-function cancelRequest() {
-  
-  document.getElementById("blood").value = "";
-  document.getElementById("units").value = "";
-  document.getElementById("urgency").value = "Urgent";
-  document.getElementById("location").value = "";
-  document.getElementById("phone").value = "";
-  document.getElementById("notes").value = "";
+    window.location.href = "request-status.html";
+  })
 
-  // Reset preview
-  document.getElementById("pBlood").innerText = "Blood Group: —";
-  document.getElementById("pUnits").innerText = "Units: —";
-  document.getElementById("pUrgency").innerText = "Urgency: —";
-  document.getElementById("pLocation").innerText = "Location: —";
-}
-document.getElementById("bloodGroup").addEventListener("change", updatePreview);
-document.getElementById("units").addEventListener("input", updatePreview);
-document.getElementById("urgency").addEventListener("change", updatePreview);
-document.getElementById("location").addEventListener("input", updatePreview);
+    
+  }
+  function cancelRequest() {
+    
+    document.getElementById("blood").value = "";
+    document.getElementById("units").value = "";
+    document.getElementById("urgency").value = "Urgent";
+    document.getElementById("location").value = "";
+    document.getElementById("phone").value = "";
+    document.getElementById("notes").value = "";
 
-updatePreview();
-</script>
+    // Reset preview
+    document.getElementById("pBlood").innerText = "Blood Group: —";
+    document.getElementById("pUnits").innerText = "Units: —";
+    document.getElementById("pUrgency").innerText = "Urgency: —";
+    document.getElementById("pLocation").innerText = "Location: —";
+  }
+  document.getElementById("bloodGroup").addEventListener("change", updatePreview);
+  document.getElementById("units").addEventListener("input", updatePreview);
+  document.getElementById("urgency").addEventListener("change", updatePreview);
+  document.getElementById("location").addEventListener("input", updatePreview);
+
+  updatePreview();
+  </script>
 
 
-</body>
-</html>
+  </body>
+  </html>

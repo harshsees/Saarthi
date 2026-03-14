@@ -186,7 +186,7 @@ body{
       <div style="display:flex;justify-content:space-between;margin-bottom:12px">
         <div>
           <div class="small">Active Requests</div>
-          <div class="kpi-value">3</div>
+          <div class="kpi-value" id="activeRequestCount">0</div>
         </div>
         <div>
           <div class="small">Donor Points</div>
@@ -194,62 +194,11 @@ body{
         </div>
       </div>
 
-      <h3>Nearby Requests</h3>
+     <h3>Nearby Requests</h3>
 
-     <div class="request-card" onmouseenter="showActions(this)" onmouseleave="hideActions(this)">
-  <div class="request-header">
-    <div><strong>AB+</strong> — 2 units</div>
-    <div class="small">1.2 km</div>
-  </div>
+<div id="requestList"></div>
 
-  <div class="small">Hospital: City Care</div>
-
-  <!-- ACTION BUTTONS (HIDDEN INITIALLY) 1-->
-  <div class="request-actions">
-    <button class="btn accept-btn" onclick="acceptRequest(this)">Accept</button>
-    <button class="small-ghost decline-btn" onclick="declineRequest(this)">Decline</button>
-  </div>
-
-  
-  <div class="status-text small"></div>
-</div>
-
-
-    <div class="request-card" onmouseenter="showActions(this)" onmouseleave="hideActions(this)">
-  <div class="request-header">
-    <div><strong>O-</strong> — 5 units</div>
-    <div class="small">1 km</div>
-  </div>
-
-  <div class="small">Hospital:  Venus Care</div>
-
-  <!-- ACTION BUTTONS (HIDDEN INITIALLY) 2-->
-  <div class="request-actions">
-    <button class="btn accept-btn" onclick="acceptRequest(this)">Accept</button>
-    <button class="small-ghost decline-btn" onclick="declineRequest(this)">Decline</button>
-  </div>
-
-  <!-- STATUS TEXT -->
-  <div class="status-text small"></div>
-</div>
-<div class="request-card" onmouseenter="showActions(this)" onmouseleave="hideActions(this)">
-  <div class="request-header">
-    <div><strong>A-</strong> — 3 units</div>
-    <div class="small">0.5 km</div>
-  </div>
-
-  <div class="small">Hospital: VS Hospital</div>
-
-  <!-- ACTION BUTTONS (HIDDEN INITIALLY) 3-->
-  <div class="request-actions">
-    <button class="btn accept-btn" onclick="acceptRequest(this)">Accept</button>
-    <button class="small-ghost decline-btn" onclick="declineRequest(this)">Decline</button>
-  </div>
-
-  <!-- STATUS TEXT -->
-  <div class="status-text small"></div>
-</div>
-
+<div class="small">Live blood requests from nearby patients</div>
 
         <div class="small">Home donor required</div>
       </div>
@@ -370,73 +319,122 @@ function hideActions(card) {
 }
 
 // Accept request
-function acceptRequest(btn) {
-  const card = btn.closest(".request-card");
-  const status = card.querySelector(".status-text");
+function acceptRequest(btn){
 
-  status.innerText = "Accepted ✔";
-  status.style.color = "green";
+const card = btn.closest(".request-card");
+const requestId = card.dataset.id;
 
-  card.classList.add("accepted");
+let requests = JSON.parse(localStorage.getItem("requests")) || [];
 
-  // Hide buttons after accept
-  card.querySelector(".request-actions").style.display = "none";
+requests = requests.map(req => {
+if(req.id == requestId){
+req.status = "accepted";
+}
+return req;
+});
+
+localStorage.setItem("requests", JSON.stringify(requests));
+
+card.classList.add("accepted");
+
+const status = card.querySelector(".status-text");
+
+status.innerText = "Accepted ✔ Contact requester";
+status.style.color = "green";
+
+card.querySelector(".request-actions").style.display="none";
+
+loadRequests();
+
 }
 
 // Decline request
-function declineRequest(btn) {
-  const card = btn.closest(".request-card");
-  const status = card.querySelector(".status-text");
+function declineRequest(btn){
 
-  status.innerText = "Declined ✖";
-  status.style.color = "red";
+const card = btn.closest(".request-card");
+const requestId = card.dataset.id;
 
-  card.classList.add("declined");
+let requests = JSON.parse(localStorage.getItem("requests")) || [];
 
-  // Remove card after animation
-  setTimeout(() => {
-    card.remove();
-  }, 400);
+/* remove request from storage */
+requests = requests.filter(req => req.id != requestId);
+
+localStorage.setItem("requests", JSON.stringify(requests));
+
+/* UI animation */
+const status = card.querySelector(".status-text");
+status.innerText="Declined ✖";
+status.style.color="red";
+
+card.classList.add("declined");
+
+setTimeout(()=>{
+card.remove();
+},400);
+loadRequests();
+
 }
+
 function goToPostRequest() {
   window.location.href = "post-request.html";
 }
-function loadRequests() {
-  const requests = JSON.parse(localStorage.getItem("requests")) || [];
-  const container = document.getElementById("requestList");
+function loadRequests(){
 
-  container.innerHTML = "";
+const myId = Number(localStorage.getItem("userId"));
 
-  requests.forEach(req => {
-    container.innerHTML += `
-      <div class="request-card"
-           data-name="Patient"
-           data-blood="${req.blood}"
-           data-units="${req.units}"
-           data-hospital="${req.location}"
-           data-phone="${req.phone}"
-           data-location="${req.location}"
-           onmouseenter="showActions(this)"
-           onmouseleave="hideActions(this)">
+const requests = JSON.parse(localStorage.getItem("requests")) || [];
 
-        <div style="display:flex;justify-content:space-between">
-          <strong>${req.blood} — ${req.units} units</strong>
-          <span class="small">Urgent</span>
-        </div>
+const container = document.getElementById("requestList");
+const counter = document.getElementById("activeRequestCount");
 
-        <div class="small">Hospital: ${req.location}</div>
+container.innerHTML = "";
 
-        <div class="request-actions">
-          <button class="btn" onclick="acceptRequest(this)">Accept</button>
-          <button class="small-ghost" onclick="declineRequest(this)">Decline</button>
-        </div>
+const activeRequests = requests.filter(req => req.status !== "declined");
 
-        <div class="status-text small"></div>
-      </div>
-    `;
-  });
+activeRequests.forEach(req => {
+
+/* show request ONLY if this donor is matched */
+if(!req.matchedDonors) return;
+
+const donorIds = req.matchedDonors.map(Number);
+
+if(!donorIds.includes(Number(myId))) return;
+
+const acceptedClass = req.status === "accepted" ? "accepted" : "";
+
+container.innerHTML += `
+<div class="request-card ${acceptedClass}"
+data-id="${req.id}"
+data-requester="${req.requesterName}"
+data-phone="${req.phone}"
+data-location="${req.location}"
+onmouseenter="showActions(this)"
+onmouseleave="hideActions(this)">
+
+<div style="display:flex;justify-content:space-between">
+<strong>${req.blood} — ${req.units} units</strong>
+<span class="small">${req.urgency}</span>
+</div>
+
+<div class="small">Hospital: ${req.location}</div>
+
+<div class="small">Requester: ${req.requesterName}</div>
+
+<div class="request-actions" style="${req.status === "accepted" ? "display:none" : ""}">
+<button class="btn" onclick="acceptRequest(this)">Accept</button>
+<button class="small-ghost" onclick="declineRequest(this)">Decline</button>
+</div>
+
+<div class="status-text small">
+${req.status === "accepted" ? "Accepted ✔ Contact requester" : ""}
+</div>
+
+</div>
+`;
+
+});
+counter.innerText = container.children.length;
 }
-
 loadRequests();
 </script>
 </body>

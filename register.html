@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saarthi — Create Account</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --crimson: #C0152A; --crimson-dark: #8B0000; --crimson-light: #FF3547;
+  --blush: #FFF1F1; --blush-mid: #FFE0E0;
+  --ink: #1A0A0A; --ink-mid: #3D1A1A; --muted: #8A6A6A; --white: #FFFFFF;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; min-height: 100vh; background: var(--blush); }
+
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 60px; background: white;
+  border-bottom: 1px solid var(--blush-mid);
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo-icon { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark)); position: relative; }
+.logo-icon::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 2px; height: 20px; background: white; border-radius: 2px; }
+.logo-icon::after  { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 20px; height: 2px; background: white; border-radius: 2px; }
+.logo-text { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--ink); }
+.nav-login { font-size: 13px; color: var(--muted); text-decoration: none; }
+.nav-login span { color: var(--crimson); font-weight: 700; }
+
+.page-wrap {
+  max-width: 960px; margin: 40px auto; padding: 0 24px;
+  display: grid; grid-template-columns: 1fr 340px; gap: 24px;
+  align-items: start;
+}
+
+.form-card {
+  background: white; border-radius: 20px;
+  padding: 40px; box-shadow: 0 4px 24px rgba(192,21,42,0.08);
+  border: 1px solid rgba(192,21,42,0.06);
+}
+
+.card-head { margin-bottom: 32px; }
+.card-head h1 { font-family: 'DM Serif Display', serif; font-size: 32px; letter-spacing: -0.6px; color: var(--ink); margin-bottom: 8px; }
+.card-head p  { font-size: 14px; color: var(--muted); line-height: 1.5; }
+
+.step-bar { display: flex; align-items: center; gap: 0; margin-bottom: 36px; }
+.step-seg { flex: 1; height: 3px; background: var(--blush-mid); border-radius: 2px; transition: background 0.3s; }
+.step-seg.active { background: var(--crimson); }
+.step-seg + .step-seg { margin-left: 4px; }
+
+.field { margin-bottom: 20px; }
+.field label { display: block; font-size: 11px; font-weight: 700; color: var(--ink-mid); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; }
+.field input {
+  width: 100%; padding: 13px 16px;
+  border: 1.5px solid var(--blush-mid); border-radius: 10px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink);
+  background: white; outline: none; transition: all 0.2s;
+}
+.field input:focus { border-color: var(--crimson); box-shadow: 0 0 0 3px rgba(192,21,42,0.08); }
+
+/* ── ERROR state — red border + blush bg ── */
+.field input.error-state { border-color: var(--crimson); background: var(--blush); }
+
+/* ── SUCCESS state — green border so user knows field is valid ── */
+.field input.success-state { border-color: #16a34a; background: #f0fdf4; }
+
+.error-msg { display: none; font-size: 11px; color: var(--crimson); margin-top: 6px; padding: 5px 10px; background: var(--blush); border-radius: 6px; }
+.error-msg.show { display: block; }
+
+/* ── SUCCESS message — shown when field is valid ── */
+.success-msg { display: none; font-size: 11px; color: #16a34a; margin-top: 6px; padding: 5px 10px; background: #f0fdf4; border-radius: 6px; }
+.success-msg.show { display: block; }
+
+.strength-wrap { margin-top: 8px; }
+.strength-bar  { height: 4px; border-radius: 2px; background: var(--blush-mid); overflow: hidden; }
+.strength-fill { height: 100%; width: 0%; border-radius: 2px; transition: all 0.3s; }
+.strength-label { font-size: 11px; margin-top: 4px; }
+
+.btn-send {
+  width: 100%; padding: 14px;
+  background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark));
+  color: white; border: none; border-radius: 10px;
+  font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700;
+  cursor: pointer; box-shadow: 0 6px 20px rgba(192,21,42,0.28);
+  transition: all 0.2s; margin-top: 8px;
+}
+.btn-send:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(192,21,42,0.36); }
+.btn-send:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+.otp-section {
+  display: none; margin-top: 28px; padding: 24px;
+  background: var(--blush); border-radius: 14px;
+  border: 1px dashed rgba(192,21,42,0.2);
+  animation: fadeIn 0.3s ease both;
+}
+.otp-section.show { display: block; }
+.otp-head { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.otp-sub  { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+.otp-input-row { display: flex; gap: 10px; align-items: center; }
+.otp-input-row input {
+  flex: 1; padding: 13px 16px; border: 1.5px solid var(--blush-mid);
+  border-radius: 10px; font-family: 'DM Sans'; font-size: 18px;
+  text-align: center; letter-spacing: 6px; outline: none; transition: all 0.2s;
+}
+.otp-input-row input:focus { border-color: var(--crimson); box-shadow: 0 0 0 3px rgba(192,21,42,0.1); }
+.btn-verify {
+  flex-shrink: 0; padding: 13px 20px;
+  background: var(--crimson); color: white; border: none; border-radius: 10px;
+  font-family: 'DM Sans'; font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-verify:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.already { text-align: center; margin-top: 24px; font-size: 13px; color: var(--muted); }
+.already a { color: var(--crimson); font-weight: 700; text-decoration: none; }
+
+/* SIDE CARDS */
+.side-content { display: flex; flex-direction: column; gap: 16px; }
+.side-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 16px rgba(192,21,42,0.07); border: 1px solid rgba(192,21,42,0.06); }
+.side-card.crimson-card { background: linear-gradient(135deg, var(--crimson), var(--crimson-dark)); color: white; }
+.sc-icon  { font-size: 28px; margin-bottom: 12px; }
+.sc-title { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 8px; color: var(--ink); }
+.sc-title.white { color: white; }
+.sc-text  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.sc-text.white  { color: rgba(255,255,255,0.8); }
+.eligibility-list { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.eli-item { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); }
+.eli-icon { width: 22px; height: 22px; border-radius: 50%; background: var(--blush); display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon"></div>
+    <span class="logo-text">Saarthi</span>
+  </a>
+  <a href="login.html" class="nav-login">Already registered? <span>Sign in</span></a>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- FORM CARD -->
+  <div class="form-card">
+    <div class="card-head">
+      <h1>Create your account</h1>
+      <p>Join Saarthi and start saving lives in your neighbourhood.</p>
+    </div>
+
+    <div class="step-bar">
+      <div class="step-seg active" id="seg1"></div>
+      <div class="step-seg" id="seg2"></div>
+      <div class="step-seg" id="seg3"></div>
+    </div>
+
+    <!-- NAME -->
+    <div class="field">
+      <label>Full Name</label>
+      <input type="text" id="nameInput" placeholder="Rahul Sharma">
+      <div class="error-msg"   id="nameError"></div>
+      <div class="success-msg" id="nameSuccess"></div>
+    </div>
+
+    <!-- EMAIL -->
+    <div class="field">
+      <label>Email Address</label>
+      <input type="email" id="emailInput" placeholder="rahul@gmail.com">
+      <div class="error-msg"   id="emailError"></div>
+      <div class="success-msg" id="emailSuccess"></div>
+    </div>
+
+    <!-- PASSWORD -->
+    <div class="field">
+      <label>Create Password</label>
+      <input type="password" id="passwordInput" placeholder="Min. 8 characters with uppercase & numbers">
+      <div class="strength-wrap">
+        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+        <div class="strength-label" id="strengthLabel"></div>
+      </div>
+      <div class="error-msg"   id="passwordError"></div>
+      <div class="success-msg" id="passwordSuccess"></div>
+    </div>
+
+    <button class="btn-send" id="sendOtpBtn">Send Verification OTP →</button>
+
+    <!-- OTP SECTION -->
+    <div class="otp-section" id="otpSection">
+      <div class="otp-head">📬 OTP sent to your email</div>
+      <div class="otp-sub" id="otpSubText">Enter the 6-digit code we sent to your inbox.</div>
+      <div class="otp-input-row">
+        <input type="text" id="otpInput" placeholder="000000" maxlength="6" inputmode="numeric">
+        <button class="btn-verify" id="verifyBtn">Verify →</button>
+      </div>
+      <div class="error-msg" id="otpError" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="already">Already have an account? <a href="login.html">Sign in</a></div>
+  </div>
+
+  <!-- SIDE -->
+  <div class="side-content">
+    <div class="side-card crimson-card">
+      <div class="sc-icon">🩸</div>
+      <div class="sc-title white">Make your first donation</div>
+      <div class="sc-text white">After registering, complete your profile with blood group and city to start receiving donation requests near you.</div>
+    </div>
+    <div class="side-card">
+      <div class="sc-title">Who can donate?</div>
+      <div class="eligibility-list">
+        <div class="eli-item"><div class="eli-icon">✓</div> Age 18–65 years</div>
+        <div class="eli-item"><div class="eli-icon">✓</div> No donation in last 90 days</div>
+        <div class="eli-item"><div class="eli-icon">✓</div> No major illness or medication</div>
+        <div class="eli-item"><div class="eli-icon">✓</div> Haemoglobin ≥ 12.5 g/dL</div>
+      </div>
+    </div>
+    <div class="side-card">
+      <div class="sc-icon">🔐</div>
+      <div class="sc-title">Secure &amp; Verified</div>
+      <div class="sc-text">OTP email verification ensures all accounts are genuine. Your personal info is encrypted and only shared with matched patients.</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API = 'https://saarthi-backend-ahto.onrender.com';
+
+/* ── HELPERS ── */
+function showError(inputId, errId, msg) {
+  const inp = document.getElementById(inputId);
+  inp.classList.add('error-state');
+  inp.classList.remove('success-state');
+  document.getElementById(errId).textContent = '✱ ' + msg;
+  document.getElementById(errId).classList.add('show');
+  // hide success msg for this field
+  const sId = errId.replace('Error','Success');
+  if (document.getElementById(sId)) document.getElementById(sId).classList.remove('show');
+}
+
+function showSuccess(inputId, sucId, msg) {
+  const inp = document.getElementById(inputId);
+  inp.classList.remove('error-state');
+  inp.classList.add('success-state');
+  document.getElementById(sucId).textContent = '✓ ' + msg;
+  document.getElementById(sucId).classList.add('show');
+  // hide error msg for this field
+  const eId = sucId.replace('Success','Error');
+  if (document.getElementById(eId)) document.getElementById(eId).classList.remove('show');
+}
+
+function clearField(inputId, errId, sucId) {
+  const inp = document.getElementById(inputId);
+  inp.classList.remove('error-state','success-state');
+  document.getElementById(errId).classList.remove('show');
+  if (sucId && document.getElementById(sucId)) document.getElementById(sucId).classList.remove('show');
+}
+
+/* ── INDIVIDUAL VALIDATORS — each returns true/false and shows its own message ── */
+
+function validateName() {
+  const v = document.getElementById('nameInput').value.trim();
+  if (!v) {
+    clearField('nameInput','nameError','nameSuccess'); // empty — no message yet
+    return false;
+  }
+  if (v.length < 3) {
+    showError('nameInput','nameError','Full name must be at least 3 characters'); return false;
+  }
+  if (/[^a-zA-Z\s]/.test(v)) {
+    showError('nameInput','nameError','Name should only contain letters'); return false;
+  }
+  showSuccess('nameInput','nameSuccess','Looks good!');
+  return true;
+}
+
+function validateEmail() {
+  const v = document.getElementById('emailInput').value.trim();
+  if (!v) {
+    clearField('emailInput','emailError','emailSuccess'); return false;
+  }
+  if (!/^[^\s@]+@gmail\.com$/.test(v)) {
+    showError('emailInput','emailError','Only Gmail addresses are accepted (e.g. you@gmail.com)'); return false;
+  }
+  showSuccess('emailInput','emailSuccess','Valid Gmail address');
+  return true;
+}
+
+function validatePassword() {
+  const v = document.getElementById('passwordInput').value;
+  if (!v) {
+    clearField('passwordInput','passwordError','passwordSuccess'); return false;
+  }
+  if (v.length < 8) {
+    showError('passwordInput','passwordError','Password must be at least 8 characters'); return false;
+  }
+  if (/\s/.test(v)) {
+    showError('passwordInput','passwordError','Password must not contain spaces'); return false;
+  }
+  showSuccess('passwordInput','passwordSuccess','Password looks strong');
+  return true;
+}
+
+/* ── PASSWORD STRENGTH BAR ── */
+document.getElementById('passwordInput').addEventListener('input', function() {
+  const v = this.value;
+  const fill  = document.getElementById('strengthFill');
+  const label = document.getElementById('strengthLabel');
+  if (!v) { fill.style.width = '0%'; label.textContent = ''; return; }
+  let score = 0;
+  if (v.length >= 8)           score++;
+  if (v.length >= 12)          score++;
+  if (/[A-Z]/.test(v))         score++;
+  if (/[0-9]/.test(v))         score++;
+  if (/[^a-zA-Z0-9]/.test(v)) score++;
+  const configs = [
+    { w:'20%',  bg:'#ef4444', txt:'Too weak'  },
+    { w:'40%',  bg:'#f97316', txt:'Weak'      },
+    { w:'60%',  bg:'#eab308', txt:'Fair'      },
+    { w:'80%',  bg:'#22c55e', txt:'Good'      },
+    { w:'100%', bg:'#16a34a', txt:'Strong ✓'  }
+  ];
+  const c = configs[Math.min(score, 4)];
+  fill.style.width = c.w; fill.style.background = c.bg;
+  label.textContent = c.txt; label.style.color = c.bg;
+  document.getElementById('seg2').style.background = score >= 3 ? 'var(--crimson)' : '';
+});
+
+/* ── BLUR VALIDATION — fires when user leaves the field ── */
+document.getElementById('nameInput').addEventListener('blur', validateName);
+document.getElementById('emailInput').addEventListener('blur', validateEmail);
+document.getElementById('passwordInput').addEventListener('blur', validatePassword);
+
+/* ── FIX AS YOU TYPE — only re-validates if field already has an error ── */
+document.getElementById('nameInput').addEventListener('input', () => { if (document.getElementById('nameInput').classList.contains('error-state')) validateName(); });
+document.getElementById('emailInput').addEventListener('input', () => { if (document.getElementById('emailInput').classList.contains('error-state')) validateEmail(); });
+document.getElementById('passwordInput').addEventListener('input', () => { if (document.getElementById('passwordInput').classList.contains('error-state')) validatePassword(); });
+
+/* ── OTP — digits only ── */
+document.getElementById('otpInput').addEventListener('input', function() {
+  this.value = this.value.replace(/\D/g,'').substring(0,6);
+});
+
+/* ── SEND OTP BUTTON ── */
+document.getElementById('sendOtpBtn').addEventListener('click', async () => {
+  // Run all validations together
+  const nameOk  = validateName();
+  const emailOk = validateEmail();
+  const passOk  = validatePassword();
+  if (!nameOk || !emailOk || !passOk) return;
+
+  const btn = document.getElementById('sendOtpBtn');
+  btn.textContent = 'Sending OTP…'; btn.disabled = true;
+
+  try {
+    const res  = await fetch(API + '/register', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name:     document.getElementById('nameInput').value.trim(),
+        email:    document.getElementById('emailInput').value.trim(),
+        password: document.getElementById('passwordInput').value
+      })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById('seg2').style.background = 'var(--crimson)';
+      document.getElementById('otpSubText').textContent =
+        'Code sent to ' + document.getElementById('emailInput').value.trim() + '. Check spam if not in inbox.';
+      document.getElementById('otpSection').classList.add('show');
+    } else {
+      if (data.message === 'User already exists')
+        showError('emailInput','emailError','An account with this Gmail already exists');
+      else
+        showError('emailInput','emailError', data.message || 'Registration failed. Please try again.');
+    }
+  } catch(e) {
+    showError('emailInput','emailError','Cannot connect to server. Is the backend running?');
+  }
+
+  btn.textContent = 'Send Verification OTP →'; btn.disabled = false;
+});
+
+/* ── VERIFY OTP BUTTON ── */
+document.getElementById('verifyBtn').addEventListener('click', async () => {
+  const otp   = document.getElementById('otpInput').value.trim();
+  const errEl = document.getElementById('otpError');
+  errEl.classList.remove('show');
+
+  if (!/^\d{6}$/.test(otp)) {
+    errEl.textContent = '✱ OTP must be exactly 6 digits';
+    errEl.classList.add('show'); return;
+  }
+
+  const btn = document.getElementById('verifyBtn');
+  btn.textContent = 'Verifying…'; btn.disabled = true;
+
+  try {
+    const res  = await fetch(API + '/verify-otp', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: document.getElementById('emailInput').value.trim(),
+        otp
+      })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById('seg3').style.background = 'var(--crimson)';
+      btn.textContent = 'Account created! ✓';
+      btn.style.background = '#16a34a';
+      setTimeout(() => window.location.href = 'login.html', 1000);
+    } else {
+      errEl.textContent = '✱ Invalid OTP — please check and try again';
+      errEl.classList.add('show');
+      btn.textContent = 'Verify →'; btn.disabled = false;
+    }
+  } catch(e) {
+    errEl.textContent = '✱ Cannot connect to server';
+    errEl.classList.add('show');
+    btn.textContent = 'Verify →'; btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

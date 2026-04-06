@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saarthi — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --crimson: #C0152A; --crimson-dark: #8B0000; --crimson-light: #FF3547;
+  --blush: #FFF1F1; --blush-mid: #FFE0E0;
+  --ink: #1A0A0A; --ink-mid: #3D1A1A; --muted: #8A6A6A; --white: #FFFFFF;
+  --green: #16A34A; --green-bg: #F0FDF4;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; background: #F8F4F4; min-height: 100vh; }
+
+.layout { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 260px; background: white;
+  border-right: 1px solid var(--blush-mid);
+  display: flex; flex-direction: column;
+  padding: 24px 16px; position: fixed; top: 0; left: 0; height: 100vh;
+  z-index: 50;
+}
+
+.sb-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; padding: 8px 12px; margin-bottom: 32px; }
+.logo-icon { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark)); position: relative; flex-shrink: 0; }
+.logo-icon::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:2px; height:20px; background:white; border-radius:2px; }
+.logo-icon::after  { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:20px; height:2px; background:white; border-radius:2px; }
+.logo-name { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--ink); }
+
+.sb-section-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); padding: 0 12px; margin-bottom: 8px; }
+
+.sb-nav { display: flex; flex-direction: column; gap: 4px; margin-bottom: 28px; }
+.sb-link { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 10px; text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500; transition: all 0.15s; }
+.sb-link:hover  { background: var(--blush); color: var(--crimson); }
+.sb-link.active { background: var(--blush); color: var(--crimson); font-weight: 700; }
+.sb-link .icon  { width: 18px; text-align: center; font-size: 16px; }
+.sb-badge { margin-left: auto; background: var(--crimson); color: white; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; }
+
+.sb-user { margin-top: auto; padding: 14px; background: var(--blush); border-radius: 12px; border: 1px solid var(--blush-mid); }
+.sb-user-row { display: flex; align-items: center; gap: 10px; }
+.sb-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark)); color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.sb-user-name  { font-size: 13px; font-weight: 700; color: var(--ink); }
+.sb-user-email { font-size: 11px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 150px; }
+.sb-logout { margin-top: 10px; display: block; font-size: 12px; color: var(--muted); text-decoration: none; padding: 6px 0; text-align: center; border-top: 1px solid var(--blush-mid); transition: color 0.2s; }
+.sb-logout:hover { color: var(--crimson); }
+
+.main { margin-left: 260px; flex: 1; padding: 32px; }
+
+.topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+.topbar-left h2 { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--ink); letter-spacing: -0.5px; }
+.topbar-left p  { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.btn-post {
+  display: flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark));
+  color: white; text-decoration: none; padding: 12px 22px; border-radius: 10px;
+  font-weight: 700; font-size: 14px;
+  box-shadow: 0 6px 18px rgba(192,21,42,0.28); transition: all 0.2s;
+}
+.btn-post:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(192,21,42,0.36); }
+
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+.kpi-card { background: white; border-radius: 16px; padding: 22px 20px; border: 1px solid rgba(192,21,42,0.06); box-shadow: 0 2px 12px rgba(192,21,42,0.05); }
+.kpi-label { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: 0.3px; text-transform: uppercase; margin-bottom: 10px; }
+.kpi-val   { font-family: 'DM Serif Display', serif; font-size: 32px; color: var(--crimson); line-height: 1; }
+.kpi-sub   { font-size: 12px; color: var(--muted); margin-top: 6px; }
+.kpi-card.green .kpi-val { color: var(--green); }
+
+.dashboard-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+
+.panel { background: white; border-radius: 20px; padding: 28px; border: 1px solid rgba(192,21,42,0.06); box-shadow: 0 2px 16px rgba(192,21,42,0.05); }
+.panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+.panel-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--ink); }
+.live-badge { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--green); background: var(--green-bg); padding: 5px 10px; border-radius: 999px; }
+.live-dot   { width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; }
+
+.request-item { padding: 16px 18px; border-radius: 14px; background: white; border: 1.5px solid var(--blush-mid); margin-bottom: 12px; position: relative; overflow: hidden; transition: all 0.2s; }
+.request-item:hover { border-color: var(--crimson); box-shadow: 0 6px 20px rgba(192,21,42,0.1); }
+.request-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--crimson); border-radius: 2px 0 0 2px; }
+.request-item.urgent::before   { background: #F97316; }
+.request-item.critical::before { background: var(--crimson-dark); }
+.request-item.accepted { background: var(--green-bg); border-color: #86EFAC; }
+.request-item.accepted::before { background: var(--green); }
+
+.req-header  { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.req-blood   { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--ink); }
+.req-urgency { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
+.urg-normal   { background: #F3F4F6; color: #374151; }
+.urg-urgent   { background: #FFF7ED; color: #EA580C; }
+.urg-critical { background: var(--blush); color: var(--crimson); }
+.req-meta    { font-size: 13px; color: var(--muted); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.req-actions { display: flex; gap: 10px; margin-top: 14px; }
+.btn-accept  { flex: 1; padding: 10px; background: var(--crimson); color: white; border: none; border-radius: 8px; font-family: 'DM Sans'; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+.btn-accept:hover  { background: var(--crimson-dark); }
+.btn-decline { padding: 10px 16px; background: white; color: var(--muted); border: 1.5px solid var(--blush-mid); border-radius: 8px; font-family: 'DM Sans'; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn-decline:hover { border-color: var(--crimson); color: var(--crimson); }
+.accepted-status { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--green); margin-top: 12px; }
+
+.empty-state  { text-align: center; padding: 48px 20px; color: var(--muted); }
+.empty-icon   { font-size: 40px; margin-bottom: 12px; }
+.empty-state h4 { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.empty-state p  { font-size: 13px; }
+
+.profile-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
+.profile-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark)); color: white; display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 22px; }
+.profile-name  { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--ink); }
+.profile-blood { font-size: 12px; font-weight: 700; color: var(--crimson); background: var(--blush); padding: 3px 10px; border-radius: 999px; display: inline-block; margin-top: 3px; }
+
+.profile-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.ps-item  { background: var(--blush); border-radius: 10px; padding: 14px; text-align: center; }
+.ps-val   { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--crimson); }
+.ps-label { font-size: 11px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+
+.profile-meta { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+.pm-row  { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+.pm-icon { width: 28px; height: 28px; background: var(--blush); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+.pm-val  { color: var(--ink); font-weight: 600; }
+
+.avail-row       { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: var(--blush); border-radius: 12px; margin-bottom: 16px; }
+.avail-row-label { font-size: 13px; font-weight: 700; color: var(--ink); }
+.toggle-switch   { width: 48px; height: 26px; border-radius: 999px; background: #E5E7EB; cursor: pointer; position: relative; transition: background 0.25s; }
+.toggle-switch.on { background: var(--crimson); }
+.toggle-knob     { width: 20px; height: 20px; border-radius: 50%; background: white; position: absolute; top: 3px; left: 3px; transition: left 0.25s; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+.toggle-switch.on .toggle-knob { left: 25px; }
+
+.btn-edit-profile { width: 100%; padding: 12px; background: white; border: 1.5px solid var(--blush-mid); border-radius: 10px; font-family: 'DM Sans'; font-size: 13px; font-weight: 700; color: var(--crimson); cursor: pointer; transition: all 0.2s; }
+.btn-edit-profile:hover { background: var(--blush); border-color: var(--crimson); }
+
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.85)} }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <a href="index.html" class="sb-logo">
+      <div class="logo-icon"></div>
+      <span class="logo-name">Saarthi</span>
+    </a>
+
+    <div class="sb-section-label">Main</div>
+    <nav class="sb-nav">
+      <a href="dashboard.html" class="sb-link active">
+        <span class="icon">🏠</span> Dashboard
+        <span class="sb-badge" id="badgeCount">0</span>
+      </a>
+      <a href="post-request.html" class="sb-link">
+        <span class="icon">🩸</span> Post Request
+      </a>
+      <a href="request-status.html" class="sb-link">
+        <span class="icon">📋</span> My Requests
+      </a>
+    </nav>
+
+    <div class="sb-section-label">Account</div>
+    <nav class="sb-nav">
+      <a href="complete-profile.html" class="sb-link">
+        <span class="icon">👤</span> Profile
+      </a>
+      <a href="about.html" class="sb-link">
+        <span class="icon">ℹ️</span> About
+      </a>
+    </nav>
+
+    <!-- SECTION 1: Sidebar user card — shows logged-in user name, email, avatar -->
+    <div class="sb-user">
+      <div class="sb-user-row">
+        <div class="sb-avatar" id="sidebarAvatar">?</div>
+        <div>
+          <div class="sb-user-name"  id="sidebarName">Loading...</div>
+          <div class="sb-user-email" id="sidebarEmail"></div>
+        </div>
+      </div>
+      <a href="#" class="sb-logout" id="logoutBtn">Sign out →</a>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h2 id="welcomeText">Good morning!</h2>
+        <p id="dateText">Today is a chance to save a life.</p>
+      </div>
+      <a href="post-request.html" class="btn-post">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+        Post Urgent Request
+      </a>
+    </div>
+
+    <!-- SECTION 3: KPI cards — pulled from backend + localStorage -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Active Requests</div>
+        <div class="kpi-val" id="kpiActive">0</div>
+        <div class="kpi-sub">Nearby right now</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label">Donations Made</div>
+        <div class="kpi-val" id="kpiDonations">0</div>
+        <div class="kpi-sub">Lifetime total</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Response Rate</div>
+        <div class="kpi-val" id="kpiRate">—</div>
+        <div class="kpi-sub">Acceptance rate</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Donor Points</div>
+        <div class="kpi-val" id="kpiPoints">0</div>
+        <div class="kpi-sub">Impact score</div>
+      </div>
+    </div>
+
+    <div class="dashboard-grid">
+
+      <!-- SECTION 3: Nearby Blood Requests — from localStorage matchedDonors -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3 class="panel-title">Nearby Blood Requests</h3>
+          <span class="live-badge"><span class="live-dot"></span> Live</span>
+        </div>
+        <div id="requestList">
+          <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <h4>No requests right now</h4>
+            <p>When someone nearby posts a blood request that matches your group, it will appear here.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: My Profile — fetched from GET /get-profile/:userId -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3 class="panel-title">My Profile</h3>
+        </div>
+
+        <div class="profile-header">
+          <div class="profile-avatar" id="profileAvatar">?</div>
+          <div>
+            <div class="profile-name"  id="profileName">Loading...</div>
+            <div class="profile-blood" id="profileBlood">—</div>
+          </div>
+        </div>
+
+        <div class="profile-stats">
+          <div class="ps-item">
+            <div class="ps-val" id="statDonations">0</div>
+            <div class="ps-label">Donations</div>
+          </div>
+          <div class="ps-item">
+            <div class="ps-val" id="statRate">0%</div>
+            <div class="ps-label">Response Rate</div>
+          </div>
+        </div>
+
+        <div class="profile-meta">
+          <div class="pm-row"><div class="pm-icon">👤</div><span>Name: <span class="pm-val" id="profName2">—</span></span></div>
+          <div class="pm-row"><div class="pm-icon">✉️</div><span>Email: <span class="pm-val" id="profEmail">—</span></span></div>
+          <div class="pm-row"><div class="pm-icon">📍</div><span>City: <span class="pm-val" id="profCity">—</span></span></div>
+          <div class="pm-row"><div class="pm-icon">📱</div><span>Phone: <span class="pm-val" id="profPhone">—</span></span></div>
+          <div class="pm-row"><div class="pm-icon">🗓</div><span>Last donated: <span class="pm-val" id="profLastDon">Never</span></span></div>
+        </div>
+
+        <div class="avail-row">
+          <span class="avail-row-label" id="availLabel">Available to donate</span>
+          <div class="toggle-switch on" id="availToggle">
+            <div class="toggle-knob"></div>
+          </div>
+        </div>
+
+        <div class="avail-row" style="margin-top:8px;">
+          <div>
+            <span class="avail-row-label" id="locLabel">📍 Location Sharing</span>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px;">Helps ML match nearest donors</div>
+          </div>
+          <div class="toggle-switch" id="locToggle">
+            <div class="toggle-knob"></div>
+          </div>
+        </div>
+
+        <button class="btn-edit-profile" onclick="window.location.href='complete-profile.html'">Edit Profile →</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const API    = 'https://saarthi-backend-ahto.onrender.com';
+const userId   = localStorage.getItem('userId');
+const userName = localStorage.getItem('userName');
+const userEmail= localStorage.getItem('userEmail');
+
+/* ── AUTH GUARD ── */
+if (!userId) window.location.href = 'login.html';
+
+/* ════════════════════════════════════════════
+   SECTION 1 — SIDEBAR USER CARD
+   Shows name + email + avatar from localStorage.
+   Backend loadProfile() also refreshes name from
+   DB in case localStorage was stale.
+════════════════════════════════════════════ */
+function setUserDisplay(name, email) {
+  const initials = (name || '?').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+  document.getElementById('sidebarAvatar').textContent  = initials;
+  document.getElementById('sidebarName').textContent    = name  || 'Donor';
+  document.getElementById('sidebarEmail').textContent   = email || '';
+  document.getElementById('profileAvatar').textContent  = initials;
+  document.getElementById('profileName').textContent    = name  || 'Donor';
+}
+
+// Show immediately from localStorage (no waiting for API)
+setUserDisplay(userName, userEmail);
+
+// Greeting + date
+const hr = new Date().getHours();
+const greeting = hr < 12 ? 'Good morning' : hr < 18 ? 'Good afternoon' : 'Good evening';
+document.getElementById('welcomeText').textContent = greeting + ', ' + (userName || 'Donor').split(' ')[0] + '!';
+document.getElementById('dateText').textContent = new Date().toLocaleDateString('en-IN', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+/* ════════════════════════════════════════════
+   SECTION 2 — MY PROFILE PANEL
+   Fetches from: GET /get-profile/:userId
+   Fills: blood group, city, phone, last donation,
+   total donations, availability toggle.
+   Toggle fires: POST /update-availability
+════════════════════════════════════════════ */
+async function loadProfile() {
+  try {
+    const res  = await fetch(API + '/get-profile/' + userId + '?t=' + Date.now(), { cache: 'no-store' });
+    const data = await res.json();
+
+    if (!data.success || !data.profile) {
+      // Profile not completed — show helpful defaults
+      document.getElementById('profName2').textContent    = 'Not set';
+      document.getElementById('profEmail').textContent    = 'Not set';
+      document.getElementById('profileBlood').textContent = 'Not set';
+      document.getElementById('profCity').textContent     = 'Not set';
+      document.getElementById('profPhone').textContent    = 'Not set';
+      return;
+    }
+
+    const p = data.profile;
+
+    // Refresh name from DB (more reliable than localStorage)
+    if (p.name) {
+      localStorage.setItem('userName', p.name);
+      setUserDisplay(p.name, p.email || userEmail);
+      document.getElementById('welcomeText').textContent =
+        greeting + ', ' + p.name.split(' ')[0] + '!';
+    }
+
+    // Fill profile panel
+    document.getElementById('profName2').textContent    = p.name       || 'Not set';
+    document.getElementById('profEmail').textContent    = p.email      || 'Not set';
+    document.getElementById('profileBlood').textContent = p.blood_group || 'Not set';
+    document.getElementById('profCity').textContent     = p.city        || 'Not set';
+    document.getElementById('profPhone').textContent    = p.phone       || 'Not set';
+    document.getElementById('profLastDon').textContent  = p.last_donation_date
+      ? new Date(p.last_donation_date).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })
+      : 'Never';
+
+    // Fill donations KPI from profile
+    const donations = Number(p.total_donations) || 0;
+    document.getElementById('statDonations').textContent = donations;
+    document.getElementById('kpiDonations').textContent  = donations;
+
+    // Load real response rate + points from backend
+    loadDonorStats();
+
+    // Sync availability toggle from DB — DB is always the source of truth
+    const isAvail = p.available_for_donation == 1 || p.available_for_donation === true;
+    const toggle  = document.getElementById('availToggle');
+    if (isAvail) {
+      toggle.classList.add('on');
+      document.getElementById('availLabel').textContent = 'Available to donate';
+    } else {
+      toggle.classList.remove('on');
+      document.getElementById('availLabel').textContent = 'Not available';
+    }
+    // Keep localStorage in sync with DB so complete-profile pre-loads correctly
+    localStorage.setItem('available', isAvail ? 'true' : 'false');
+
+    // Sync location toggle — if lat/lng exist, it's "on"
+    const hasLocation = p.latitude && p.longitude;
+    const locToggle = document.getElementById('locToggle');
+    if (hasLocation) {
+      locToggle.classList.add('on');
+      document.getElementById('locLabel').textContent = '📍 Location Active';
+      localStorage.setItem('locationSharing', 'true');
+      localStorage.setItem('donorLat', p.latitude);
+      localStorage.setItem('donorLng', p.longitude);
+    } else {
+      locToggle.classList.remove('on');
+      document.getElementById('locLabel').textContent = '📍 Location Sharing';
+      localStorage.setItem('locationSharing', 'false');
+    }
+
+  } catch(e) {
+    // Backend unreachable
+    document.getElementById('profileBlood').textContent = 'Unavailable';
+    document.getElementById('profCity').textContent     = 'Unavailable';
+    document.getElementById('profPhone').textContent    = 'Unavailable';
+    console.log('Profile load error:', e);
+  }
+}
+loadProfile();
+
+// Toggle — updates DB immediately on click
+const toggle = document.getElementById('availToggle');
+toggle.addEventListener('click', () => {
+  toggle.classList.toggle('on');
+  const isOn = toggle.classList.contains('on');
+  document.getElementById('availLabel').textContent = isOn ? 'Available to donate' : 'Not available';
+  localStorage.setItem('available', isOn ? 'true' : 'false'); // keep in sync with complete-profile
+  fetch(API + '/update-availability', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ userId, available: isOn ? 1 : 0 })
+  }).catch(e => console.log('Toggle error:', e));
+});
+
+// Location toggle — captures GPS on enable, clears on disable
+const locToggleDash = document.getElementById('locToggle');
+locToggleDash.addEventListener('click', () => {
+  locToggleDash.classList.toggle('on');
+  const isOn = locToggleDash.classList.contains('on');
+
+  if (isOn) {
+    document.getElementById('locLabel').textContent = '📍 Detecting…';
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude.toFixed(6);
+        const lng = pos.coords.longitude.toFixed(6);
+        document.getElementById('locLabel').textContent = '📍 Location Active';
+        localStorage.setItem('locationSharing', 'true');
+        localStorage.setItem('donorLat', lat);
+        localStorage.setItem('donorLng', lng);
+        fetch(API + '/update-location-sharing', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, latitude: lat, longitude: lng, sharing: true })
+        }).catch(e => console.log('Loc toggle error:', e));
+      },
+      () => {
+        locToggleDash.classList.remove('on');
+        document.getElementById('locLabel').textContent = '📍 Access Denied';
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  } else {
+    document.getElementById('locLabel').textContent = '📍 Location Sharing';
+    localStorage.setItem('locationSharing', 'false');
+    fetch(API + '/update-location-sharing', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, latitude: null, longitude: null, sharing: false })
+    }).catch(e => console.log('Loc toggle error:', e));
+  }
+});
+
+/* ════════════════════════════════════════════
+   SECTION 3 — NEARBY REQUESTS + KPI CARDS
+   Fetches from DB via GET /get-donor-requests/:donorId
+   Shows requests where this donor was ML-matched.
+   Accept/Decline calls POST /update-request-status
+════════════════════════════════════════════ */
+/* ════════════════════════════════════════════
+   DONOR STATS — Response Rate + Points
+   Fetches from: GET /get-donor-stats/:userId
+   Response Rate = accepted by me / total matched to me (DB-based)
+   Points = (donations × 10) + urgency bonuses per accepted request
+     Critical accepted → +20 pts
+     Urgent   accepted → +10 pts
+     Normal   accepted → +5  pts
+════════════════════════════════════════════ */
+async function loadDonorStats() {
+  try {
+    const res  = await fetch(API + '/get-donor-stats/' + userId + '?t=' + Date.now(), { cache: 'no-store' });
+    const data = await res.json();
+
+    if (!data.success) return;
+
+    const { responseRate, points, totalDonations } = data.stats;
+
+    // KPI cards
+    document.getElementById('kpiRate').textContent   = responseRate + '%';
+    document.getElementById('kpiPoints').textContent = points;
+
+    // Profile panel stats
+    document.getElementById('statRate').textContent      = responseRate + '%';
+    document.getElementById('statDonations').textContent = totalDonations;
+    document.getElementById('kpiDonations').textContent  = totalDonations;
+
+  } catch(e) {
+    console.log('Stats load error:', e);
+    document.getElementById('kpiRate').textContent   = '—';
+    document.getElementById('kpiPoints').textContent = '0';
+  }
+}
+
+async function loadRequests() {
+  const myId      = Number(userId);
+  const container = document.getElementById('requestList');
+
+  try {
+    const res  = await fetch(API + '/get-donor-requests/' + myId + '?t=' + Date.now(), { cache: 'no-store' });
+    const data = await res.json();
+
+    if (!data.success) throw new Error('Failed');
+
+    const requests = data.requests || [];
+
+    // Active = not declined by me (stored in localStorage per-donor)
+    const declinedIds = JSON.parse(localStorage.getItem('declinedRequests') || '[]');
+    const active = requests.filter(r => !declinedIds.includes(r.id));
+
+    // KPI active count only (rate + points handled by loadDonorStats)
+    const pending  = active.filter(r => r.status === 'pending').length;
+    document.getElementById('kpiActive').textContent  = pending;
+    document.getElementById('badgeCount').textContent = pending;
+
+    if (active.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">🔍</div>
+          <h4>No requests right now</h4>
+          <p>When someone nearby posts a blood request that matches your group, it will appear here.</p>
+        </div>`;
+      return;
+    }
+
+    const urgClass  = { Critical:'critical', Urgent:'urgent', Normal:'' };
+    const urgBadge  = { Critical:'urg-critical', Urgent:'urg-urgent', Normal:'urg-normal' };
+
+    container.innerHTML = active.map(req => {
+      const cls   = urgClass[req.urgency]  || '';
+      const badge = urgBadge[req.urgency]  || 'urg-normal';
+
+      if (req.status === 'accepted') {
+        return `<div class="request-item accepted" data-id="${req.id}">
+          <div class="req-header">
+            <span class="req-blood">${req.blood_group} — ${req.units} units</span>
+            <span class="req-urgency ${badge}">${req.urgency}</span>
+          </div>
+          <div class="req-meta"><span>🏥</span> ${req.location}</div>
+          <div class="req-meta"><span>👤</span> ${req.requester_name}</div>
+          <div class="accepted-status">✓ Accepted — Contact: ${req.phone}</div>
+        </div>`;
+      }
+
+      return `<div class="request-item ${cls}" data-id="${req.id}">
+        <div class="req-header">
+          <span class="req-blood">${req.blood_group} — ${req.units} units</span>
+          <span class="req-urgency ${badge}">${req.urgency}</span>
+        </div>
+        <div class="req-meta"><span>🏥</span> ${req.location}</div>
+        <div class="req-meta"><span>👤</span> ${req.requester_name} · 📞 ${req.phone}</div>
+        <div class="req-actions">
+          <button class="btn-accept"  onclick="acceptReq(${req.id})">Accept →</button>
+          <button class="btn-decline" onclick="declineReq(${req.id})">Decline</button>
+        </div>
+      </div>`;
+    }).join('');
+
+  } catch(e) {
+    console.log('Load requests error:', e);
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <h4>No requests right now</h4>
+        <p>When someone nearby posts a blood request that matches your group, it will appear here.</p>
+      </div>`;
+  }
+}
+
+function acceptReq(id) {
+  const btn = event.target;
+  btn.textContent = 'Accepting…'; btn.disabled = true;
+  fetch(API + '/accept-request', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ requestId: id, donorId: Number(userId) })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      // Redirect to Active Donation page
+      window.location.href = 'active-donation.html?id=' + id;
+    }
+    else { btn.textContent = 'Accept →'; btn.disabled = false; }
+  })
+  .catch(() => { btn.textContent = 'Accept →'; btn.disabled = false; });
+}
+
+function declineReq(id) {
+  // Store declined locally per donor (don't change DB status for other donors)
+  const declined = JSON.parse(localStorage.getItem('declinedRequests') || '[]');
+  declined.push(id);
+  localStorage.setItem('declinedRequests', JSON.stringify(declined));
+  loadRequests();
+}
+
+loadRequests();
+document.getElementById('logoutBtn').addEventListener('click', e => {
+  e.preventDefault();
+  localStorage.clear();
+  window.location.href = 'index.html';
+});
+
+/* ════════════════════════════════════════════════════════════════
+   HYPERLOCAL DEMO — Auto-seed donors around user's location
+   This ensures whoever tests the platform sees the hyperlocal feature
+════════════════════════════════════════════════════════════════ */
+async function seedHyperlocalDonors() {
+  // Only seed once per session
+  if (sessionStorage.getItem('hyperlocalSeeded')) return;
+  
+  try {
+    // Get user's current location
+    const position = await new Promise((resolve, reject) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000 // 5 minutes
+        });
+      } else {
+        reject(new Error('Geolocation not supported'));
+      }
+    });
+
+    const { latitude, longitude } = position.coords;
+    console.log(`📍 User location detected: ${latitude}, ${longitude}`);
+    console.log(`🎯 Seeding hyperlocal donors for demo...`);
+
+    // Call backend to seed donors around this location
+    const res = await fetch(API + '/seed-hyperlocal-donors', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ latitude, longitude, count: 100 })
+    });
+    
+    const data = await res.json();
+    if (data.success) {
+      console.log(`✅ Hyperlocal demo ready!`, data.stats);
+      sessionStorage.setItem('hyperlocalSeeded', 'true');
+    }
+  } catch (e) {
+    console.log('⚠️ Could not seed hyperlocal donors:', e.message);
+  }
+}
+
+// Auto-seed on dashboard load
+seedHyperlocalDonors();
+</script>
+</body>
+</html>

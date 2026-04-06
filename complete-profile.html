@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saarthi — Complete Your Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --crimson: #C0152A; --crimson-dark: #8B0000; --crimson-light: #FF3547;
+  --blush: #FFF1F1; --blush-mid: #FFE0E0;
+  --ink: #1A0A0A; --ink-mid: #3D1A1A; --muted: #8A6A6A; --white: #FFFFFF;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; background: var(--blush); min-height: 100vh; }
+
+nav { display: flex; align-items: center; padding: 18px 60px; background: white; border-bottom: 1px solid var(--blush-mid); }
+.logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo-icon { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg,var(--crimson-light),var(--crimson-dark)); position: relative; }
+.logo-icon::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:2px; height:20px; background:white; border-radius:2px; }
+.logo-icon::after  { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:20px; height:2px; background:white; border-radius:2px; }
+.logo-text { font-family:'DM Serif Display',serif; font-size:20px; color:var(--ink); }
+
+.page-container { max-width: 860px; margin: 40px auto; padding: 0 24px; }
+
+.progress-header { text-align: center; margin-bottom: 40px; }
+.step-indicator {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: white; padding: 8px 20px; border-radius: 999px;
+  border: 1px solid var(--blush-mid); margin-bottom: 20px;
+}
+.step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blush-mid); }
+.step-dot.done    { background: var(--crimson); }
+.step-dot.current { background: var(--crimson); box-shadow: 0 0 0 3px rgba(192,21,42,0.2); }
+.step-label { font-size: 12px; color: var(--muted); font-weight: 600; }
+
+.progress-header h1 { font-family: 'DM Serif Display', serif; font-size: 36px; color: var(--ink); letter-spacing: -0.7px; margin-bottom: 10px; }
+.progress-header p  { font-size: 15px; color: var(--muted); }
+
+.form-card {
+  background: white; border-radius: 24px;
+  padding: 44px; box-shadow: 0 4px 30px rgba(192,21,42,0.08);
+  border: 1px solid rgba(192,21,42,0.06);
+}
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.form-grid .full { grid-column: span 2; }
+
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field label { font-size: 11px; font-weight: 700; color: var(--ink-mid); letter-spacing: 0.5px; text-transform: uppercase; }
+.field input, .field select {
+  padding: 13px 16px; border: 1.5px solid var(--blush-mid);
+  border-radius: 10px; font-family: 'DM Sans', sans-serif;
+  font-size: 14px; color: var(--ink); background: white;
+  outline: none; transition: all 0.2s; appearance: none;
+}
+.field input:focus, .field select:focus { border-color: var(--crimson); box-shadow: 0 0 0 3px rgba(192,21,42,0.08); }
+.field input:disabled {
+  background: #F3F0F0; color: #B0A0A0; cursor: not-allowed;
+  border-color: #E8E0E0;
+}
+.field input.err { border-color: var(--crimson); background: var(--blush); }
+
+.error-msg { display: none; font-size: 11px; color: var(--crimson); padding: 5px 10px; background: var(--blush); border-radius: 6px; }
+.error-msg.show { display: block; }
+
+.field-hint { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* Blood Group Picker */
+.blood-picker { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 4px; }
+.bp-option {
+  padding: 12px 6px; border-radius: 10px; border: 1.5px solid var(--blush-mid);
+  text-align: center; font-weight: 700; font-size: 14px; cursor: pointer;
+  transition: all 0.2s; color: var(--ink-mid); background: white;
+}
+.bp-option:hover   { border-color: var(--crimson); color: var(--crimson); }
+.bp-option.selected { background: var(--crimson); border-color: var(--crimson); color: white; }
+
+/* Availability Toggle */
+.availability-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px; background: var(--blush);
+  border-radius: 12px; border: 1px solid var(--blush-mid); margin-top: 8px;
+}
+.avail-info h4 { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+.avail-info p  { font-size: 12px; color: var(--muted); }
+
+.toggle-switch {
+  width: 52px; height: 28px; border-radius: 999px;
+  background: #E5E7EB; cursor: pointer; position: relative; transition: background 0.25s;
+}
+.toggle-switch.on { background: var(--crimson); }
+.toggle-knob {
+  width: 22px; height: 22px; border-radius: 50%; background: white;
+  position: absolute; top: 3px; left: 3px; transition: left 0.25s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.toggle-switch.on .toggle-knob { left: 27px; }
+
+.section-divider { border: none; border-top: 1px solid var(--blush-mid); margin: 32px 0; }
+
+/* Location capture */
+.loc-capture { margin-top: 6px; }
+.loc-btn {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 14px 18px;
+  background: white; border: 1.5px dashed var(--blush-mid);
+  border-radius: 12px; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
+  color: var(--crimson); transition: all 0.2s;
+}
+.loc-btn:hover { border-color: var(--crimson); background: var(--blush); }
+.loc-btn.captured { border-style: solid; border-color: #16A34A; background: #F0FDF4; color: #16A34A; pointer-events: none; }
+.loc-btn .loc-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: var(--blush); display: flex; align-items: center;
+  justify-content: center; font-size: 18px; flex-shrink: 0;
+}
+.loc-btn.captured .loc-icon { background: #DCFCE7; }
+.loc-btn .loc-text { text-align: left; }
+.loc-btn .loc-title { font-size: 14px; font-weight: 700; }
+.loc-btn .loc-sub { font-size: 11px; color: var(--muted); font-weight: 400; margin-top: 2px; }
+.loc-btn.captured .loc-sub { color: #16A34A; }
+
+.save-btn {
+  width: 100%; padding: 16px;
+  background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark));
+  color: white; border: none; border-radius: 12px;
+  font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700;
+  cursor: pointer; box-shadow: 0 8px 24px rgba(192,21,42,0.28);
+  transition: all 0.2s; margin-top: 32px;
+}
+.save-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(192,21,42,0.36); }
+.save-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+.donation-info {
+  background: var(--blush); border-radius: 12px; padding: 16px 20px;
+  margin-top: 16px; font-size: 13px; color: var(--muted); line-height: 1.65;
+}
+.donation-info strong { color: var(--crimson); }
+
+/* Eligibility Checklist */
+.eligibility-section { margin-top: 32px; }
+.eligibility-title {
+  font-family: 'DM Serif Display', serif; font-size: 18px;
+  color: var(--ink); margin-bottom: 6px;
+}
+.eligibility-subtitle {
+  font-size: 12px; color: var(--muted); margin-bottom: 16px;
+}
+.eli-checklist { display: flex; flex-direction: column; gap: 0; }
+.eli-check-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px; background: var(--blush);
+  border: 1px solid var(--blush-mid); cursor: pointer;
+  transition: all 0.2s; user-select: none;
+}
+.eli-check-item:first-child { border-radius: 12px 12px 0 0; }
+.eli-check-item:last-child  { border-radius: 0 0 12px 12px; }
+.eli-check-item:not(:last-child) { border-bottom: none; }
+.eli-check-item:hover { background: #FFE8E8; }
+.eli-check-item.checked { background: #F0FDF4; border-color: #BBF7D0; }
+.eli-check-item.checked + .eli-check-item { border-top-color: #BBF7D0; }
+
+.eli-checkbox {
+  width: 22px; height: 22px; border-radius: 6px;
+  border: 2px solid var(--blush-mid); background: white;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.25s;
+}
+.eli-check-item.checked .eli-checkbox {
+  background: #16A34A; border-color: #16A34A;
+}
+.eli-checkbox svg {
+  width: 14px; height: 14px; stroke: white;
+  stroke-width: 2.5; fill: none;
+  opacity: 0; transform: scale(0.5);
+  transition: all 0.2s;
+}
+.eli-check-item.checked .eli-checkbox svg {
+  opacity: 1; transform: scale(1);
+}
+.eli-label {
+  font-size: 14px; color: var(--ink-mid); font-weight: 500;
+  transition: color 0.2s;
+}
+.eli-check-item.checked .eli-label { color: var(--ink); font-weight: 600; }
+
+/* Age auto-check row */
+.eli-check-item.auto { cursor: default; }
+.eli-check-item.auto:hover { background: var(--blush); }
+.eli-check-item.auto.checked:hover { background: #F0FDF4; }
+.age-badge {
+  display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px;
+  border-radius: 999px; white-space: nowrap; margin-left: 8px; vertical-align: middle;
+}
+.age-badge.valid { background: #DCFCE7; color: #166534; }
+.age-badge.invalid { background: #FEE2E2; color: #991B1B; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo-wrap">
+    <div class="logo-icon"></div>
+    <span class="logo-text">Saarthi</span>
+  </a>
+</nav>
+
+<div class="page-container">
+  <div class="progress-header">
+    <div class="step-indicator">
+      <div class="step-dot done"></div>
+      <div class="step-dot done"></div>
+      <div class="step-dot current"></div>
+      <span class="step-label">Step 3 of 3 — Donor Profile</span>
+    </div>
+    <h1>Complete your donor profile</h1>
+    <p>This helps us find the right matches and notify you about nearby emergencies.</p>
+  </div>
+
+  <div class="form-card">
+    <div class="form-grid">
+
+      <div class="field">
+        <label>Phone Number</label>
+        <input type="tel" id="phone" placeholder="98765 43210" maxlength="10">
+        <span class="field-hint">10-digit Indian mobile number</span>
+        <div class="error-msg" id="phoneError"></div>
+      </div>
+
+      <div class="field">
+        <label>City</label>
+        <input type="text" id="city" placeholder="e.g. Ahmedabad, Mumbai, Delhi" autocomplete="off">
+        <span class="field-hint">Must be a valid Indian city — used for hyperlocal matching</span>
+        <div class="error-msg" id="cityError"></div>
+      </div>
+
+      <div class="field full">
+        <label>📍 Your Location</label>
+        <span class="field-hint">Used for shortest-distance donor matching by our ML model</span>
+        <input type="hidden" id="latitude" value="">
+        <input type="hidden" id="longitude" value="">
+        <div class="loc-capture">
+          <button type="button" class="loc-btn" id="locBtn">
+            <div class="loc-icon">📍</div>
+            <div class="loc-text">
+              <div class="loc-title" id="locTitle">Enable Location Access</div>
+              <div class="loc-sub" id="locSub">Tap to share your GPS coordinates for better matching</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <div class="field full">
+        <label>Blood Group</label>
+        <input type="hidden" id="bloodGroup">
+        <div class="blood-picker" id="bloodPicker">
+          <div class="bp-option" data-val="A+">A+</div>
+          <div class="bp-option" data-val="A-">A−</div>
+          <div class="bp-option" data-val="B+">B+</div>
+          <div class="bp-option" data-val="B-">B−</div>
+          <div class="bp-option" data-val="AB+">AB+</div>
+          <div class="bp-option" data-val="AB-">AB−</div>
+          <div class="bp-option" data-val="O+">O+</div>
+          <div class="bp-option" data-val="O-">O−</div>
+        </div>
+        <div class="error-msg" id="bloodGroupError"></div>
+      </div>
+
+      <div class="field">
+        <label>Date of Birth</label>
+        <input type="date" id="dob" max="">
+        <span class="field-hint" id="dobHint">Used to verify age eligibility (18–65 years)</span>
+      </div>
+
+      <div class="field">
+        <label>Total Donations Made</label>
+        <input type="number" id="totalDonations" placeholder="0" value="0" min="0">
+        <span class="field-hint">Your donation count so far</span>
+        <div class="error-msg" id="totalDonationsError"></div>
+      </div>
+
+      <div class="field">
+        <label>Last Donation Date</label>
+        <input type="date" id="lastDonation" disabled>
+        <span class="field-hint" id="lastDonationHint">Only available if you have made at least 1 donation</span>
+      </div>
+
+    </div>
+
+    <hr class="section-divider">
+
+    <label style="font-size:11px;font-weight:700;color:var(--ink-mid);letter-spacing:0.5px;text-transform:uppercase;display:block;margin-bottom:6px;">Availability to Donate</label>
+    <div class="availability-row">
+      <div class="avail-info">
+        <h4 id="availLabel">Available for donation</h4>
+        <p>You'll receive blood request notifications from nearby patients</p>
+      </div>
+      <div class="toggle-switch on" id="availToggle">
+        <div class="toggle-knob"></div>
+      </div>
+    </div>
+    <input type="hidden" id="availability" value="">
+
+    <div class="donation-info">
+      <strong>Note:</strong> Blood can be donated once every 90 days. You must weigh at least 50 kg and be between 18–65 years of age.
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="eligibility-section">
+      <div class="eligibility-title">Eligibility Confirmation</div>
+      <p class="eligibility-subtitle">Please confirm all criteria below to complete your profile</p>
+      <div class="eli-checklist" id="eligibilityChecklist">
+        <div class="eli-check-item auto" data-eli="age" id="ageCheckItem">
+          <div class="eli-checkbox"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
+          <span class="eli-label">I am between 18–65 years of age</span>
+          <span class="age-badge" id="ageBadge" style="display:none;"></span>
+        </div>
+        <div class="eli-check-item auto" data-eli="donation" id="donationCheckItem">
+          <div class="eli-checkbox"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
+          <span class="eli-label">No blood donation in the last 90 days</span>
+          <span class="age-badge" id="donationBadge" style="display:none;"></span>
+        </div>
+        <div class="eli-check-item" data-eli="illness">
+          <div class="eli-checkbox"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
+          <span class="eli-label">No major illness or ongoing medication</span>
+        </div>
+        <div class="eli-check-item" data-eli="haemoglobin">
+          <div class="eli-checkbox"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
+          <span class="eli-label">Haemoglobin level ≥ 12.5 g/dL</span>
+        </div>
+      </div>
+      <div class="error-msg" id="eligibilityError"></div>
+    </div>
+
+    <button class="save-btn" id="saveBtn">Save Profile &amp; Continue →</button>
+  </div>
+</div>
+
+<script>
+const API = 'https://saarthi-backend-ahto.onrender.com';
+const userId = localStorage.getItem('userId');
+if (!userId) window.location.href = 'login.html';
+
+
+
+
+async function prefillProfile() {
+  try {
+    const res  = await fetch(API + '/get-profile/' + userId + '?t=' + Date.now(), { cache: 'no-store' });
+    const data = await res.json();
+    if (!data.success || !data.profile) return;
+    const p = data.profile;
+
+    if (p.phone) {
+      document.getElementById('phone').value = p.phone;
+    }
+    if (p.city)         document.getElementById('city').value           = p.city;
+    if (p.total_donations !== undefined) {
+      document.getElementById('totalDonations').value = p.total_donations;
+      toggleDonationDate();  // enable/disable date field based on prefilled count
+    }
+    if (p.last_donation_date && Number(p.total_donations) >= 1) {
+      // Format date to YYYY-MM-DD for the date input
+      document.getElementById('lastDonation').value =
+        new Date(p.last_donation_date).toISOString().split('T')[0];
+    }
+
+    // Pre-select blood group pill
+    if (p.blood_group) {
+      document.getElementById('bloodGroup').value = p.blood_group;
+      document.querySelectorAll('.bp-option').forEach(btn => {
+        btn.classList.toggle('selected', btn.dataset.val === p.blood_group);
+      });
+    }
+
+    // Set availability toggle from DB
+    const isAvail = p.available_for_donation == 1 || p.available_for_donation === true;
+    const toggleEl = document.getElementById('availToggle');
+    document.getElementById('availability').value = isAvail ? 'true' : 'false';
+    if (isAvail) {
+      toggleEl.classList.add('on');
+      document.getElementById('availLabel').textContent = 'Available for donation';
+    } else {
+      toggleEl.classList.remove('on');
+      document.getElementById('availLabel').textContent = 'Not available right now';
+    }
+  } catch(e) { console.log('Prefill error:', e); }
+}
+prefillProfile();
+
+// Set initial donation eligibility state on page load
+setTimeout(() => { if (typeof updateDonationEligibility === 'function') updateDonationEligibility(); }, 100);
+
+/* ── BLOOD GROUP PICKER ── */
+document.querySelectorAll('.bp-option').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.bp-option').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById('bloodGroup').value = btn.dataset.val;
+    clearError('bloodGroupError'); // clear blood error immediately on selection
+  });
+});
+
+/* ── DONATION DATE TOGGLE — disable date when donations = 0 ── */
+function toggleDonationDate() {
+  const count = Number(document.getElementById('totalDonations').value) || 0;
+  const dateInput = document.getElementById('lastDonation');
+  const hint = document.getElementById('lastDonationHint');
+  if (count >= 1) {
+    dateInput.disabled = false;
+    hint.textContent = 'When did you last donate blood?';
+  } else {
+    dateInput.disabled = true;
+    dateInput.value = '';  // clear date when no donations
+    clearError('lastDonationError', 'lastDonation');
+    hint.textContent = 'Only available if you have made at least 1 donation';
+  }
+  updateDonationEligibility();
+}
+document.getElementById('totalDonations').addEventListener('input', toggleDonationDate);
+document.getElementById('totalDonations').addEventListener('change', toggleDonationDate);
+
+/* ── 90-DAY DONATION ELIGIBILITY AUTO-CHECK ── */
+function updateDonationEligibility() {
+  const count = Number(document.getElementById('totalDonations').value) || 0;
+  const dateVal = document.getElementById('lastDonation').value;
+  const item = document.getElementById('donationCheckItem');
+  const badge = document.getElementById('donationBadge');
+
+  if (count === 0) {
+    // Never donated — automatically eligible
+    item.classList.add('checked');
+    badge.style.display = 'inline-block';
+    badge.textContent = 'No prior donations — Eligible ✓';
+    badge.className = 'age-badge valid';
+    return;
+  }
+
+  if (!dateVal) {
+    // Has donations but no date entered yet
+    item.classList.remove('checked');
+    badge.style.display = 'inline-block';
+    badge.textContent = 'Enter last donation date';
+    badge.className = 'age-badge invalid';
+    return;
+  }
+
+  const d = new Date(dateVal);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const daysSince = Math.floor((today - d) / 86400000);
+
+  badge.style.display = 'inline-block';
+  if (daysSince >= 90) {
+    item.classList.add('checked');
+    badge.textContent = daysSince + ' days ago — Eligible ✓';
+    badge.className = 'age-badge valid';
+  } else {
+    item.classList.remove('checked');
+    badge.textContent = daysSince + ' days ago — Wait ' + (90 - daysSince) + ' more days';
+    badge.className = 'age-badge invalid';
+  }
+  clearError('eligibilityError');
+}
+
+/* ── AVAILABILITY TOGGLE ── */
+const toggle = document.getElementById('availToggle');
+
+toggle.addEventListener('click', () => {
+  toggle.classList.toggle('on');
+  const isOn = toggle.classList.contains('on');
+  document.getElementById('availability').value = isOn ? 'true' : 'false';
+  document.getElementById('availLabel').textContent = isOn ? 'Available for donation' : 'Not available right now';
+});
+
+/* ── HELPERS ── */
+function showError(inputId, errId, msg) {
+  if (inputId) document.getElementById(inputId).classList.add('err');
+  const e = document.getElementById(errId);
+  e.textContent = '✱ ' + msg; e.classList.add('show');
+}
+function clearError(errId, inputId) {
+  document.getElementById(errId).classList.remove('show');
+  if (inputId) document.getElementById(inputId).classList.remove('err');
+}
+
+/* ── INDIVIDUAL VALIDATORS ── */
+function validatePhone() {
+  const v = document.getElementById('phone').value.trim();
+  clearError('phoneError', 'phone');
+  if (!v) { showError('phone', 'phoneError', 'Phone number is required'); return false; }
+  if (!/^[6-9]\d{9}$/.test(v)) { showError('phone', 'phoneError', 'Enter a valid 10-digit Indian mobile number'); return false; }
+  return true;
+}
+
+function validateCity() {
+  const v = document.getElementById('city').value.trim();
+  clearError('cityError', 'city');
+  if (!v) { showError('city', 'cityError', 'City name is required'); return false; }
+  if (/[^a-zA-Z\s]/.test(v)) { showError('city', 'cityError', 'City name should only contain letters'); return false; }
+
+  const indianCities = [
+    'mumbai','delhi','bangalore','bengaluru','hyderabad','ahmedabad','chennai','kolkata',
+    'surat','pune','jaipur','lucknow','kanpur','nagpur','indore','thane','bhopal',
+    'visakhapatnam','vizag','patna','vadodara','ghaziabad','ludhiana','agra','nashik',
+    'faridabad','meerut','rajkot','varanasi','srinagar','aurangabad','dhanbad','amritsar',
+    'allahabad','prayagraj','ranchi','howrah','coimbatore','jabalpur','gwalior','vijayawada',
+    'jodhpur','madurai','raipur','kota','chandigarh','guwahati','solapur','hubballi','hubli',
+    'tiruchirappalli','trichy','bareilly','mysuru','mysore','tiruppur','gurgaon','gurugram',
+    'aligarh','jalandhar','bhubaneswar','salem','warangal','guntur','bhiwandi','saharanpur',
+    'gorakhpur','bikaner','amravati','noida','jamshedpur','bhilai','cuttack','firozabad',
+    'kochi','cochin','erode','bhavnagar','sangli','ajmer','dehradun','jamnagar','ujjain',
+    'siliguri','jhansi','ulhasnagar','nellore','jammu','mangaluru','mangalore','bokaro',
+    'belgaum','belagavi','kolhapur','rourkela','dhule','nanded','malegaon','akola','kurnool',
+    'durgapur','asansol','gaya','nizamabad','udaipur','kakinada','davanagere','kozhikode',
+    'calicut','patiala','tirunelveli','shimla','gangtok','panaji','imphal','aizawl','kohima',
+    'itanagar','dispur','agartala','leh','haridwar','rishikesh','mathura','vrindavan','ayodhya',
+    'dwarka','shirdi','tirupati','bathinda','hoshiarpur','pathankot','rohtak','hisar','panipat',
+    'karnal','ambala','yamunanagar','bhiwani','sonipat','rewari','palwal','jind','fatehabad',
+    'sirsa','kurukshetra','panchkula','anand','gandhinagar','junagadh','porbandar','surendranagar',
+    'morbi','mehsana','navsari','valsad','bharuch','ankleshwar','godhra','nadiad','bilaspur',
+    'korba','durg','rajnandgaon','ambikapur','jagdalpur','shivamogga','shimoga','tumkur','bidar',
+    'raichur','bijapur','vijayapura','udupi','chikmagalur','mandya','kolar','thrissur','kollam',
+    'thiruvananthapuram','trivandrum','kannur','alappuzha','palakkad','malappuram','kasaragod',
+    'kottayam','ernakulam','vellore','thanjavur','tiruvannamalai','dindigul','cuddalore',
+    'nagapattinam','thoothukudi','tuticorin','pudukkottai','ramanathapuram','sivaganga',
+    'virudhunagar','theni','krishnagiri','dharmapuri','karur','namakkal','hosur','ooty',
+    'udhagamandalam','ambattur','avadi','tambaram','porur','navi mumbai','thane','kalyan',
+    'dombivli','vasai','virar','mira bhayandar','ulhasnagar','bhuj','anjar','gandhidham',
+    'vapi','silvassa','daman','diu','port blair','kavaratti','lakshadweep','imphal','kohima',
+    'shillong','aizawl','agartala','itanagar','dispur','panaji','silvassa','daman','puducherry',
+    'pondicherry','karaikal','mahe','yanam','nagar','ahmednagar','latur','osmanabad','hingoli',
+    'beed','nandurbar','jalgaon','buldhana','washim','yavatmal','chandrapur','gadchiroli',
+    'gondia','wardha','bhandara','parbhani','jalna','satara','raigad','sindhudurg','ratnagiri',
+    'mumbai suburban','thane','raigarh','bilaspur','surguja','bastar','dantewada','narayanpur'
+  ];
+
+  const normalised = v.toLowerCase().trim();
+  if (!indianCities.includes(normalised)) {
+    showError('city', 'cityError', 'Please enter a valid Indian city name'); return false;
+  }
+  return true;
+}
+
+function validateBlood() {
+  clearError('bloodGroupError', null);
+  if (!document.getElementById('bloodGroup').value) {
+    showError(null, 'bloodGroupError', 'Please select your blood group'); return false;
+  }
+  return true;
+}
+
+function validateTotalDonations() {
+  const v = Number(document.getElementById('totalDonations').value);
+  clearError('totalDonationsError', 'totalDonations');
+  if (isNaN(v) || v < 0) { showError('totalDonations', 'totalDonationsError', 'Enter a valid number (0 or more)'); return false; }
+  if (v > 100) { showError('totalDonations', 'totalDonationsError', 'Value seems too high — please double check'); return false; }
+  return true;
+}
+
+/* ── BLUR — show error when user leaves the field ── */
+document.getElementById('phone').addEventListener('blur',          validatePhone);
+document.getElementById('city').addEventListener('blur',           validateCity);
+document.getElementById('lastDonation').addEventListener('blur',   updateDonationEligibility);
+document.getElementById('lastDonation').addEventListener('change', updateDonationEligibility);
+document.getElementById('totalDonations').addEventListener('blur', validateTotalDonations);
+
+/* ── LOCATION CAPTURE ── */
+document.getElementById('locBtn').addEventListener('click', () => {
+  const btn = document.getElementById('locBtn');
+  const title = document.getElementById('locTitle');
+  const sub = document.getElementById('locSub');
+
+  if (!navigator.geolocation) {
+    title.textContent = '⚠️ Not Supported';
+    sub.textContent = 'Your browser does not support location access';
+    return;
+  }
+
+  title.textContent = 'Detecting location…';
+  sub.textContent = 'Please allow location access when prompted';
+
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const lat = pos.coords.latitude.toFixed(6);
+      const lng = pos.coords.longitude.toFixed(6);
+      document.getElementById('latitude').value = lat;
+      document.getElementById('longitude').value = lng;
+
+      btn.classList.add('captured');
+      title.textContent = '✓ Location Captured';
+      sub.textContent = `Coordinates: ${lat}, ${lng}`;
+
+      // Save to localStorage for dashboard toggle
+      localStorage.setItem('locationSharing', 'true');
+      localStorage.setItem('donorLat', lat);
+      localStorage.setItem('donorLng', lng);
+    },
+    (err) => {
+      title.textContent = '⚠️ Access Denied';
+      sub.textContent = 'Please enable location in browser settings and retry';
+      console.log('Location error:', err);
+    },
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+  );
+});
+
+// Pre-fill location from localStorage if available
+if (localStorage.getItem('donorLat') && localStorage.getItem('donorLng')) {
+  document.getElementById('latitude').value = localStorage.getItem('donorLat');
+  document.getElementById('longitude').value = localStorage.getItem('donorLng');
+  document.getElementById('locBtn').classList.add('captured');
+  document.getElementById('locTitle').textContent = '✓ Location Captured';
+  document.getElementById('locSub').textContent = `Coordinates: ${localStorage.getItem('donorLat')}, ${localStorage.getItem('donorLng')}`;
+}
+
+/* ── FIX AS YOU TYPE — clears error once user starts correcting ── */
+document.getElementById('phone').addEventListener('input', () => {
+  if (document.getElementById('phone').classList.contains('err')) validatePhone();
+});
+document.getElementById('city').addEventListener('input',           () => { if (document.getElementById('city').classList.contains('err'))           validateCity(); });
+document.getElementById('totalDonations').addEventListener('input', () => { if (document.getElementById('totalDonations').classList.contains('err')) validateTotalDonations(); });
+
+/* ── ELIGIBILITY CHECKLIST ── */
+document.querySelectorAll('.eli-check-item').forEach(item => {
+  // Skip auto-calculated items (age) — they can't be manually toggled
+  if (item.classList.contains('auto')) return;
+  item.addEventListener('click', () => {
+    item.classList.toggle('checked');
+    clearError('eligibilityError');
+  });
+});
+
+/* ── DOB → AGE AUTO-CHECK ── */
+// Set max date to today
+const dobInput = document.getElementById('dob');
+dobInput.max = new Date().toISOString().split('T')[0];
+
+function calculateAge(dob) {
+  const today = new Date();
+  const birth = new Date(dob);
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  return age;
+}
+
+function handleDobChange() {
+  const val = dobInput.value;
+  const ageItem = document.getElementById('ageCheckItem');
+  const badge = document.getElementById('ageBadge');
+
+  if (!val) {
+    ageItem.classList.remove('checked');
+    badge.style.display = 'none';
+    return;
+  }
+
+  const age = calculateAge(val);
+  badge.style.display = 'inline-block';
+
+  if (age >= 18 && age <= 65) {
+    ageItem.classList.add('checked');
+    badge.textContent = age + ' yrs — Eligible ✓';
+    badge.className = 'age-badge valid';
+  } else {
+    ageItem.classList.remove('checked');
+    badge.textContent = age + ' yrs — Not eligible';
+    badge.className = 'age-badge invalid';
+  }
+  clearError('eligibilityError');
+}
+
+dobInput.addEventListener('change', handleDobChange);
+dobInput.addEventListener('input', handleDobChange);
+
+function validateEligibility() {
+  clearError('eligibilityError');
+  const allItems = document.querySelectorAll('.eli-check-item');
+  const checkedItems = document.querySelectorAll('.eli-check-item.checked');
+  if (checkedItems.length < allItems.length) {
+    showError(null, 'eligibilityError', 'Please confirm all eligibility criteria before saving');
+    document.getElementById('eligibilityChecklist').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return false;
+  }
+  return true;
+}
+
+/* ── SAVE BUTTON ── */
+document.getElementById('saveBtn').addEventListener('click', async () => {
+  // run all validators — show errors for any invalid field
+  const ok = validatePhone() && validateCity() && validateBlood() && validateTotalDonations() && validateEligibility();
+  if (!ok) return;
+
+
+
+  const btn = document.getElementById('saveBtn');
+  btn.textContent = 'Saving…'; btn.disabled = true;
+
+  try {
+    const res = await fetch(API + '/complete-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId,
+        phone:          document.getElementById('phone').value.trim(),
+        bloodGroup:     document.getElementById('bloodGroup').value,
+        city:           document.getElementById('city').value.trim(),
+        dob:            document.getElementById('dob').value || null,
+        lastDonation:   document.getElementById('lastDonation').value || null,
+        totalDonations: document.getElementById('totalDonations').value,
+        availability:   document.getElementById('availability').value || 'true',
+        latitude:       document.getElementById('latitude').value || null,
+        longitude:      document.getElementById('longitude').value || null
+      })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      // Sync availability to localStorage so dashboard toggle reflects immediately
+      const availVal = document.getElementById('availability').value;
+      localStorage.setItem('available', availVal);
+      window.location.href = 'dashboard.html';
+    } else {
+      btn.textContent = 'Save Profile & Continue →';
+      btn.disabled = false;
+    }
+  } catch(e) {
+    btn.textContent = 'Save Profile & Continue →';
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

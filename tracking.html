@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saarthi — Live Tracking</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+<style>
+/* Hide the default routing instructions box */
+.leaflet-routing-container { display: none !important; }
+:root {
+  --crimson: #C0152A; --crimson-dark: #8B0000; --crimson-light: #FF3547;
+  --blush: #FFF1F1; --blush-mid: #FFE0E0;
+  --ink: #1A0A0A; --muted: #8A6A6A;
+  --green: #16A34A; --green-bg: #F0FDF4;
+  --orange: #EA580C; --orange-bg: #FFF7ED;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; background: #F8F4F4; min-height: 100vh; }
+
+/* NAV */
+nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 56px; background: white; border-bottom: 1px solid var(--blush-mid); position: sticky; top: 0; z-index: 50; }
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo-icon { width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark)); position: relative; }
+.logo-icon::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:2px; height:18px; background:white; border-radius:2px; }
+.logo-icon::after  { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:18px; height:2px; background:white; border-radius:2px; }
+.logo-text { font-family: 'DM Serif Display', serif; font-size: 19px; color: var(--ink); }
+.nav-back { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.nav-back:hover { color: var(--crimson); }
+
+/* LAYOUT */
+.page { max-width: 1320px; margin: 0 auto; padding: 32px 24px 60px; }
+
+/* ══════════════════════════════════════════════════════
+   SPLIT SCREEN LAYOUT — Timeline Left, Map Right
+═══════════════════════════════════════════════════════ */
+.tracking-split {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.tracking-left { display: flex; flex-direction: column; gap: 20px; }
+.tracking-right { position: sticky; top: 100px; }
+
+/* Mobile: stack vertically */
+@media (max-width: 960px) {
+  .tracking-split {
+    grid-template-columns: 1fr;
+  }
+  .tracking-right { position: static; }
+}
+
+/* ── STATUS TIMELINE (Uber style) ── */
+.status-card {
+  background: white; border-radius: 22px; padding: 24px 24px;
+  box-shadow: 0 4px 28px rgba(192,21,42,0.09);
+  border: 1px solid rgba(192,21,42,0.07);
+}
+
+.sc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
+.sc-blood { font-family: 'DM Serif Display', serif; font-size: 24px; color: var(--ink); }
+.sc-urgency { font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 999px; }
+.urg-normal   { background: #F3F4F6; color: #374151; }
+.urg-urgent   { background: var(--orange-bg); color: var(--orange); }
+.urg-critical { background: var(--blush); color: var(--crimson); }
+
+/* Timeline */
+.timeline { display: flex; flex-direction: column; gap: 0; position: relative; }
+
+.tl-step {
+  display: flex; align-items: flex-start; gap: 14px;
+  position: relative; padding-bottom: 22px;
+}
+.tl-step:last-child { padding-bottom: 0; }
+
+.tl-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+
+.tl-dot {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; flex-shrink: 0;
+  transition: all 0.4s;
+}
+.tl-dot.done    { background: var(--green); color: white; }
+.tl-dot.active  { background: var(--crimson); color: white; animation: ring 1.8s ease-in-out infinite; }
+.tl-dot.waiting { background: #F3F4F6; color: #9CA3AF; }
+
+.tl-line {
+  width: 2px; flex: 1; min-height: 20px; margin-top: 4px;
+  background: #E5E7EB; border-radius: 2px;
+}
+.tl-line.done { background: var(--green); }
+
+.tl-content { padding-top: 4px; flex: 1; min-width: 0; }
+.tl-title { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.tl-title.waiting { color: #9CA3AF; }
+.tl-sub   { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.tl-time  { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+@keyframes ring {
+  0%,100% { box-shadow: 0 0 0 0 rgba(192,21,42,0.3); }
+  50%      { box-shadow: 0 0 0 10px rgba(192,21,42,0); }
+}
+
+/* ── DONOR CARD (shown after accept) ── */
+.donor-card {
+  background: white; border-radius: 22px; padding: 28px 32px;
+  box-shadow: 0 4px 28px rgba(192,21,42,0.09);
+  border: 1px solid rgba(192,21,42,0.07); margin-bottom: 20px;
+  display: none;
+}
+.donor-card.show { display: block; }
+
+.dc-head { display: flex; align-items: center; gap: 16px; margin-bottom: 22px; }
+.dc-avatar {
+  width: 60px; height: 60px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark));
+  color: white; font-family: 'DM Serif Display', serif; font-size: 22px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 20px rgba(192,21,42,0.28);
+}
+.dc-name  { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--ink); }
+.dc-blood { display: inline-block; font-size: 12px; font-weight: 700; color: var(--crimson); background: var(--blush); padding: 3px 10px; border-radius: 999px; margin-top: 4px; }
+
+.dc-info { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px; }
+.dc-info-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px; background: var(--blush);
+  border-radius: 10px; font-size: 13px;
+}
+.dc-info-icon { font-size: 16px; flex-shrink: 0; }
+.dc-info-val  { font-weight: 700; color: var(--ink); }
+.dc-info-lbl  { font-size: 11px; color: var(--muted); }
+
+.btn-call {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 14px; border: none; border-radius: 12px;
+  background: linear-gradient(135deg, var(--green), #15803D);
+  color: white; font-family: 'DM Sans'; font-size: 16px; font-weight: 700;
+  cursor: pointer; text-decoration: none;
+  box-shadow: 0 6px 20px rgba(22,163,74,0.3); transition: all 0.2s;
+}
+.btn-call:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(22,163,74,0.4); }
+
+/* ── REQUEST DETAILS ── */
+.details-card {
+  background: white; border-radius: 22px; padding: 22px 24px;
+  box-shadow: 0 2px 14px rgba(192,21,42,0.06);
+  border: 1px solid rgba(192,21,42,0.06);
+}
+.dc-section-title { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 12px; }
+.detail-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+.detail-row:last-child { margin-bottom: 0; }
+.detail-icon { width: 26px; height: 26px; background: var(--blush); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+.detail-val  { color: var(--ink); font-weight: 600; word-break: break-word; }
+
+/* ══════════════════════════════════════════════════════
+   UBER-LIKE WAITING STATE — Finding Nearby Donors
+═══════════════════════════════════════════════════════ */
+.waiting-map-card {
+  background: white; border-radius: 22px; overflow: hidden;
+  box-shadow: 0 8px 40px rgba(192,21,42,0.12);
+  border: 2px solid rgba(192,21,42,0.1);
+}
+.waiting-map-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 28px; border-bottom: 1px solid var(--blush-mid);
+  background: linear-gradient(135deg, var(--blush) 0%, white 100%);
+}
+.waiting-map-title {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.waiting-map-title h3 {
+  font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--ink); margin: 0;
+}
+.hyperlocal-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10px; font-weight: 700; color: white; letter-spacing: 0.5px;
+  background: linear-gradient(135deg, var(--crimson), var(--crimson-dark));
+  padding: 5px 12px; border-radius: 999px; text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(192,21,42,0.25);
+}
+.searching-badge {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 700; color: var(--crimson);
+  background: var(--blush); padding: 6px 14px; border-radius: 999px;
+}
+.searching-dot {
+  width: 8px; height: 8px; background: var(--crimson); border-radius: 50%;
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
+}
+#waitingMap {
+  width: 100%; height: 420px;
+}
+.waiting-map-info {
+  display: flex; align-items: center; justify-content: space-around;
+  padding: 20px 24px; background: linear-gradient(135deg, var(--blush) 0%, white 100%);
+  border-top: 1px solid var(--blush-mid);
+}
+.wmi-item { text-align: center; }
+.wmi-value {
+  font-family: 'DM Serif Display', serif; font-size: 32px;
+  color: var(--crimson); line-height: 1;
+}
+.wmi-label {
+  font-size: 11px; color: var(--muted); font-weight: 600; margin-top: 4px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.wmi-divider {
+  width: 1px; height: 40px; background: var(--blush-mid);
+}
+
+/* Donor list under map */
+.waiting-donors-list {
+  padding: 20px 28px; border-top: 1px solid var(--blush-mid);
+}
+.wdl-title {
+  font-size: 12px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;
+}
+.wdl-chips {
+  display: flex; flex-wrap: wrap; gap: 10px;
+}
+.wdl-chip {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; background: white; border: 1.5px solid var(--blush-mid);
+  border-radius: 12px; transition: all 0.2s;
+}
+.wdl-chip:hover {
+  border-color: var(--crimson); box-shadow: 0 4px 12px rgba(192,21,42,0.1);
+}
+.wdl-chip-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark));
+  color: white; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.wdl-chip-avatar::after {
+  content: ''; position: absolute; bottom: -2px; right: -2px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--green); border: 2px solid white;
+}
+.wdl-chip-info { text-align: left; }
+.wdl-chip-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.wdl-chip-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* ── PENDING PULSE (legacy - now replaced by map) ── */
+.pending-card {
+  background: white; border-radius: 22px; padding: 40px 32px;
+  text-align: center; box-shadow: 0 4px 28px rgba(192,21,42,0.09);
+  border: 1px solid rgba(192,21,42,0.07); margin-bottom: 20px;
+}
+.pulse-icon {
+  width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 20px;
+  background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark));
+  color: white; font-size: 36px;
+  display: flex; align-items: center; justify-content: center;
+  animation: ring 2s ease-in-out infinite;
+  box-shadow: 0 8px 28px rgba(192,21,42,0.3);
+}
+.pending-title { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--ink); margin-bottom: 10px; }
+.pending-sub   { font-size: 14px; color: var(--muted); line-height: 1.65; max-width: 380px; margin: 0 auto 20px; }
+.donors-chips  { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 8px; }
+.donor-chip    { display: flex; align-items: center; gap: 7px; padding: 7px 14px; background: var(--blush); border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--ink); }
+.donor-chip-av { width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark)); color: white; font-size: 8px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.refresh-hint  { font-size: 12px; color: var(--muted); margin-top: 10px; }
+
+/* CANCEL BTN */
+.btn-cancel {
+  width: 100%; padding: 13px; background: white; border: 1.5px solid var(--blush-mid);
+  border-radius: 10px; font-family: 'DM Sans'; font-size: 14px; font-weight: 700;
+  color: var(--muted); cursor: pointer; transition: all 0.2s; margin-top: 8px;
+}
+.btn-cancel:hover { border-color: var(--crimson); color: var(--crimson); }
+
+/* ── LIVE MAP (ACCEPTED STATE) ── */
+.map-card {
+  background: white; border-radius: 22px; overflow: hidden;
+  box-shadow: 0 6px 32px rgba(192,21,42,0.12);
+  border: 2px solid rgba(192,21,42,0.1);
+}
+.map-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 28px;
+  background: linear-gradient(135deg, var(--blush) 0%, white 100%);
+  border-bottom: 1px solid var(--blush-mid);
+}
+.map-title {
+  font-family: 'DM Serif Display', serif; font-size: 20px;
+  color: var(--ink); display: flex; align-items: center; gap: 8px;
+}
+.map-live-badge {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 700; color: var(--green);
+  background: var(--green-bg); padding: 5px 12px; border-radius: 999px;
+}
+.map-live-dot {
+  width: 7px; height: 7px; background: var(--green); border-radius: 50%;
+  animation: ring 1.5s ease-in-out infinite;
+}
+#trackingMap {
+  width: 100%; height: 420px;
+}
+.map-eta-bar {
+  display: flex; align-items: center; justify-content: space-around;
+  padding: 20px 24px; background: linear-gradient(135deg, var(--blush) 0%, white 100%);
+  border-top: 1px solid var(--blush-mid);
+}
+.map-eta-item { text-align: center; }
+.map-eta-val {
+  font-family: 'DM Serif Display', serif; font-size: 32px;
+  color: var(--crimson); line-height: 1;
+}
+.map-eta-label {
+  font-size: 11px; color: var(--muted); font-weight: 600; margin-top: 4px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.map-waiting {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 420px; color: var(--muted); font-size: 14px; gap: 8px;
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon"></div>
+    <span class="logo-text">Saarthi</span>
+  </a>
+  <a href="request-status.html" class="nav-back">← My Requests</a>
+</nav>
+
+<div class="page" id="pageContent">
+  <div style="text-align:center;padding:60px;color:var(--muted);">
+    <div style="font-size:32px;margin-bottom:12px;animation:ring 1s ease-in-out infinite;display:inline-block;">⚙️</div>
+    <div>Loading request…</div>
+  </div>
+</div>
+
+<script>
+const API       = 'https://saarthi-backend-ahto.onrender.com';
+const userId    = localStorage.getItem('userId');
+const userName  = localStorage.getItem('userName');
+const params    = new URLSearchParams(window.location.search);
+const requestId = params.get('id');
+
+if (!userId) window.location.href = 'login.html';
+if (!requestId) window.location.href = 'request-status.html';
+
+let pollInterval = null;
+let requestData  = null;
+let lastStatus = null;  // Track status to avoid unnecessary re-renders
+
+/* ── LOAD & RENDER ── */
+async function loadTracking() {
+  try {
+    const res  = await fetch(API + '/track-request/' + requestId + '?t=' + Date.now(), { cache: 'no-store' });
+    const data = await res.json();
+    if (!data.success) throw new Error('Not found');
+    requestData = data.request;
+    
+    // Only re-render if status changed (to preserve map)
+    if (lastStatus !== requestData.status) {
+      lastStatus = requestData.status;
+      render(requestData);
+    }
+  } catch(e) {
+    document.getElementById('pageContent').innerHTML = `
+      <div style="text-align:center;padding:60px;color:var(--muted);">
+        <div style="font-size:36px;margin-bottom:16px;">⚠️</div>
+        <div style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:8px;">Request not found</div>
+        <a href="request-status.html" style="color:var(--crimson);font-weight:700;text-decoration:none;">← Back to My Requests</a>
+      </div>`;
+  }
+}
+
+function render(req) {
+  const page       = document.getElementById('pageContent');
+  const isAccepted = req.status === 'accepted';
+  const isCancelled= req.status === 'cancelled';
+  const urgBadge   = { Normal:'urg-normal', Urgent:'urg-urgent', Critical:'urg-critical' }[req.urgency] || 'urg-normal';
+  const matchedIds = JSON.parse(req.matched_donors || '[]');
+  const timePosted = getTimeAgo(new Date(req.created_at));
+
+  /* ── TIMELINE steps ── */
+  const steps = [
+    {
+      icon: '📋',
+      state: 'done',
+      title: 'Request Posted',
+      sub: `Your ${req.blood_group} request was posted and ${matchedIds.length} donor${matchedIds.length!==1?'s':''} were notified.`,
+      time: timePosted
+    },
+    {
+      icon: '🤖',
+      state: 'done',
+      title: 'AI Matching Complete',
+      sub: `${matchedIds.length} best-matched donor${matchedIds.length!==1?'s':''} identified and notified by our ML model.`,
+      time: ''
+    },
+    {
+      icon: isAccepted ? '✓' : '⏳',
+      state: isAccepted ? 'done' : isCancelled ? 'waiting' : 'active',
+      title: isAccepted ? 'Donor Accepted' : isCancelled ? 'Request Cancelled' : 'Waiting for Donor Response',
+      sub: isAccepted
+        ? `${req.donor_name} has accepted and is on their way!`
+        : isCancelled
+        ? 'This request was cancelled.'
+        : 'Donors have been notified. Waiting for one to accept…',
+      time: ''
+    },
+    {
+      icon: isAccepted ? '🩸' : '🩸',
+      state: isAccepted ? 'active' : 'waiting',
+      title: 'Donation in Progress',
+      sub: isAccepted ? 'Contact the donor to coordinate meeting at the hospital.' : 'Will begin once a donor accepts.',
+      time: ''
+    }
+  ];
+
+  const timelineHTML = steps.map((s, i) => {
+    const isLast = i === steps.length - 1;
+    return `
+      <div class="tl-step">
+        <div class="tl-left">
+          <div class="tl-dot ${s.state}">${s.state === 'done' ? '✓' : s.icon}</div>
+          ${!isLast ? `<div class="tl-line ${s.state === 'done' ? 'done' : ''}"></div>` : ''}
+        </div>
+        <div class="tl-content">
+          <div class="tl-title ${s.state === 'waiting' ? 'waiting' : ''}">${s.title}</div>
+          <div class="tl-sub">${s.sub}</div>
+          ${s.time ? `<div class="tl-time">${s.time}</div>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+
+  /* ── PENDING state — UBER-LIKE WAITING MAP with nearby donors ── */
+  let pendingSection = '';
+  if (!isAccepted && !isCancelled) {
+    pendingSection = `
+      <!-- Uber-style Waiting Map -->
+      <div class="waiting-map-card">
+        <div class="waiting-map-header">
+          <div class="waiting-map-title">
+            <h3>🔍 Finding Nearby Donors</h3>
+            <span class="hyperlocal-badge">📍 Hyperlocal AI</span>
+          </div>
+          <div class="searching-badge">
+            <span class="searching-dot"></span>
+            Searching
+          </div>
+        </div>
+        
+        <div id="waitingMap"></div>
+        
+        <div class="waiting-map-info">
+          <div class="wmi-item">
+            <div class="wmi-value" id="wmiDonorCount">${matchedIds.length}</div>
+            <div class="wmi-label">Donors Notified</div>
+          </div>
+          <div class="wmi-divider"></div>
+          <div class="wmi-item">
+            <div class="wmi-value" id="wmiNearby">—</div>
+            <div class="wmi-label">Within 5km</div>
+          </div>
+          <div class="wmi-divider"></div>
+          <div class="wmi-item">
+            <div class="wmi-value" id="wmiAvgDistance">—</div>
+            <div class="wmi-label">Avg Distance</div>
+          </div>
+        </div>
+        
+        <div class="waiting-donors-list">
+          <div class="wdl-title">🩸 Matched Donors Considering Your Request</div>
+          <div class="wdl-chips" id="waitingDonorChips">
+            <!-- Will be populated by JS -->
+          </div>
+        </div>
+        
+        <div style="text-align:center;padding:14px;color:var(--muted);font-size:12px;border-top:1px solid var(--blush-mid);">
+          <span style="display:inline-block;animation:ring 1.5s ease-in-out infinite;">⏳</span>
+          Auto-refreshing… Waiting for a donor to accept
+        </div>
+      </div>`;
+    
+    // Load waiting map with donor locations (delay to ensure DOM is ready)
+    setTimeout(() => {
+      console.log('🗺️ Initializing waiting map...');
+      initWaitingMap(requestId);
+    }, 500);
+  }
+
+  /* ── ACCEPTED state — show donor details card (LEFT) and map (RIGHT) ── */
+  let donorSection = '';
+  let acceptedMapSection = '';
+  if (isAccepted && req.donor_name) {
+    const init = req.donor_name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+    donorSection = `
+      <div class="donor-card show">
+        <div class="dc-section-title">🩸 Donor is on the way</div>
+        <div class="dc-head">
+          <div class="dc-avatar">${init}</div>
+          <div>
+            <div class="dc-name">${req.donor_name}</div>
+            <div class="dc-blood">${req.donor_blood || req.blood_group}</div>
+          </div>
+        </div>
+        <div class="dc-info">
+          <div class="dc-info-item">
+            <span class="dc-info-icon">📱</span>
+            <div>
+              <div class="dc-info-lbl">Phone</div>
+              <div class="dc-info-val">${req.donor_phone || '—'}</div>
+            </div>
+          </div>
+          <div class="dc-info-item">
+            <span class="dc-info-icon">📍</span>
+            <div>
+              <div class="dc-info-lbl">City</div>
+              <div class="dc-info-val">${req.donor_city || '—'}</div>
+            </div>
+          </div>
+        </div>
+        <a href="tel:${req.donor_phone}" class="btn-call">
+          📞 Call Donor Now — ${req.donor_phone}
+        </a>
+        <div style="font-size:12px;color:var(--muted);text-align:center;margin-top:10px;">You should also have received an SMS and email notification</div>
+      </div>`;
+    
+    // Separate map section for RIGHT column
+    acceptedMapSection = `
+      <!-- LIVE LOCATION MAP -->
+      <div class="map-card" id="mapCard">
+        <div class="map-header">
+          <div class="map-title">📡 Live Donor Tracking</div>
+          <div class="map-live-badge" id="mapLiveBadge" style="display:none;">
+            <span class="map-live-dot"></span> Live
+          </div>
+        </div>
+        <div id="trackingMap">
+          <div class="map-waiting" id="mapWaiting">
+            <div style="font-size:28px;">📍</div>
+            <div>Waiting for donor to share location…</div>
+            <div style="font-size:12px;">The map will appear once the donor enables live sharing</div>
+          </div>
+        </div>
+        <div class="map-eta-bar" id="mapEtaBar" style="display:none;">
+          <div class="map-eta-item">
+            <div class="map-eta-val" id="mapDistance">—</div>
+            <div class="map-eta-label">Distance</div>
+          </div>
+          <div class="map-eta-item">
+            <div class="map-eta-val" id="mapEta">—</div>
+            <div class="map-eta-label">Est. Arrival</div>
+          </div>
+          <div class="map-eta-item">
+            <div class="map-eta-val" id="mapUpdated">—</div>
+            <div class="map-eta-label">Last Updated</div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  /* ── REQUEST DETAILS ── */
+  const detailsSection = `
+    <div class="details-card">
+      <div class="dc-section-title">Request Details</div>
+      <div class="detail-row"><div class="detail-icon">🩸</div><span>Blood: <span class="detail-val">${req.blood_group} — ${req.units} unit${req.units>1?'s':''}</span></span></div>
+      <div class="detail-row"><div class="detail-icon">🚨</div><span>Urgency: <span class="detail-val">${req.urgency}</span></span></div>
+      <div class="detail-row"><div class="detail-icon">🏥</div><span>Location: <span class="detail-val">${req.location}</span></span></div>
+      <div class="detail-row"><div class="detail-icon">📱</div><span>Your Contact: <span class="detail-val">${req.phone}</span></span></div>
+      ${req.notes ? `<div class="detail-row"><div class="detail-icon">📝</div><span>Notes: <span class="detail-val">${req.notes}</span></span></div>` : ''}
+      ${req.status === 'pending' ? `<button class="btn-cancel" onclick="cancelRequest()">Cancel This Request</button>` : ''}
+    </div>`;
+
+  // ══════════════════════════════════════════════════════
+  // SPLIT LAYOUT: Timeline Left, Map Right (when pending)
+  // ══════════════════════════════════════════════════════
+  if (!isAccepted && !isCancelled) {
+    // Pending state: split layout
+    page.innerHTML = `
+      <div class="tracking-split">
+        <!-- LEFT COLUMN: Status + Details -->
+        <div class="tracking-left">
+          <div class="status-card">
+            <div class="sc-header">
+              <div class="sc-blood">${req.blood_group} Request</div>
+              <span class="sc-urgency ${urgBadge}">${req.urgency}</span>
+            </div>
+            <div class="timeline">${timelineHTML}</div>
+          </div>
+          ${detailsSection}
+        </div>
+        
+        <!-- RIGHT COLUMN: Uber-like Map (HERO) -->
+        <div class="tracking-right">
+          ${pendingSection}
+        </div>
+      </div>`;
+  } else {
+    // Accepted/Cancelled state: SPLIT LAYOUT (same as pending)
+    page.innerHTML = `
+      <div class="tracking-split">
+        <!-- LEFT COLUMN: Status + Donor Details + Request Details -->
+        <div class="tracking-left">
+          <div class="status-card">
+            <div class="sc-header">
+              <div class="sc-blood">${req.blood_group} Request</div>
+              <span class="sc-urgency ${urgBadge}">${req.urgency}</span>
+            </div>
+            <div class="timeline">${timelineHTML}</div>
+          </div>
+          ${donorSection}
+          ${detailsSection}
+        </div>
+        
+        <!-- RIGHT COLUMN: Live Tracking Map (HERO) -->
+        <div class="tracking-right">
+          ${acceptedMapSection}
+        </div>
+      </div>`;
+  }
+}
+
+/* ── LOAD REAL DONOR NAMES FOR CHIPS ── */
+async function loadDonorChips(ids) {
+  const container = document.getElementById('donorChips');
+  if (!container) return;
+  const chips = await Promise.all(ids.slice(0,6).map(async id => {
+    try {
+      const r = await fetch(API + '/donor/' + id);
+      const d = await r.json();
+      if (d.success && d.donor) {
+        const init = d.donor.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+        return `<div class="donor-chip"><div class="donor-chip-av">${init}</div>${d.donor.name} · ${d.donor.city||''}</div>`;
+      }
+    } catch(e) {}
+    return `<div class="donor-chip"><div class="donor-chip-av">#</div>Donor #${id}</div>`;
+  }));
+  if (container) container.innerHTML = chips.join('');
+}
+
+/* ── CANCEL ── */
+async function cancelRequest() {
+  if (!confirm('Cancel this blood request?')) return;
+  const res  = await fetch(API + '/cancel-request', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ requestId, userId })
+  });
+  const data = await res.json();
+  if (data.success) loadTracking();
+}
+
+/* ── TIME AGO ── */
+function getTimeAgo(date) {
+  const diff = Math.floor((Date.now() - date) / 1000);
+  if (diff < 60)    return 'just now';
+  if (diff < 3600)  return Math.floor(diff/60) + ' min ago';
+  if (diff < 86400) return Math.floor(diff/3600) + ' hr ago';
+  return Math.floor(diff/86400) + ' day' + (Math.floor(diff/86400)>1?'s':'') + ' ago';
+}
+
+/* ══════════════════════════════════════════════════════════════
+   UBER-LIKE WAITING MAP — Shows nearby donor icons
+══════════════════════════════════════════════════════════════ */
+let waitingMapInstance = null;
+let waitingDonorMarkers = [];
+let hospitalWaitingMarker = null;
+
+// Calculate distance between two coordinates (Haversine)
+function calcDistance(lat1, lon1, lat2, lon2) {
+  if (!lat1 || !lon1 || !lat2 || !lon2) return Infinity;
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+// Create custom donor icon with pulsing effect
+function createDonorMapIcon(initials, color = '#C0152A') {
+  return L.divIcon({
+    className: '',
+    html: `
+      <div style="position:relative;">
+        <div style="
+          width: 44px; height: 44px; border-radius: 50%;
+          background: ${color}; border: 3px solid white;
+          box-shadow: 0 0 0 4px rgba(192,21,42,0.2), 0 4px 12px rgba(0,0,0,0.3);
+          display: flex; align-items: center; justify-content: center;
+          font-size: 14px; font-weight: 700; color: white;
+          font-family: 'DM Sans', sans-serif;
+          animation: pulse-marker 2s ease-in-out infinite;
+        ">${initials}</div>
+        <div style="
+          position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+          width: 0; height: 0;
+          border-left: 8px solid transparent;
+          border-right: 8px solid transparent;
+          border-top: 10px solid ${color};
+        "></div>
+      </div>
+    `,
+    iconSize: [44, 54],
+    iconAnchor: [22, 54],
+    popupAnchor: [0, -54]
+  });
+}
+
+// Create hospital/requester icon
+function createHospitalMapIcon() {
+  return L.divIcon({
+    className: '',
+    html: `
+      <div style="
+        width: 52px; height: 52px; border-radius: 50%;
+        background: linear-gradient(135deg, #16A34A, #15803D);
+        border: 4px solid white;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 24px;
+      ">🏥</div>
+    `,
+    iconSize: [52, 52],
+    iconAnchor: [26, 26],
+    popupAnchor: [0, -26]
+  });
+}
+
+// Add CSS animation for pulsing markers
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes pulse-marker {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+`;
+document.head.appendChild(style);
+
+async function initWaitingMap(reqId) {
+  const mapEl = document.getElementById('waitingMap');
+  console.log('🗺️ Map element:', mapEl, 'Existing map:', waitingMapInstance);
+  
+  if (!mapEl) {
+    console.log('❌ Map element not found');
+    return;
+  }
+  
+  if (waitingMapInstance) {
+    console.log('✅ Map already initialized');
+    return;
+  }
+
+  try {
+    // Fetch matched donor locations from backend
+    console.log('📡 Fetching donor locations for request:', reqId);
+    const res = await fetch(API + '/get-matched-donor-locations/' + reqId);
+    const data = await res.json();
+    console.log('📍 Donor locations response:', data);
+
+    if (!data.success) {
+      mapEl.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:380px;color:var(--muted);">Could not load donor locations</div>';
+      return;
+    }
+
+    // Initialize map
+    const reqLat = data.requestLocation.latitude || 23.0225;
+    const reqLng = data.requestLocation.longitude || 72.5714;
+    console.log('🗺️ Initializing map at:', reqLat, reqLng);
+    
+    waitingMapInstance = L.map('waitingMap').setView([reqLat, reqLng], 13);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap',
+      maxZoom: 18
+    }).addTo(waitingMapInstance);
+
+    // Add hospital marker (requester location)
+    hospitalWaitingMarker = L.marker([reqLat, reqLng], { icon: createHospitalMapIcon() })
+      .addTo(waitingMapInstance)
+      .bindPopup(`<b>🏥 ${data.requestLocation.name || 'Hospital'}</b><br>Your blood request location`);
+
+    // Add donor markers
+    let nearbyCount = 0;
+    let totalDistance = 0;
+    let validDistances = 0;
+    const bounds = L.latLngBounds([[reqLat, reqLng]]);
+
+    data.donors.forEach((donor, index) => {
+      if (donor.latitude && donor.longitude) {
+        const distance = calcDistance(reqLat, reqLng, donor.latitude, donor.longitude);
+        
+        if (distance <= 5) nearbyCount++;
+        if (distance !== Infinity) {
+          totalDistance += distance;
+          validDistances++;
+        }
+
+        const initials = donor.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        const color = distance <= 2 ? '#16A34A' : distance <= 5 ? '#F97316' : '#C0152A';
+        
+        const marker = L.marker([donor.latitude, donor.longitude], { 
+          icon: createDonorMapIcon(initials, color) 
+        })
+          .addTo(waitingMapInstance)
+          .bindPopup(`
+            <div style="font-family:'DM Sans',sans-serif;min-width:160px;">
+              <div style="font-weight:700;font-size:15px;margin-bottom:4px;">${donor.name}</div>
+              <div style="font-size:12px;color:#666;margin-bottom:8px;">${donor.city || 'Unknown location'}</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;">
+                <div>📍 ${distance === Infinity ? 'N/A' : distance.toFixed(1) + ' km'}</div>
+                <div>🩸 ${donor.totalDonations} donations</div>
+                <div>⭐ ${donor.responseRate}% rate</div>
+                <div>💪 ${donor.impactScore} pts</div>
+              </div>
+            </div>
+          `);
+        
+        waitingDonorMarkers.push(marker);
+        bounds.extend([donor.latitude, donor.longitude]);
+
+        // Animate markers appearing one by one
+        marker.setOpacity(0);
+        setTimeout(() => {
+          marker.setOpacity(1);
+        }, index * 200);
+      }
+    });
+
+    // Fit map to show all markers
+    if (waitingDonorMarkers.length > 0) {
+      waitingMapInstance.fitBounds(bounds, { padding: [50, 50] });
+    }
+
+    // Update stats
+    const countEl = document.getElementById('wmiNearby');
+    const avgEl = document.getElementById('wmiAvgDistance');
+    if (countEl) countEl.textContent = nearbyCount;
+    if (avgEl) avgEl.textContent = validDistances > 0 ? (totalDistance / validDistances).toFixed(1) + ' km' : '—';
+
+    // Populate donor chips list
+    const chipsContainer = document.getElementById('waitingDonorChips');
+    if (chipsContainer) {
+      chipsContainer.innerHTML = data.donors.slice(0, 5).map(d => {
+        const init = d.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        const dist = d.latitude && d.longitude ? calcDistance(reqLat, reqLng, d.latitude, d.longitude) : null;
+        return `
+          <div class="wdl-chip">
+            <div class="wdl-chip-avatar">${init}</div>
+            <div class="wdl-chip-info">
+              <div class="wdl-chip-name">${d.name}</div>
+              <div class="wdl-chip-meta">${d.city || ''} ${dist ? '• ' + dist.toFixed(1) + ' km away' : ''}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    console.log('✅ Waiting map initialized successfully');
+
+  } catch (e) {
+    console.error('❌ Error initializing waiting map:', e);
+    if (mapEl) {
+      mapEl.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:380px;color:var(--muted);flex-direction:column;gap:8px;"><div style="font-size:24px;">⚠️</div><div>Error loading map: ' + e.message + '</div></div>';
+    }
+  }
+}
+
+// Clean up waiting map when request is accepted
+function destroyWaitingMap() {
+  if (waitingMapInstance) {
+    waitingMapInstance.remove();
+    waitingMapInstance = null;
+    waitingDonorMarkers = [];
+    hospitalWaitingMarker = null;
+  }
+}
+
+/* ── INIT + POLL ── */
+loadTracking();
+
+// Poll every 5 seconds while pending
+pollInterval = setInterval(async () => {
+  if (requestData && requestData.status === 'pending') {
+    await loadTracking();
+  } else {
+    destroyWaitingMap(); // Clean up waiting map when status changes
+    clearInterval(pollInterval);
+  }
+}, 5000);
+
+/* ══════════════════════════════════════════
+   LIVE LOCATION TRACKING MAP
+══════════════════════════════════════════ */
+let trackingMap = null;
+let donorMarker = null;
+let hospitalMarker = null;
+let mapInitialized = false;
+let locationPollInterval = null;
+let routingControl = null;
+
+// Custom donor icon (red pulsing dot)
+const donorIcon = L.divIcon({
+  className: '',
+  html: `<div style="
+    width:20px; height:20px; border-radius:50%;
+    background:#C0152A; border:3px solid white;
+    box-shadow: 0 0 0 4px rgba(192,21,42,0.3), 0 2px 8px rgba(0,0,0,0.3);
+    animation: ring 1.8s ease-in-out infinite;
+  "></div>`,
+  iconSize: [20, 20],
+  iconAnchor: [10, 10]
+});
+
+// Hospital icon (green pin)
+const hospitalIcon = L.divIcon({
+  className: '',
+  html: `<div style="
+    width:28px; height:28px; border-radius:50%;
+    background:#16A34A; border:3px solid white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    display:flex; align-items:center; justify-content:center;
+    font-size:14px; color:white;
+  ">🏥</div>`,
+  iconSize: [28, 28],
+  iconAnchor: [14, 14]
+});
+
+function tryInitMap() {
+  const mapEl = document.getElementById('trackingMap');
+  if (!mapEl || mapInitialized) return;
+  if (!requestData || requestData.status !== 'accepted') return;
+
+  // Clear waiting message
+  const waiting = document.getElementById('mapWaiting');
+  if (waiting) waiting.remove();
+
+  mapInitialized = true;
+
+  // Default: Ahmedabad center
+  trackingMap = L.map('trackingMap').setView([23.0225, 72.5714], 13);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap',
+    maxZoom: 18
+  }).addTo(trackingMap);
+
+  // Center map on requester's own location
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition((pos) => {
+      // Local testing offset: push hospital location ~2-3 km away to simulate donor ETA route
+      const hospLat = pos.coords.latitude + 0.015;
+      const hospLng = pos.coords.longitude + 0.020;
+      
+      trackingMap.setView([hospLat, hospLng], 14);
+      hospitalMarker = L.marker([hospLat, hospLng], { icon: hospitalIcon })
+        .addTo(trackingMap)
+        .bindPopup('🏥 Hospital / Your location');
+    }, () => {}, { enableHighAccuracy: false, maximumAge: 60000 });
+  }
+
+  // Show ETA bar + live badge
+  const etaBar = document.getElementById('mapEtaBar');
+  if (etaBar) etaBar.style.display = 'flex';
+  const badge = document.getElementById('mapLiveBadge');
+  if (badge) badge.style.display = 'flex';
+
+  console.log('✅ Map initialized');
+}
+
+function updateDonorPosition(lat, lng) {
+  if (!trackingMap) return;
+
+  if (donorMarker) {
+    donorMarker.setLatLng([lat, lng]);
+  } else {
+    donorMarker = L.marker([lat, lng], { icon: donorIcon })
+      .addTo(trackingMap)
+      .bindPopup('🩸 Donor is here')
+      .openPopup();
+  }
+}
+
+// Draw realistic route using Leaflet Routing Machine (OSRM)
+function drawRoute(donorLat, donorLng, hospLat, hospLng) {
+  if (!trackingMap) return;
+
+  if (routingControl) {
+    routingControl.setWaypoints([
+      L.latLng(donorLat, donorLng),
+      L.latLng(hospLat, hospLng)
+    ]);
+  } else {
+    routingControl = L.Routing.control({
+      waypoints: [
+        L.latLng(donorLat, donorLng),
+        L.latLng(hospLat, hospLng)
+      ],
+      createMarker: function() { return null; }, // Hide default markers since we use custom ones
+      routeWhileDragging: false,
+      addWaypoints: false,
+      showAlternatives: false,
+      fitSelectedRoutes: true,
+      show: false, // Hide the text instructions box
+      lineOptions: {
+        styles: [{color: '#C0152A', opacity: 0.8, weight: 6}] // Draw path in red
+      }
+    }).addTo(trackingMap);
+
+    // Update Distance and ETA automatically from routing response
+    routingControl.on('routesfound', function(e) {
+      const routes = e.routes;
+      if (routes && routes.length > 0) {
+        const summary = routes[0].summary;
+        const distKm = (summary.totalDistance / 1000).toFixed(1);
+        const etaMins = Math.max(1, Math.round(summary.totalTime / 60)); // Time is in seconds
+
+        const distEl = document.getElementById('mapDistance');
+        const etaEl  = document.getElementById('mapEta');
+        
+        if (distEl) distEl.textContent = distKm < 1 ? Math.round(summary.totalDistance) + ' m' : distKm + ' km';
+        if (etaEl) etaEl.textContent = '~' + etaMins + ' min';
+      }
+    });
+  }
+}
+async function pollDonorLocation() {
+  if (!requestId) return;
+  if (!requestData || requestData.status !== 'accepted') return;
+  if (!mapInitialized) tryInitMap();
+
+  try {
+    const res = await fetch(API + '/get-donor-location/' + requestId + '?t=' + Date.now(), { cache: 'no-store' });
+    const data = await res.json();
+
+    if (data.success && data.sharing && data.locations.length > 0) {
+      const loc = data.locations[0]; // first donor
+
+      updateDonorPosition(loc.latitude, loc.longitude);
+
+      // Update ETA bar
+      const distEl = document.getElementById('mapDistance');
+      const etaEl  = document.getElementById('mapEta');
+      const updEl  = document.getElementById('mapUpdated');
+
+      // If we know hospital location (use requester's device geolocation as proxy)
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((pos) => {
+          // Local testing offset to simulate distance instead of 0
+          const hospLat = pos.coords.latitude + 0.015;
+          const hospLng = pos.coords.longitude + 0.020;
+          
+          if (!hospitalMarker && trackingMap) {
+            hospitalMarker = L.marker([hospLat, hospLng], { icon: hospitalIcon })
+              .addTo(trackingMap)
+              .bindPopup('🏥 Hospital / Your location');
+          }
+
+          // Use Leaflet Routing Machine to update distance and ETA automatically
+          drawRoute(loc.latitude, loc.longitude, hospLat, hospLng);
+          
+        }, () => {}, { enableHighAccuracy: false, maximumAge: 30000 });
+      }
+
+      // Last updated
+      if (updEl) {
+        const secAgo = Math.floor((Date.now() - loc.timestamp) / 1000);
+        updEl.textContent = secAgo < 5 ? 'Just now' : secAgo + 's ago';
+      }
+    } else {
+      // Donor not sharing — show waiting
+      const badge = document.getElementById('mapLiveBadge');
+      if (badge) badge.style.display = 'none';
+    }
+  } catch(e) {
+    console.log('Location poll error:', e);
+  }
+}
+
+// Start polling donor location every 5 seconds (only when accepted)
+locationPollInterval = setInterval(() => {
+  if (requestData && requestData.status === 'accepted') {
+    pollDonorLocation();
+  }
+}, 5000);
+
+// Init map + first poll after render completes
+setTimeout(() => {
+  if (requestData && requestData.status === 'accepted') {
+    tryInitMap();
+    pollDonorLocation();
+  }
+}, 2500);
+</script>
+</body>
+</html>

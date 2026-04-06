@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saarthi — Hyperlocal Blood Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --crimson: #C0152A;
+  --crimson-dark: #8B0000;
+  --crimson-light: #FF3547;
+  --blush: #FFF1F1;
+  --blush-mid: #FFE0E0;
+  --ink: #1A0A0A;
+  --ink-mid: #3D1A1A;
+  --muted: #8A6A6A;
+  --white: #FFFFFF;
+  --card-shadow: 0 2px 20px rgba(192,21,42,0.08), 0 1px 4px rgba(0,0,0,0.06);
+  --glow: 0 0 60px rgba(192,21,42,0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--white);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+/* ── NAVBAR ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 60px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(192,21,42,0.08);
+}
+
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+}
+
+.logo-icon {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  box-shadow: 0 4px 14px rgba(192,21,42,0.35);
+}
+
+.logo-icon::before {
+  content: '';
+  position: absolute; width: 3px; height: 22px;
+  background: white; border-radius: 2px;
+}
+.logo-icon::after {
+  content: '';
+  position: absolute; width: 22px; height: 3px;
+  background: white; border-radius: 2px;
+}
+
+.logo-text {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px; color: var(--ink);
+  letter-spacing: -0.3px;
+}
+
+.nav-links { display: flex; gap: 32px; align-items: center; }
+
+.nav-links a {
+  font-size: 14px; font-weight: 500;
+  color: var(--ink-mid); text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--crimson); }
+
+.nav-cta {
+  background: var(--crimson) !important;
+  color: white !important;
+  padding: 9px 22px;
+  border-radius: 8px;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  box-shadow: 0 4px 14px rgba(192,21,42,0.28);
+  transition: all 0.2s !important;
+}
+.nav-cta:hover { background: var(--crimson-dark) !important; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(192,21,42,0.36) !important; }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center;
+  padding: 120px 60px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 70% 50%, rgba(192,21,42,0.06) 0%, transparent 70%),
+              radial-gradient(ellipse 40% 40% at 20% 80%, rgba(192,21,42,0.04) 0%, transparent 60%);
+}
+
+.hero-grid-pattern {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(192,21,42,0.04) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(192,21,42,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse at 50% 50%, black 20%, transparent 70%);
+}
+
+.hero-content {
+  max-width: 580px; position: relative; z-index: 2;
+  animation: fadeSlideUp 0.9s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--blush); border: 1px solid var(--blush-mid);
+  padding: 6px 14px; border-radius: 999px; margin-bottom: 28px;
+}
+.hero-badge-dot {
+  width: 7px; height: 7px; background: var(--crimson);
+  border-radius: 50%; animation: pulse 1.8s ease-in-out infinite;
+}
+.hero-badge span { font-size: 12px; font-weight: 600; color: var(--crimson); letter-spacing: 0.4px; text-transform: uppercase; }
+
+.hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(44px, 6vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -1.5px;
+  color: var(--ink);
+  margin-bottom: 22px;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--crimson);
+  background: linear-gradient(90deg, var(--crimson), var(--crimson-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+  font-size: 18px; line-height: 1.65;
+  color: var(--muted); margin-bottom: 42px;
+  font-weight: 400;
+}
+
+.hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark));
+  color: white; text-decoration: none;
+  padding: 16px 32px; border-radius: 12px;
+  font-weight: 600; font-size: 15px;
+  box-shadow: 0 8px 24px rgba(192,21,42,0.32);
+  transition: all 0.25s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(192,21,42,0.4); }
+
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: white; color: var(--ink);
+  text-decoration: none;
+  padding: 16px 32px; border-radius: 12px;
+  font-weight: 600; font-size: 15px;
+  border: 1.5px solid rgba(192,21,42,0.2);
+  transition: all 0.25s;
+}
+.btn-secondary:hover { border-color: var(--crimson); color: var(--crimson); transform: translateY(-2px); }
+
+.hero-visual {
+  position: absolute; right: 60px; top: 50%; transform: translateY(-50%);
+  z-index: 2;
+  animation: fadeSlideUp 1s 0.15s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+.blood-drop-card {
+  width: 340px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: var(--card-shadow), 0 20px 60px rgba(192,21,42,0.12);
+  padding: 28px;
+  border: 1px solid rgba(192,21,42,0.08);
+}
+
+.bdc-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.bdc-title { font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: 0.5px; text-transform: uppercase; }
+.bdc-live { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #16A34A; }
+.live-dot { width: 7px; height: 7px; background: #16A34A; border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; }
+
+.blood-types {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  margin-bottom: 20px;
+}
+
+.blood-type {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 54px; border-radius: 10px;
+  font-family: 'DM Serif Display', serif; font-size: 16px; font-weight: 400;
+  transition: all 0.2s;
+  cursor: default;
+}
+.bt-a { background: #FFF1F1; color: var(--crimson); }
+.bt-b { background: #FFF7ED; color: #EA580C; }
+.bt-ab { background: #F0FDF4; color: #16A34A; }
+.bt-o { background: #EFF6FF; color: #2563EB; }
+.bt-label { font-size: 9px; font-family: 'DM Sans', sans-serif; font-weight: 600; margin-top: 2px; opacity: 0.65; letter-spacing: 0.3px; }
+
+.donor-list { display: flex; flex-direction: column; gap: 10px; }
+
+.donor-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px; border-radius: 10px;
+  background: var(--blush); border: 1px solid var(--blush-mid);
+}
+.donor-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: white;
+}
+.donor-info { flex: 1; }
+.donor-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+.donor-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.donor-badge {
+  font-size: 11px; font-weight: 700;
+  padding: 3px 8px; border-radius: 6px;
+  background: var(--crimson); color: white;
+}
+
+/* ── STATS STRIP ── */
+.stats-strip {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; padding: 40px 60px;
+  border-top: 1px solid rgba(192,21,42,0.08);
+  border-bottom: 1px solid rgba(192,21,42,0.08);
+  background: var(--blush);
+}
+
+.stat-item {
+  flex: 1; text-align: center; padding: 20px 40px;
+}
+.stat-item + .stat-item {
+  border-left: 1px solid rgba(192,21,42,0.12);
+}
+.stat-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 44px; color: var(--crimson);
+  line-height: 1; margin-bottom: 6px;
+}
+.stat-label { font-size: 13px; color: var(--muted); font-weight: 500; }
+
+/* ── FEATURES ── */
+.features {
+  padding: 100px 60px;
+  max-width: 1200px; margin: 0 auto;
+}
+
+.section-header { text-align: center; margin-bottom: 64px; }
+.section-tag {
+  display: inline-block;
+  font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--crimson); background: var(--blush);
+  padding: 6px 14px; border-radius: 999px; margin-bottom: 16px;
+}
+.section-header h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 46px; letter-spacing: -1px;
+  color: var(--ink); line-height: 1.1;
+}
+.section-header p {
+  font-size: 17px; color: var(--muted);
+  max-width: 500px; margin: 14px auto 0; line-height: 1.65;
+}
+
+.features-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+}
+
+.feature-card {
+  padding: 32px; border-radius: 20px;
+  background: white; border: 1px solid rgba(192,21,42,0.08);
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s;
+  position: relative; overflow: hidden;
+}
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(192,21,42,0.14);
+  border-color: rgba(192,21,42,0.2);
+}
+
+.feature-card.featured {
+  background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-dark) 100%);
+  border-color: transparent;
+  color: white;
+}
+
+.feature-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: var(--blush); display: flex; align-items: center; justify-content: center;
+  font-size: 24px; margin-bottom: 20px;
+}
+
+.feature-card.featured .feature-icon {
+  background: rgba(255,255,255,0.15);
+}
+
+.feature-card h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px; letter-spacing: -0.4px;
+  margin-bottom: 12px; color: var(--ink);
+}
+.feature-card.featured h3 { color: white; }
+
+.feature-card p {
+  font-size: 14px; line-height: 1.65;
+  color: var(--muted);
+}
+.feature-card.featured p { color: rgba(255,255,255,0.8); }
+
+/* ── HOW IT WORKS ── */
+.how-it-works {
+  padding: 100px 60px;
+  background: var(--blush);
+}
+
+.how-inner { max-width: 1100px; margin: 0 auto; }
+
+.steps {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
+  margin-top: 64px;
+}
+
+.step { text-align: center; position: relative; }
+.step::after {
+  content: '→';
+  position: absolute; right: -20px; top: 28px;
+  font-size: 20px; color: rgba(192,21,42,0.3);
+}
+.step:last-child::after { display: none; }
+
+.step-num {
+  width: 58px; height: 58px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark));
+  color: white; font-family: 'DM Serif Display', serif;
+  font-size: 22px; display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  box-shadow: 0 8px 20px rgba(192,21,42,0.3);
+}
+
+.step h4 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 18px; color: var(--ink); margin-bottom: 10px;
+}
+.step p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ── CTA ── */
+.cta-section {
+  padding: 100px 60px;
+  text-align: center;
+  background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-dark) 100%);
+  position: relative; overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 50%, rgba(255,255,255,0.06) 0%, transparent 50%);
+}
+
+.cta-section h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 52px; color: white;
+  letter-spacing: -1px; margin-bottom: 18px;
+  position: relative;
+}
+.cta-section p {
+  font-size: 18px; color: rgba(255,255,255,0.8);
+  margin-bottom: 42px; position: relative;
+}
+.btn-white {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: white; color: var(--crimson);
+  text-decoration: none;
+  padding: 16px 36px; border-radius: 12px;
+  font-weight: 700; font-size: 16px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  transition: all 0.25s; position: relative;
+}
+.btn-white:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.3); }
+
+/* ── FOOTER ── */
+footer {
+  padding: 40px 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid rgba(192,21,42,0.08);
+  background: white;
+}
+.footer-text { font-size: 13px; color: var(--muted); }
+.footer-links { display: flex; gap: 24px; }
+.footer-links a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--crimson); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+.anim { animation: fadeSlideUp 0.7s cubic-bezier(0.16,1,0.3,1) both; }
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon"></div>
+    <span class="logo-text">Saarthi</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="login.html">Login</a>
+    <a href="post-request.html" class="nav-cta">Request Blood</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-pattern"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      <span>Live Donor Network — Ahmedabad</span>
+    </div>
+    <h1>Every Second Counts.<br><em>Connect. Donate. Save.</em></h1>
+    <p>Saarthi connects blood recipients with verified hyperlocal donors in real-time using AI-powered matching — because the nearest donor is the fastest lifeline.</p>
+    <div class="hero-actions">
+      <a href="post-request.html" class="btn-primary">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+        Request Blood Now
+      </a>
+      <a href="login.html" class="btn-secondary">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        Become a Donor
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="blood-drop-card anim delay-2">
+      <div class="bdc-header">
+        <span class="bdc-title">Available Donors</span>
+        <span class="bdc-live"><span class="live-dot"></span> Live</span>
+      </div>
+      <div class="blood-types">
+        <div class="blood-type bt-a">A+<span class="bt-label">12 donors</span></div>
+        <div class="blood-type bt-b">B+<span class="bt-label">8 donors</span></div>
+        <div class="blood-type bt-ab">AB+<span class="bt-label">3 donors</span></div>
+        <div class="blood-type bt-o">O+<span class="bt-label">19 donors</span></div>
+        <div class="blood-type bt-a">A-<span class="bt-label">4 donors</span></div>
+        <div class="blood-type bt-b">B-<span class="bt-label">2 donors</span></div>
+        <div class="blood-type bt-ab">AB-<span class="bt-label">1 donor</span></div>
+        <div class="blood-type bt-o">O-<span class="bt-label">6 donors</span></div>
+      </div>
+      <div class="donor-list">
+        <div class="donor-item">
+          <div class="donor-avatar">RK</div>
+          <div class="donor-info">
+            <div class="donor-name">Rahul K.</div>
+            <div class="donor-meta">📍 Navrangpura · 1.2 km</div>
+          </div>
+          <div class="donor-badge">O+</div>
+        </div>
+        <div class="donor-item">
+          <div class="donor-avatar">PM</div>
+          <div class="donor-info">
+            <div class="donor-name">Priya M.</div>
+            <div class="donor-meta">📍 Satellite · 2.4 km</div>
+          </div>
+          <div class="donor-badge">A+</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="stat-item anim">
+    <div class="stat-num">2,847</div>
+    <div class="stat-label">Registered Donors</div>
+  </div>
+  <div class="stat-item anim delay-1">
+    <div class="stat-num">1,203</div>
+    <div class="stat-label">Lives Saved</div>
+  </div>
+  <div class="stat-item anim delay-2">
+    <div class="stat-num">28 min</div>
+    <div class="stat-label">Avg. Response Time</div>
+  </div>
+  <div class="stat-item anim delay-3">
+    <div class="stat-num">94%</div>
+    <div class="stat-label">Requests Fulfilled</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="section-header">
+    <div class="section-tag">Why Saarthi</div>
+    <h2>Built for emergencies.<br>Designed for speed.</h2>
+    <p>Every feature is engineered to get blood to patients faster, with less friction.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card anim">
+      <div class="feature-icon">⚡</div>
+      <h3>Emergency Alerts</h3>
+      <p>Instant push notifications reach the most eligible nearby donors within seconds of a request being posted.</p>
+    </div>
+    <div class="feature-card featured anim delay-1">
+      <div class="feature-icon">🤖</div>
+      <h3>AI Donor Ranking</h3>
+      <p>Our KNN-powered ML model ranks donors by proximity, availability, donation history, and response rate — finding the best match instantly.</p>
+    </div>
+    <div class="feature-card anim delay-2">
+      <div class="feature-icon">📍</div>
+      <h3>Hyperlocal Matching</h3>
+      <p>We focus on your city and neighbourhood, not the whole country — because distance matters when minutes count.</p>
+    </div>
+    <div class="feature-card anim">
+      <div class="feature-icon">✅</div>
+      <h3>Verified Donors</h3>
+      <p>OTP-verified accounts and donation history tracking ensure only eligible, trustworthy donors are connected with patients.</p>
+    </div>
+    <div class="feature-card anim delay-1">
+      <div class="feature-icon">📊</div>
+      <h3>Donor Dashboard</h3>
+      <p>Track your donation history, availability toggle, response rate, and impact score all in one beautiful interface.</p>
+    </div>
+    <div class="feature-card anim delay-2">
+      <div class="feature-icon">🔒</div>
+      <h3>Privacy First</h3>
+      <p>Only matched donors see your contact details. Your data is encrypted and never shared without consent.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works">
+  <div class="how-inner">
+    <div class="section-header">
+      <div class="section-tag">Process</div>
+      <h2>How Saarthi works</h2>
+      <p>From emergency to lifesaver in four simple steps.</p>
+    </div>
+    <div class="steps">
+      <div class="step anim">
+        <div class="step-num">1</div>
+        <h4>Post a Request</h4>
+        <p>Enter blood group, units needed, hospital location and urgency level.</p>
+      </div>
+      <div class="step anim delay-1">
+        <div class="step-num">2</div>
+        <h4>AI Matching</h4>
+        <p>Our ML model instantly ranks and identifies the best matching donors nearby.</p>
+      </div>
+      <div class="step anim delay-2">
+        <div class="step-num">3</div>
+        <h4>Donors Notified</h4>
+        <p>Matched donors receive the request and can accept or decline with one click.</p>
+      </div>
+      <div class="step anim delay-3">
+        <div class="step-num">4</div>
+        <h4>Life Saved</h4>
+        <p>Donor contacts the patient, confirms details, and heads to the hospital.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Ready to be a lifesaver?</h2>
+  <p>Join thousands of donors already saving lives across your city.</p>
+  <a href="login.html" class="btn-white">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    Register as a Donor
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-text">© 2026 Saarthi — Developed by Harsh & Shreya</div>
+  <div class="footer-links">
+    <a href="about.html">About</a>
+    <a href="login.html">Login</a>
+    <a href="post-request.html">Post Request</a>
+  </div>
+</footer>
+
+</body>
+</html>

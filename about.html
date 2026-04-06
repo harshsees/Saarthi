@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saarthi — About</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --crimson: #C0152A; --crimson-dark: #8B0000; --crimson-light: #FF3547;
+  --blush: #FFF1F1; --blush-mid: #FFE0E0;
+  --ink: #1A0A0A; --ink-mid: #3D1A1A; --muted: #8A6A6A; --white: #FFFFFF;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; background: white; color: var(--ink); }
+
+nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 60px; background: white; border-bottom: 1px solid var(--blush-mid); position: sticky; top: 0; z-index: 50; }
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo-icon { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark)); position: relative; }
+.logo-icon::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:2px; height:20px; background:white; border-radius:2px; }
+.logo-icon::after { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:20px; height:2px; background:white; border-radius:2px; }
+.logo-text { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--ink); }
+.nav-links { display: flex; gap: 28px; align-items: center; }
+.nav-links a { font-size: 14px; color: var(--muted); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover { color: var(--crimson); }
+.nav-cta { background: var(--crimson) !important; color: white !important; padding: 9px 20px; border-radius: 8px; font-weight: 700 !important; }
+
+.hero-about {
+  padding: 100px 60px 80px;
+  background: linear-gradient(135deg, var(--crimson), var(--crimson-dark));
+  text-align: center; position: relative; overflow: hidden;
+}
+.hero-about::before { content:''; position:absolute; inset:0; background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.07) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(255,255,255,0.05) 0%, transparent 50%); }
+
+.tag { display: inline-block; background: rgba(255,255,255,0.15); color: white; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 6px 16px; border-radius: 999px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.2); }
+.hero-about h1 { font-family: 'DM Serif Display', serif; font-size: 58px; color: white; letter-spacing: -1.5px; line-height: 1.05; margin-bottom: 20px; position: relative; }
+.hero-about p { font-size: 18px; color: rgba(255,255,255,0.82); line-height: 1.7; max-width: 560px; margin: 0 auto; position: relative; }
+
+.mission-section { padding: 100px 60px; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.mission-text h2 { font-family: 'DM Serif Display', serif; font-size: 44px; letter-spacing: -1px; color: var(--ink); margin-bottom: 20px; line-height: 1.1; }
+.mission-text p { font-size: 16px; color: var(--muted); line-height: 1.75; margin-bottom: 16px; }
+
+.mission-visual { background: var(--blush); border-radius: 24px; padding: 40px; }
+.mv-stat { text-align: center; padding: 20px; }
+.mv-num { font-family: 'DM Serif Display', serif; font-size: 52px; color: var(--crimson); line-height: 1; }
+.mv-label { font-size: 14px; color: var(--muted); margin-top: 6px; }
+.mv-divider { height: 1px; background: var(--blush-mid); margin: 8px 0; }
+
+.tech-section { padding: 80px 60px; background: var(--blush); }
+.tech-inner { max-width: 1100px; margin: 0 auto; }
+.section-header { text-align: center; margin-bottom: 56px; }
+.section-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--crimson); background: white; padding: 6px 14px; border-radius: 999px; margin-bottom: 16px; border: 1px solid var(--blush-mid); }
+.section-header h2 { font-family: 'DM Serif Display', serif; font-size: 40px; letter-spacing: -0.8px; color: var(--ink); }
+.section-header p { font-size: 16px; color: var(--muted); max-width: 480px; margin: 12px auto 0; line-height: 1.65; }
+
+.tech-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.tech-card { background: white; border-radius: 18px; padding: 28px; border: 1px solid rgba(192,21,42,0.07); box-shadow: 0 2px 16px rgba(192,21,42,0.05); }
+.tech-icon { font-size: 32px; margin-bottom: 16px; }
+.tech-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--ink); margin-bottom: 10px; }
+.tech-text { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+.team-section { padding: 100px 60px; max-width: 900px; margin: 0 auto; }
+.team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 56px; }
+.team-card { background: white; border-radius: 20px; padding: 36px 32px; text-align: center; border: 1px solid var(--blush-mid); box-shadow: 0 4px 20px rgba(192,21,42,0.06); transition: all 0.3s; }
+.team-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(192,21,42,0.12); }
+.team-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark)); color: white; font-family: 'DM Serif Display', serif; font-size: 28px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 8px 24px rgba(192,21,42,0.28); }
+.team-name { font-family: 'DM Serif Display', serif; font-size: 24px; color: var(--ink); margin-bottom: 6px; }
+.team-role { font-size: 13px; color: var(--crimson); font-weight: 700; margin-bottom: 12px; background: var(--blush); padding: 4px 12px; border-radius: 999px; display: inline-block; }
+.team-bio { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+footer { padding: 36px 60px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--blush-mid); }
+.footer-text { font-size: 13px; color: var(--muted); }
+.footer-links { display: flex; gap: 22px; }
+.footer-links a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--crimson); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon"></div>
+    <span class="logo-text">Saarthi</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="login.html">Login</a>
+    <a href="register.html" class="nav-cta">Join as Donor</a>
+  </div>
+</nav>
+
+<section class="hero-about">
+  <div class="tag">Our Story</div>
+  <h1>Blood connects us.<br>Technology unites us.</h1>
+  <p>Saarthi was born from a simple belief — that in a medical emergency, the nearest willing donor should find the nearest patient, instantly.</p>
+</section>
+
+<section style="padding:100px 60px;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;">
+  <div>
+    <h2 style="font-family:'DM Serif Display',serif;font-size:44px;letter-spacing:-1px;color:var(--ink);margin-bottom:20px;line-height:1.1;">Our Mission</h2>
+    <p style="font-size:16px;color:var(--muted);line-height:1.75;margin-bottom:16px;">India loses thousands of lives every year because the right blood doesn't reach the right person in time. Not because donors don't exist — but because the connection doesn't happen fast enough.</p>
+    <p style="font-size:16px;color:var(--muted);line-height:1.75;margin-bottom:16px;">Saarthi changes that. We use hyperlocal matching and AI-driven donor ranking to bridge this gap — ensuring that when someone needs blood, help is never more than a few minutes away.</p>
+    <p style="font-size:16px;color:var(--muted);line-height:1.75;">The name "Saarthi" means <em>companion</em> or <em>guide</em> in Hindi — because in your most difficult moment, we are there to guide help to your door.</p>
+  </div>
+  <div style="background:var(--blush);border-radius:24px;padding:40px;">
+    <div style="text-align:center;padding:20px 0;">
+      <div style="font-family:'DM Serif Display',serif;font-size:52px;color:var(--crimson);line-height:1;">2,847</div>
+      <div style="font-size:14px;color:var(--muted);margin-top:6px;">Registered Donors</div>
+    </div>
+    <div style="height:1px;background:var(--blush-mid);"></div>
+    <div style="text-align:center;padding:20px 0;">
+      <div style="font-family:'DM Serif Display',serif;font-size:52px;color:var(--crimson);line-height:1;">1,203</div>
+      <div style="font-size:14px;color:var(--muted);margin-top:6px;">Lives Saved</div>
+    </div>
+    <div style="height:1px;background:var(--blush-mid);"></div>
+    <div style="text-align:center;padding:20px 0;">
+      <div style="font-family:'DM Serif Display',serif;font-size:52px;color:var(--crimson);line-height:1;">28 min</div>
+      <div style="font-size:14px;color:var(--muted);margin-top:6px;">Avg. Response Time</div>
+    </div>
+  </div>
+</section>
+
+<section class="tech-section">
+  <div class="tech-inner">
+    <div class="section-header">
+      <div class="section-tag">Technology</div>
+      <h2>How it works under the hood</h2>
+      <p>Built with thoughtful engineering to make every second count in an emergency.</p>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <div class="tech-icon">🤖</div>
+        <div class="tech-title">KNN ML Model</div>
+        <div class="tech-text">Our K-Nearest Neighbours model ranks donors by proximity, availability, past donation history, and response rate — selecting the most likely-to-respond donors first.</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">⚡</div>
+        <div class="tech-title">Real-time Matching</div>
+        <div class="tech-text">Requests are processed in milliseconds. The moment you post, our backend identifies and notifies the top matched donors simultaneously via the dashboard.</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">📍</div>
+        <div class="tech-title">Hyperlocal Focus</div>
+        <div class="tech-text">We prioritise donors within the same city and neighbourhood. Closer donors arrive faster — a feature often overlooked in national-level platforms.</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">🔐</div>
+        <div class="tech-title">OTP Verification</div>
+        <div class="tech-text">All donor accounts are verified via email OTP using Brevo SMTP. Fake or inactive accounts are automatically filtered from the matching pool.</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">🌐</div>
+        <div class="tech-title">Google OAuth</div>
+        <div class="tech-text">One-click sign-in via Google makes registration frictionless. Your Google account identity provides an additional layer of trust and verification.</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">📊</div>
+        <div class="tech-title">Donor Scoring</div>
+        <div class="tech-text">Each donor accumulates a response rate score. Donors who consistently accept requests are ranked higher in future matches, improving overall platform reliability.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="team-section">
+  <div class="section-header">
+    <div class="section-tag">Team</div>
+    <h2 style="font-family:'DM Serif Display',serif;font-size:40px;letter-spacing:-0.8px;color:var(--ink);">Built by</h2>
+    <p style="font-size:16px;color:var(--muted);max-width:480px;margin:12px auto 0;line-height:1.65;">Two students who wanted to make a real difference.</p>
+  </div>
+  <div class="team-grid">
+    <div class="team-card">
+      <div class="team-avatar">H</div>
+      <div class="team-name">Harsh Shah</div>
+      <div class="team-role">Full Stack Developer</div>
+      <div class="team-bio">Architected the backend API with Node.js & MySQL, implemented the KNN donor ranking model, and integrated Google OAuth & email OTP systems.</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">S</div>
+      <div class="team-name">Shreya Khandelwal</div>
+      <div class="team-role">Frontend Developer</div>
+      <div class="team-bio">Designed and developed the entire frontend experience — from the landing page to the real-time donor dashboard — with a focus on usability in high-stress situations.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-text">© 2026 Saarthi — Developed by Harsh & Shreya</div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="login.html">Login</a>
+    <a href="post-request.html">Post Request</a>
+  </div>
+</footer>
+
+</body>
+</html>

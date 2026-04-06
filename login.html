@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saarthi — Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client"></script>
+<style>
+:root {
+  --crimson: #C0152A; --crimson-dark: #8B0000; --crimson-light: #FF3547;
+  --blush: #FFF1F1; --blush-mid: #FFE0E0;
+  --ink: #1A0A0A; --ink-mid: #3D1A1A; --muted: #8A6A6A;
+  --white: #FFFFFF;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; }
+
+.split-left {
+  width: 42%; min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 60px;
+  background: linear-gradient(135deg, #C0152A, #8B0000);
+  position: relative; overflow: hidden;
+}
+.split-left::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(circle at 30% 70%, rgba(255,255,255,0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 70% 30%, rgba(255,255,255,0.05) 0%, transparent 40%);
+}
+.split-left-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+.left-content { position: relative; z-index: 1; }
+.logo-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 60px; text-decoration: none; color: inherit; }
+.logo-wrap:visited, .logo-wrap:hover, .logo-wrap:active { text-decoration: none; color: inherit; }
+.logo-icon-white {
+  width: 42px; height: 42px; border-radius: 12px;
+  background: rgba(255,255,255,0.15); position: relative;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+.logo-icon-white::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:3px; height:22px; background:white; border-radius:2px; }
+.logo-icon-white::after  { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:22px; height:3px; background:white; border-radius:2px; }
+.logo-name { font-family:'DM Serif Display',serif; font-size:24px; color:white; }
+.left-headline { font-family:'DM Serif Display',serif; font-size:42px; color:white; line-height:1.1; letter-spacing:-1px; margin-bottom:18px; }
+.left-sub { font-size:15px; color:rgba(255,255,255,0.75); line-height:1.65; margin-bottom:48px; }
+.trust-items { display:flex; flex-direction:column; gap:16px; }
+.trust-item { display:flex; align-items:center; gap:14px; padding:14px 16px; border-radius:12px; background:rgba(255,255,255,0.09); border:1px solid rgba(255,255,255,0.12); }
+.trust-icon { font-size:20px; }
+.trust-text { font-size:13px; color:rgba(255,255,255,0.85); font-weight:500; }
+.urgent-bottom { margin-top:48px; padding:18px 20px; background:rgba(0,0,0,0.25); border-radius:14px; border:1px solid rgba(255,255,255,0.12); }
+.urgent-bottom .utitle { font-weight:700; color:white; font-size:14px; margin-bottom:6px; }
+.urgent-bottom p { font-size:12px; color:rgba(255,255,255,0.7); margin-bottom:14px; }
+.ub-btn { display:inline-block; text-decoration:none; background:white; color:var(--crimson); padding:9px 20px; border-radius:8px; font-weight:700; font-size:13px; }
+
+.split-right { flex:1; display:flex; align-items:center; justify-content:center; padding:60px 80px; background:white; }
+.login-form { width:100%; max-width:380px; }
+.form-logo { display:flex; align-items:center; gap:10px; margin-bottom:40px; }
+.form-logo a, .form-logo a:visited, .form-logo a:hover, .form-logo a:active,
+.logo-wrap a, .logo-wrap a:visited, .logo-wrap a:hover, .logo-wrap a:active {
+  text-decoration: none; color: inherit;
+}
+/* catches the case where <a> IS the logo wrapper */
+a.form-logo, a.form-logo:visited, a.form-logo:hover, a.form-logo:active,
+a.logo-wrap, a.logo-wrap:visited, a.logo-wrap:hover, a.logo-wrap:active {
+  text-decoration: none; color: inherit;
+}
+.form-logo-icon { width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,var(--crimson-light),var(--crimson-dark)); position:relative; }
+.form-logo-icon::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:2px; height:18px; background:white; border-radius:2px; }
+.form-logo-icon::after  { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:18px; height:2px; background:white; border-radius:2px; }
+.form-logo-text { font-family:'DM Serif Display',serif; font-size:18px; color:var(--ink); }
+.form-title { font-family:'DM Serif Display',serif; font-size:34px; color:var(--ink); letter-spacing:-0.8px; margin-bottom:8px; }
+.form-sub   { font-size:14px; color:var(--muted); margin-bottom:28px; }
+.field { margin-bottom:18px; }
+.field label { display:block; font-size:12px; font-weight:600; color:var(--ink-mid); letter-spacing:0.3px; text-transform:uppercase; margin-bottom:8px; }
+.field input { width:100%; padding:13px 16px; border:1.5px solid #F0E0E0; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--ink); background:white; outline:none; transition:all 0.2s; }
+.field input:focus { border-color:var(--crimson); box-shadow:0 0 0 3px rgba(192,21,42,0.08); }
+.field input.error-state { border-color:var(--crimson); background:var(--blush); }
+.error-msg { display:none; font-size:12px; color:var(--crimson); margin-top:6px; padding:6px 10px; background:var(--blush); border-radius:6px; }
+.error-msg.show { display:block; }
+.forgot { text-align:right; margin-top:6px; margin-bottom:20px; }
+.forgot a { font-size:12px; color:var(--crimson); text-decoration:none; font-weight:600; }
+.btn-login { width:100%; padding:14px; background:linear-gradient(135deg,var(--crimson-light),var(--crimson-dark)); color:white; border:none; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:700; cursor:pointer; box-shadow:0 6px 20px rgba(192,21,42,0.28); transition:all 0.2s; margin-bottom:20px; }
+.btn-login:hover { transform:translateY(-1px); box-shadow:0 10px 28px rgba(192,21,42,0.36); }
+.btn-login:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
+.divider { display:flex; align-items:center; gap:12px; font-size:12px; color:var(--muted); margin-bottom:20px; }
+.divider::before, .divider::after { content:''; flex:1; height:1px; background:#F0E0E0; }
+.google-btn-wrap { display:flex; justify-content:center; margin-bottom:28px; }
+.register-link { font-size:13px; color:var(--muted); text-align:center; }
+.register-link a { color:var(--crimson); font-weight:700; text-decoration:none; }
+#loginMessage { font-size:13px; margin-top:14px; text-align:center; min-height:20px; }
+
+/* Login Type Tabs */
+.login-tabs { display:flex; gap:0; margin-bottom:28px; background:#F8F4F4; border-radius:12px; padding:4px; }
+.login-tab { flex:1; padding:12px 16px; text-align:center; font-size:13px; font-weight:600; color:var(--muted); background:transparent; border:none; border-radius:10px; cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+.login-tab:hover { color:var(--ink); }
+.login-tab.active { background:white; color:var(--crimson); box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+.login-tab .tab-icon { margin-right:6px; }
+
+/* Admin Form Styles */
+.admin-form { display:none; }
+.admin-form.active { display:block; }
+.user-form { display:block; }
+.user-form.hidden { display:none; }
+.admin-badge { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:var(--blush); border-radius:8px; font-size:11px; font-weight:600; color:var(--crimson); margin-bottom:20px; }
+</style>
+</head>
+<body>
+
+<div class="split-left">
+  <div class="split-left-grid"></div>
+  <div class="left-content">
+    <a href="index.html" class="logo-wrap" style="text-decoration:none; color:inherit;">
+      <div class="logo-icon-white"></div>
+      <span class="logo-name">Saarthi</span>
+    </a>
+    <h1 class="left-headline">Your blood can save a life<em> today.</em></h1>
+    <p class="left-sub">Join Saarthi's hyperlocal network — sign in to see real-time requests from patients near you.</p>
+    <div class="trust-items">
+      <div class="trust-item"><span class="trust-icon">🏥</span><span class="trust-text">Connected to 50+ hospitals in Ahmedabad</span></div>
+      <div class="trust-item"><span class="trust-icon">🤖</span><span class="trust-text">AI-powered matching finds the best donor instantly</span></div>
+      <div class="trust-item"><span class="trust-icon">⚡</span><span class="trust-text">28-minute average response time</span></div>
+    </div>
+    <div class="urgent-bottom">
+      <div class="utitle">🚨 Need blood urgently?</div>
+      <p>You don't need an account — post a public request right now.</p>
+      <a href="post-request.html" class="ub-btn">Post Emergency Request</a>
+    </div>
+  </div>
+</div>
+
+<div class="split-right">
+  <div class="login-form">
+
+    <a href="index.html" class="form-logo" style="text-decoration:none; color:inherit;">
+      <div class="form-logo-icon"></div>
+      <span class="form-logo-text">Saarthi</span>
+    </a>
+
+    <h1 class="form-title">Welcome back</h1>
+    <p class="form-sub">Sign in to continue to Saarthi.</p>
+
+    <!-- Login Type Tabs -->
+    <div class="login-tabs">
+      <button class="login-tab active" id="userTab" onclick="switchLoginTab('user')">
+        <span class="tab-icon">👤</span> User Login
+      </button>
+      <button class="login-tab" id="adminTab" onclick="switchLoginTab('admin')">
+        <span class="tab-icon">🔐</span> Admin Login
+      </button>
+    </div>
+
+    <!-- USER LOGIN FORM -->
+    <div class="user-form" id="userForm">
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" id="emailInput" placeholder="you@gmail.com">
+        <div class="error-msg" id="emailError"></div>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="passwordInput" placeholder="Enter your password">
+        <div class="error-msg" id="passwordError"></div>
+      </div>
+
+      <div class="forgot"><a href="forgot-password.html">Forgot password?</a></div>
+
+      <button class="btn-login" id="loginBtn">Sign in →</button>
+
+      <div class="divider">or continue with</div>
+
+      <!-- REAL GOOGLE SIGN-IN — do not change these divs -->
+      <div id="g_id_onload"
+        data-client_id="177488391434-ticsuprf45ut64tphnfg62ba33c65lvp.apps.googleusercontent.com"
+        data-callback="handleGoogleLogin"
+        data-auto_prompt="false">
+      </div>
+      <div class="google-btn-wrap">
+        <div class="g_id_signin"
+          data-type="standard"
+          data-shape="rectangular"
+          data-theme="outline"
+          data-text="signin_with"
+          data-size="large"
+          data-logo_alignment="left"
+          data-width="320">
+        </div>
+      </div>
+
+      <div class="register-link">New to Saarthi? <a href="register.html">Create an account</a></div>
+    </div>
+
+    <!-- ADMIN LOGIN FORM -->
+    <div class="admin-form" id="adminForm">
+      <div class="admin-badge">🛡️ Administrator Access</div>
+      
+      <div class="field">
+        <label>Admin Username</label>
+        <input type="text" id="adminUsername" placeholder="Enter admin username" autocomplete="off">
+        <div class="error-msg" id="adminUsernameError"></div>
+      </div>
+
+      <div class="field">
+        <label>Admin Password</label>
+        <input type="password" id="adminPassword" placeholder="Enter admin password">
+        <div class="error-msg" id="adminPasswordError"></div>
+      </div>
+
+      <button class="btn-login" id="adminLoginBtn" style="margin-top:20px;">
+        🔐 Sign in as Admin →
+      </button>
+
+      <p style="font-size:12px; color:var(--muted); text-align:center; margin-top:16px;">
+        Admin access is restricted to authorized personnel only.
+      </p>
+    </div>
+
+    <p id="loginMessage"></p>
+
+  </div>
+</div>
+
+<script>
+const API = 'https://saarthi-backend-ahto.onrender.com';
+
+const loginBtn      = document.getElementById('loginBtn');
+const emailInput    = document.getElementById('emailInput');
+const passwordInput = document.getElementById('passwordInput');
+
+/* HELPERS */
+function showError(inputEl, errorId, msg) {
+  inputEl.classList.add('error-state');
+  const e = document.getElementById(errorId);
+  e.textContent = '✱ ' + msg;
+  e.classList.add('show');
+}
+function clearError(inputEl, errorId) {
+  inputEl.classList.remove('error-state');
+  document.getElementById(errorId).classList.remove('show');
+}
+function showMessage(msg, color) {
+  const el = document.getElementById('loginMessage');
+  el.textContent = msg;
+  el.style.color = color;
+}
+
+/* VALIDATION */
+function validateEmail() {
+  const v = emailInput.value.trim();
+  clearError(emailInput, 'emailError');
+  if (!v) { showError(emailInput, 'emailError', 'Email is required'); return false; }
+  if (!/^[^\s@]+@gmail\.com$/.test(v)) { showError(emailInput, 'emailError', 'Only Gmail addresses are accepted'); return false; }
+  return true;
+}
+function validatePassword() {
+  const v = passwordInput.value;
+  clearError(passwordInput, 'passwordError');
+  if (!v) { showError(passwordInput, 'passwordError', 'Password is required'); return false; }
+  if (v.length < 8) { showError(passwordInput, 'passwordError', 'Password must be at least 8 characters'); return false; }
+  return true;
+}
+
+/* LIVE VALIDATION — clears error as user fixes the field */
+emailInput.addEventListener('blur',    validateEmail);
+passwordInput.addEventListener('blur', validatePassword);
+emailInput.addEventListener('input',    () => { if (emailInput.classList.contains('error-state'))    validateEmail(); });
+passwordInput.addEventListener('input', () => { if (passwordInput.classList.contains('error-state')) validatePassword(); });
+
+/* ENTER KEY — works on both fields now */
+emailInput.addEventListener('keydown',    e => { if (e.key === 'Enter') loginBtn.click(); });
+passwordInput.addEventListener('keydown', e => { if (e.key === 'Enter') loginBtn.click(); });
+
+/* EMAIL + PASSWORD LOGIN */
+loginBtn.addEventListener('click', async () => {
+  if (!validateEmail() || !validatePassword()) return;
+
+  loginBtn.textContent = 'Signing in…';
+  loginBtn.disabled    = true;
+
+  try {
+    const res  = await fetch(API + '/login', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ email: emailInput.value.trim(), password: passwordInput.value })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      localStorage.setItem('userId',    data.user.id);
+      localStorage.setItem('userName',  data.user.name);
+      localStorage.setItem('userEmail', data.user.email);
+      showMessage('✓ Login successful! Redirecting…', 'green');
+      setTimeout(() => {
+        window.location.href = data.profileCompleted ? 'dashboard.html' : 'complete-profile.html';
+      }, 600);
+    } else {
+      if (data.message === 'User not found')   showError(emailInput,    'emailError',    'No account found with this email');
+      else if (data.message === 'Wrong password') showError(passwordInput, 'passwordError', 'Incorrect password — please try again');
+      else showError(emailInput, 'emailError', data.message || 'Login failed. Please try again.');
+      loginBtn.textContent = 'Sign in →';
+      loginBtn.disabled    = false;
+    }
+  } catch (err) {
+    showMessage('Cannot connect to server. Is the backend running?', 'red');
+    loginBtn.textContent = 'Sign in →';
+    loginBtn.disabled    = false;
+  }
+});
+
+/* GOOGLE LOGIN — Google calls this automatically after user picks account */
+async function handleGoogleLogin(response) {
+  showMessage('Signing in with Google…', 'gray');
+  try {
+    const res  = await fetch(API + '/google-login', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ token: response.credential })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      localStorage.setItem('userId',    data.user.id);
+      localStorage.setItem('userName',  data.user.name);
+      localStorage.setItem('userEmail', data.user.email);
+      window.location.href = data.profileCompleted ? 'dashboard.html' : 'complete-profile.html';
+    } else {
+      showMessage('Google login failed. Please try again.', 'red');
+    }
+  } catch (err) {
+    showMessage('Cannot connect to server. Is the backend running?', 'red');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* TAB SWITCHING                                                               */
+/* ═══════════════════════════════════════════════════════════════════════════ */
+function switchLoginTab(tab) {
+  const userTab = document.getElementById('userTab');
+  const adminTab = document.getElementById('adminTab');
+  const userForm = document.getElementById('userForm');
+  const adminForm = document.getElementById('adminForm');
+  
+  // Clear any messages
+  showMessage('', '');
+  
+  if (tab === 'user') {
+    userTab.classList.add('active');
+    adminTab.classList.remove('active');
+    userForm.classList.remove('hidden');
+    userForm.style.display = 'block';
+    adminForm.classList.remove('active');
+    adminForm.style.display = 'none';
+  } else {
+    adminTab.classList.add('active');
+    userTab.classList.remove('active');
+    adminForm.classList.add('active');
+    adminForm.style.display = 'block';
+    userForm.classList.add('hidden');
+    userForm.style.display = 'none';
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* ADMIN LOGIN                                                                 */
+/* ═══════════════════════════════════════════════════════════════════════════ */
+const adminLoginBtn = document.getElementById('adminLoginBtn');
+const adminUsername = document.getElementById('adminUsername');
+const adminPassword = document.getElementById('adminPassword');
+
+// Admin validation
+function validateAdminUsername() {
+  const v = adminUsername.value.trim();
+  clearError(adminUsername, 'adminUsernameError');
+  if (!v) { showError(adminUsername, 'adminUsernameError', 'Username is required'); return false; }
+  return true;
+}
+
+function validateAdminPassword() {
+  const v = adminPassword.value;
+  clearError(adminPassword, 'adminPasswordError');
+  if (!v) { showError(adminPassword, 'adminPasswordError', 'Password is required'); return false; }
+  return true;
+}
+
+// Admin live validation
+adminUsername.addEventListener('blur', validateAdminUsername);
+adminPassword.addEventListener('blur', validateAdminPassword);
+adminUsername.addEventListener('input', () => { if (adminUsername.classList.contains('error-state')) validateAdminUsername(); });
+adminPassword.addEventListener('input', () => { if (adminPassword.classList.contains('error-state')) validateAdminPassword(); });
+
+// Admin enter key
+adminUsername.addEventListener('keydown', e => { if (e.key === 'Enter') adminLoginBtn.click(); });
+adminPassword.addEventListener('keydown', e => { if (e.key === 'Enter') adminLoginBtn.click(); });
+
+// Admin login handler
+adminLoginBtn.addEventListener('click', async () => {
+  if (!validateAdminUsername() || !validateAdminPassword()) return;
+  
+  adminLoginBtn.textContent = 'Signing in…';
+  adminLoginBtn.disabled = true;
+  
+  try {
+    const res = await fetch(API + '/admin-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        username: adminUsername.value.trim(), 
+        password: adminPassword.value 
+      })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      sessionStorage.setItem('adminToken', data.token);
+      showMessage('✓ Admin login successful! Redirecting…', 'green');
+      setTimeout(() => {
+        window.location.href = 'admin.html';
+      }, 600);
+    } else {
+      showError(adminPassword, 'adminPasswordError', 'Invalid credentials. Access denied.');
+      adminLoginBtn.innerHTML = '🔐 Sign in as Admin →';
+      adminLoginBtn.disabled = false;
+    }
+  } catch (err) {
+    showMessage('Cannot connect to server. Is the backend running?', 'red');
+    adminLoginBtn.innerHTML = '🔐 Sign in as Admin →';
+    adminLoginBtn.disabled = false;
+  }
+});
+</script>
+</body>
+</html> 

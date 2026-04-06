@@ -1,4 +1,4 @@
-const mysql = require("mysql");
+const mysql = require("mysql2");
 
 // Log DB config for debugging (remove in production)
 console.log("DB_HOST:", process.env.DB_HOST);

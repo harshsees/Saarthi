@@ -94,20 +94,6 @@ a.logo-wrap, a.logo-wrap:visited, a.logo-wrap:hover, a.logo-wrap:active {
 .register-link a { color:var(--crimson); font-weight:700; text-decoration:none; }
 #loginMessage { font-size:13px; margin-top:14px; text-align:center; min-height:20px; }
 
-/* Login Type Tabs */
-.login-tabs { display:flex; gap:0; margin-bottom:28px; background:#F8F4F4; border-radius:12px; padding:4px; }
-.login-tab { flex:1; padding:12px 16px; text-align:center; font-size:13px; font-weight:600; color:var(--muted); background:transparent; border:none; border-radius:10px; cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
-.login-tab:hover { color:var(--ink); }
-.login-tab.active { background:white; color:var(--crimson); box-shadow:0 2px 8px rgba(0,0,0,0.08); }
-.login-tab .tab-icon { margin-right:6px; }
-
-/* Admin Form Styles */
-.admin-form { display:none; }
-.admin-form.active { display:block; }
-.user-form { display:block; }
-.user-form.hidden { display:none; }
-.admin-badge { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:var(--blush); border-radius:8px; font-size:11px; font-weight:600; color:var(--crimson); margin-bottom:20px; }
-
 /* ── MOBILE RESPONSIVE ── */
 @media (max-width: 900px) {
   body { flex-direction: column; }
@@ -182,81 +168,43 @@ a.logo-wrap, a.logo-wrap:visited, a.logo-wrap:hover, a.logo-wrap:active {
     <h1 class="form-title">Welcome back</h1>
     <p class="form-sub">Sign in to continue to Saarthi.</p>
 
-    <!-- Login Type Tabs -->
-    <div class="login-tabs">
-      <button class="login-tab active" id="userTab" onclick="switchLoginTab('user')">
-        <span class="tab-icon">👤</span> User Login
-      </button>
-      <button class="login-tab" id="adminTab" onclick="switchLoginTab('admin')">
-        <span class="tab-icon">🔐</span> Admin Login
-      </button>
+    <div class="field">
+      <label>Email Address</label>
+      <input type="email" id="emailInput" placeholder="you@gmail.com">
+      <div class="error-msg" id="emailError"></div>
     </div>
 
-    <!-- USER LOGIN FORM -->
-    <div class="user-form" id="userForm">
-      <div class="field">
-        <label>Email Address</label>
-        <input type="email" id="emailInput" placeholder="you@gmail.com">
-        <div class="error-msg" id="emailError"></div>
-      </div>
-
-      <div class="field">
-        <label>Password</label>
-        <input type="password" id="passwordInput" placeholder="Enter your password">
-        <div class="error-msg" id="passwordError"></div>
-      </div>
-
-      <div class="forgot"><a href="forgot-password.html">Forgot password?</a></div>
-
-      <button class="btn-login" id="loginBtn">Sign in →</button>
-
-      <div class="divider">or continue with</div>
-
-      <!-- REAL GOOGLE SIGN-IN — do not change these divs -->
-      <div id="g_id_onload"
-        data-client_id="177488391434-ticsuprf45ut64tphnfg62ba33c65lvp.apps.googleusercontent.com"
-        data-callback="handleGoogleLogin"
-        data-auto_prompt="false">
-      </div>
-      <div class="google-btn-wrap">
-        <div class="g_id_signin"
-          data-type="standard"
-          data-shape="rectangular"
-          data-theme="outline"
-          data-text="signin_with"
-          data-size="large"
-          data-logo_alignment="left"
-          data-width="320">
-        </div>
-      </div>
-
-      <div class="register-link">New to Saarthi? <a href="register.html">Create an account</a></div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="passwordInput" placeholder="Enter your password">
+      <div class="error-msg" id="passwordError"></div>
     </div>
 
-    <!-- ADMIN LOGIN FORM -->
-    <div class="admin-form" id="adminForm">
-      <div class="admin-badge">🛡️ Administrator Access</div>
-      
-      <div class="field">
-        <label>Admin Username</label>
-        <input type="text" id="adminUsername" placeholder="Enter admin username" autocomplete="off">
-        <div class="error-msg" id="adminUsernameError"></div>
-      </div>
+    <div class="forgot"><a href="forgot-password.html">Forgot password?</a></div>
 
-      <div class="field">
-        <label>Admin Password</label>
-        <input type="password" id="adminPassword" placeholder="Enter admin password">
-        <div class="error-msg" id="adminPasswordError"></div>
-      </div>
+    <button class="btn-login" id="loginBtn">Sign in →</button>
 
-      <button class="btn-login" id="adminLoginBtn" style="margin-top:20px;">
-        🔐 Sign in as Admin →
-      </button>
+    <div class="divider">or continue with</div>
 
-      <p style="font-size:12px; color:var(--muted); text-align:center; margin-top:16px;">
-        Admin access is restricted to authorized personnel only.
-      </p>
+    <!-- REAL GOOGLE SIGN-IN — do not change these divs -->
+    <div id="g_id_onload"
+      data-client_id="177488391434-ticsuprf45ut64tphnfg62ba33c65lvp.apps.googleusercontent.com"
+      data-callback="handleGoogleLogin"
+      data-auto_prompt="false">
     </div>
+    <div class="google-btn-wrap">
+      <div class="g_id_signin"
+        data-type="standard"
+        data-shape="rectangular"
+        data-theme="outline"
+        data-text="signin_with"
+        data-size="large"
+        data-logo_alignment="left"
+        data-width="320">
+      </div>
+    </div>
+
+    <div class="register-link">New to Saarthi? <a href="register.html">Create an account</a></div>
 
     <p id="loginMessage"></p>
 
@@ -317,14 +265,47 @@ passwordInput.addEventListener('keydown', e => { if (e.key === 'Enter') loginBtn
 loginBtn.addEventListener('click', async () => {
   if (!validateEmail() || !validatePassword()) return;
 
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+
   loginBtn.textContent = 'Signing in…';
   loginBtn.disabled    = true;
 
+  // Check if admin login
+  if (email === 'admin@gmail.com') {
+    try {
+      const res = await fetch(API + '/admin-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: email, password: password })
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        sessionStorage.setItem('adminToken', data.token);
+        showMessage('✓ Admin login successful! Redirecting…', 'green');
+        setTimeout(() => {
+          window.location.href = 'admin.html';
+        }, 600);
+      } else {
+        showError(passwordInput, 'passwordError', 'Invalid admin credentials');
+        loginBtn.textContent = 'Sign in →';
+        loginBtn.disabled = false;
+      }
+    } catch (err) {
+      showMessage('Cannot connect to server. Is the backend running?', 'red');
+      loginBtn.textContent = 'Sign in →';
+      loginBtn.disabled = false;
+    }
+    return;
+  }
+
+  // Regular user login
   try {
     const res  = await fetch(API + '/login', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ email: emailInput.value.trim(), password: passwordInput.value })
+      body:    JSON.stringify({ email: email, password: password })
     });
     const data = await res.json();
 
@@ -373,103 +354,6 @@ async function handleGoogleLogin(response) {
     showMessage('Cannot connect to server. Is the backend running?', 'red');
   }
 }
-
-/* ═══════════════════════════════════════════════════════════════════════════ */
-/* TAB SWITCHING                                                               */
-/* ═══════════════════════════════════════════════════════════════════════════ */
-function switchLoginTab(tab) {
-  const userTab = document.getElementById('userTab');
-  const adminTab = document.getElementById('adminTab');
-  const userForm = document.getElementById('userForm');
-  const adminForm = document.getElementById('adminForm');
-  
-  // Clear any messages
-  showMessage('', '');
-  
-  if (tab === 'user') {
-    userTab.classList.add('active');
-    adminTab.classList.remove('active');
-    userForm.classList.remove('hidden');
-    userForm.style.display = 'block';
-    adminForm.classList.remove('active');
-    adminForm.style.display = 'none';
-  } else {
-    adminTab.classList.add('active');
-    userTab.classList.remove('active');
-    adminForm.classList.add('active');
-    adminForm.style.display = 'block';
-    userForm.classList.add('hidden');
-    userForm.style.display = 'none';
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════ */
-/* ADMIN LOGIN                                                                 */
-/* ═══════════════════════════════════════════════════════════════════════════ */
-const adminLoginBtn = document.getElementById('adminLoginBtn');
-const adminUsername = document.getElementById('adminUsername');
-const adminPassword = document.getElementById('adminPassword');
-
-// Admin validation
-function validateAdminUsername() {
-  const v = adminUsername.value.trim();
-  clearError(adminUsername, 'adminUsernameError');
-  if (!v) { showError(adminUsername, 'adminUsernameError', 'Username is required'); return false; }
-  return true;
-}
-
-function validateAdminPassword() {
-  const v = adminPassword.value;
-  clearError(adminPassword, 'adminPasswordError');
-  if (!v) { showError(adminPassword, 'adminPasswordError', 'Password is required'); return false; }
-  return true;
-}
-
-// Admin live validation
-adminUsername.addEventListener('blur', validateAdminUsername);
-adminPassword.addEventListener('blur', validateAdminPassword);
-adminUsername.addEventListener('input', () => { if (adminUsername.classList.contains('error-state')) validateAdminUsername(); });
-adminPassword.addEventListener('input', () => { if (adminPassword.classList.contains('error-state')) validateAdminPassword(); });
-
-// Admin enter key
-adminUsername.addEventListener('keydown', e => { if (e.key === 'Enter') adminLoginBtn.click(); });
-adminPassword.addEventListener('keydown', e => { if (e.key === 'Enter') adminLoginBtn.click(); });
-
-// Admin login handler
-adminLoginBtn.addEventListener('click', async () => {
-  if (!validateAdminUsername() || !validateAdminPassword()) return;
-  
-  adminLoginBtn.textContent = 'Signing in…';
-  adminLoginBtn.disabled = true;
-  
-  try {
-    const res = await fetch(API + '/admin-login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        username: adminUsername.value.trim(), 
-        password: adminPassword.value 
-      })
-    });
-    const data = await res.json();
-    
-    if (data.success) {
-      sessionStorage.setItem('adminToken', data.token);
-      showMessage('✓ Admin login successful! Redirecting…', 'green');
-      setTimeout(() => {
-        window.location.href = 'admin.html';
-      }, 600);
-    } else {
-      showError(adminPassword, 'adminPasswordError', 'Invalid credentials. Access denied.');
-      adminLoginBtn.innerHTML = '🔐 Sign in as Admin →';
-      adminLoginBtn.disabled = false;
-    }
-  } catch (err) {
-    showMessage('Cannot connect to server. Is the backend running?', 'red');
-    adminLoginBtn.innerHTML = '🔐 Sign in as Admin →';
-    adminLoginBtn.disabled = false;
-  }
-});
 </script>
 </body>
-</html> 
+</html>

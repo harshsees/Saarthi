@@ -21,7 +21,7 @@ app.use(cors());
 // ══════════════════════════════════════════════════════════════════════════════
 // ADMIN AUTH — Hardcoded credentials (no DB table needed)
 // ══════════════════════════════════════════════════════════════════════════════
-const ADMIN_USER = "admin";
+const ADMIN_USER = "admin@gmail.com";
 const ADMIN_PASS = "saarthi@admin2024";
 const ADMIN_TOKEN_SECRET = crypto.randomBytes(32).toString("hex");
 let adminTokens = new Set(); // In-memory valid tokens

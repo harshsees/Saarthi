@@ -107,6 +107,44 @@ a.logo-wrap, a.logo-wrap:visited, a.logo-wrap:hover, a.logo-wrap:active {
 .user-form { display:block; }
 .user-form.hidden { display:none; }
 .admin-badge { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:var(--blush); border-radius:8px; font-size:11px; font-weight:600; color:var(--crimson); margin-bottom:20px; }
+
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width: 900px) {
+  body { flex-direction: column; }
+  .split-left { width: 100%; min-height: auto; padding: 40px 30px; }
+  .split-right { padding: 40px 30px; }
+  .left-headline { font-size: 32px; }
+  .left-sub { margin-bottom: 30px; }
+  .trust-items { gap: 12px; }
+  .urgent-bottom { margin-top: 30px; }
+}
+
+@media (max-width: 600px) {
+  .split-left { padding: 30px 20px; }
+  .split-right { padding: 30px 20px; }
+  .logo-wrap { margin-bottom: 30px; }
+  .left-headline { font-size: 26px; }
+  .left-sub { font-size: 14px; }
+  .trust-item { padding: 12px; }
+  .trust-text { font-size: 12px; }
+  .login-form { max-width: 100%; }
+  .form-title { font-size: 28px; }
+  .form-sub { font-size: 13px; }
+  .login-tabs { flex-direction: column; gap: 8px; }
+  .login-tab { padding: 14px; }
+  .field input { padding: 12px 14px; }
+  .btn-login { padding: 13px; }
+  .google-btn-wrap { overflow-x: auto; }
+}
+
+@media (max-width: 400px) {
+  .split-left { padding: 24px 16px; }
+  .split-right { padding: 24px 16px; }
+  .left-headline { font-size: 22px; }
+  .form-title { font-size: 24px; }
+  .urgent-bottom { padding: 14px 16px; }
+  .ub-btn { padding: 8px 16px; font-size: 12px; }
+}
 </style>
 </head>
 <body>

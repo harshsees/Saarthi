@@ -143,6 +143,26 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
 @keyframes spin  { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width: 768px) {
+  nav { padding: 14px 20px; }
+  .page-wrap { padding: 24px 16px; }
+  .card { padding: 24px 20px; border-radius: 18px; }
+  .card-head h1 { font-size: 24px; }
+  .request-item { padding: 18px 16px; }
+  .ri-blood { font-size: 18px; }
+}
+
+@media (max-width: 480px) {
+  nav { padding: 12px 16px; }
+  .logo-text { font-size: 18px; }
+  .page-wrap { padding: 16px 12px; }
+  .card { padding: 20px 16px; }
+  .card-head h1 { font-size: 20px; }
+  .ri-actions { flex-direction: column; }
+  .ri-actions .btn-track, .ri-actions .btn-cancel { width: 100%; }
+}
 </style>
 </head>
 <body>

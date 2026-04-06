@@ -208,10 +208,26 @@ tr:hover td { background: var(--blush); }
   .charts-row { grid-template-columns: 1fr; }
 }
 @media (max-width: 900px) {
-  .sidebar { display: none; }
-  .main { margin-left: 0; }
+  .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-toggle { display: flex; }
+  .sidebar-overlay.open { display: block; }
+  .main { margin-left: 0; padding: 80px 20px 24px; }
   .kpi-row { grid-template-columns: repeat(2, 1fr); }
 }
+@media (max-width: 600px) {
+  .main { padding: 70px 16px 20px; }
+  .kpi-row { grid-template-columns: 1fr; }
+  .topbar { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .topbar h2 { font-size: 22px; }
+  .panel { padding: 18px; }
+  .panel-title { font-size: 16px; }
+}
+
+/* Mobile sidebar toggle */
+.sidebar-toggle { display: none; position: fixed; top: 16px; left: 16px; z-index: 100; width: 44px; height: 44px; background: white; border: 1px solid var(--blush-mid); border-radius: 12px; cursor: pointer; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.sidebar-toggle span { width: 20px; height: 2px; background: var(--ink); border-radius: 2px; }
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 40; }
 
 /* ══════════════════════════════════════════════════════════════════════════ */
 /* REQUEST DETAILS MODAL                                                       */
@@ -395,6 +411,12 @@ tr.clickable-row:hover td { background: var(--blush); }
 <!-- MAIN LAYOUT                                                                 -->
 <!-- ═══════════════════════════════════════════════════════════════════════════ -->
 <div class="layout" id="mainLayout" style="display:none;">
+  
+  <!-- Mobile Sidebar Toggle -->
+  <button class="sidebar-toggle" onclick="toggleAdminSidebar()">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="sidebar-overlay" onclick="toggleAdminSidebar()"></div>
   
   <!-- SIDEBAR -->
   <aside class="sidebar">
@@ -1355,6 +1377,12 @@ document.addEventListener('keydown', (e) => {
     closeRequestModal();
   }
 });
+
+// Mobile sidebar toggle
+function toggleAdminSidebar() {
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.querySelector('.sidebar-overlay').classList.toggle('open');
+}
 </script>
 </body>
 </html>

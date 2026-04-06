@@ -347,11 +347,47 @@ body { font-family: 'DM Sans', sans-serif; background: #F8F4F4; min-height: 100v
 .qm-btn.sent { background: var(--green-bg); color: var(--green); border-color: var(--green-light); pointer-events: none; }
 
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.85)} }
+
+/* ── MOBILE RESPONSIVE ── */
+.sidebar-toggle { display: none; position: fixed; top: 16px; left: 16px; z-index: 100; width: 44px; height: 44px; background: white; border: 1px solid var(--blush-mid); border-radius: 12px; cursor: pointer; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.sidebar-toggle span { width: 20px; height: 2px; background: var(--ink); border-radius: 2px; }
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 40; }
+
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-toggle { display: flex; }
+  .sidebar-overlay.open { display: block; }
+  .main { margin-left: 0; padding: 80px 20px 24px; }
+}
+
+@media (max-width: 768px) {
+  .main { padding: 70px 16px 20px; }
+  .topbar { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .topbar h2 { font-size: 22px; }
+  .status-grid { grid-template-columns: 1fr; }
+  .panel { padding: 20px; }
+  .journey-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
+
+@media (max-width: 480px) {
+  .main { padding: 65px 12px 16px; }
+  .panel { padding: 16px; }
+  .panel-title { font-size: 16px; }
+  .jt-item { padding: 14px 0; }
+  .jt-icon { width: 36px; height: 36px; font-size: 14px; }
+}
 </style>
 </head>
 <body>
 
 <div class="layout">
+  <!-- Mobile Sidebar Toggle -->
+  <button class="sidebar-toggle" onclick="toggleSidebar()">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+  
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <a href="index.html" class="sb-logo">
@@ -986,6 +1022,12 @@ window.addEventListener('beforeunload', stopLocationSharing);
 
 // ── LOAD DATA ──
 loadRequestDetails();
+
+// Mobile sidebar toggle
+function toggleSidebar() {
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.querySelector('.sidebar-overlay').classList.toggle('open');
+}
 </script>
 </body>
 </html>

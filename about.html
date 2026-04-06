@@ -73,6 +73,50 @@ footer { padding: 36px 60px; display: flex; align-items: center; justify-content
 .footer-links { display: flex; gap: 22px; }
 .footer-links a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
 .footer-links a:hover { color: var(--crimson); }
+
+/* Hamburger menu */
+.nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+.nav-toggle span { width: 24px; height: 2px; background: var(--ink); border-radius: 2px; }
+
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width: 900px) {
+  nav { padding: 14px 20px; }
+  .nav-links { 
+    position: fixed; top: 65px; left: 0; right: 0;
+    flex-direction: column; gap: 0;
+    background: white; border-bottom: 1px solid var(--blush-mid);
+    max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+  }
+  .nav-links.active { max-height: 250px; }
+  .nav-links a { padding: 16px 20px; border-bottom: 1px solid rgba(0,0,0,0.05); }
+  .nav-cta { margin: 16px 20px !important; text-align: center; display: block !important; }
+  .nav-toggle { display: flex; }
+  
+  .hero-about { padding: 60px 20px 50px; }
+  .hero-about h1 { font-size: 36px; }
+  .hero-about p { font-size: 16px; }
+  
+  .mission-section { grid-template-columns: 1fr; gap: 40px; padding: 60px 20px; }
+  .mission-text h2 { font-size: 32px; }
+  
+  .tech-section { padding: 60px 20px; }
+  .tech-grid { grid-template-columns: 1fr; }
+  .section-header h2 { font-size: 32px; }
+  
+  .team-section { padding: 60px 20px; }
+  .team-grid { grid-template-columns: 1fr; }
+  
+  footer { flex-direction: column; gap: 16px; padding: 30px 20px; text-align: center; }
+}
+
+@media (max-width: 600px) {
+  .hero-about h1 { font-size: 28px; }
+  .mission-text h2 { font-size: 26px; }
+  .mv-num { font-size: 40px; }
+  .section-header h2 { font-size: 26px; }
+  .team-name { font-size: 20px; }
+  .team-avatar { width: 60px; height: 60px; font-size: 22px; }
+}
 </style>
 </head>
 <body>
@@ -82,6 +126,9 @@ footer { padding: 36px 60px; display: flex; align-items: center; justify-content
     <div class="logo-icon"></div>
     <span class="logo-text">Saarthi</span>
   </a>
+  <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('active')">
+    <span></span><span></span><span></span>
+  </button>
   <div class="nav-links">
     <a href="index.html">Home</a>
     <a href="about.html">About</a>

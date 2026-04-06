@@ -23,555 +23,332 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'DM Sans', sans-serif; background: #F8F4F4; min-height: 100vh; }
 
-/* ── LAYOUT ── */
-.layout { display: flex; min-height: 100vh; }
+/* NAV - Same as tracking.html */
+nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 56px; background: white; border-bottom: 1px solid var(--blush-mid); position: sticky; top: 0; z-index: 50; }
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo-icon { width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark)); position: relative; }
+.logo-icon::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:2px; height:18px; background:white; border-radius:2px; }
+.logo-icon::after  { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:18px; height:2px; background:white; border-radius:2px; }
+.logo-text { font-family: 'DM Serif Display', serif; font-size: 19px; color: var(--ink); }
+.nav-back { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.nav-back:hover { color: var(--crimson); }
 
-/* ── SIDEBAR ── */
-.sidebar {
-  width: 260px; background: white;
-  border-right: 1px solid var(--blush-mid);
-  display: flex; flex-direction: column;
-  padding: 24px 16px; position: fixed; top: 0; left: 0; height: 100vh; z-index: 50;
+/* LAYOUT - Split screen like tracking.html */
+.page { max-width: 1320px; margin: 0 auto; padding: 32px 24px 60px; }
+
+.tracking-split {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 24px;
+  align-items: start;
 }
-.sb-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; padding: 8px 12px; margin-bottom: 32px; }
-.logo-icon { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark)); position: relative; flex-shrink: 0; }
-.logo-icon::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:2px; height:20px; background:white; border-radius:2px; }
-.logo-icon::after  { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:20px; height:2px; background:white; border-radius:2px; }
-.logo-name { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--ink); }
+.tracking-left { display: flex; flex-direction: column; gap: 20px; }
+.tracking-right { position: sticky; top: 100px; }
 
-.sb-section-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); padding: 0 12px; margin-bottom: 8px; }
-.sb-nav { display: flex; flex-direction: column; gap: 4px; margin-bottom: 28px; }
-.sb-link { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 10px; text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500; transition: all 0.15s; }
-.sb-link:hover  { background: var(--blush); color: var(--crimson); }
-.sb-link.active { background: var(--blush); color: var(--crimson); font-weight: 700; }
-.sb-link .icon  { width: 18px; text-align: center; font-size: 16px; }
-
-.sb-user { margin-top: auto; padding: 14px; background: var(--blush); border-radius: 12px; border: 1px solid var(--blush-mid); }
-.sb-user-row { display: flex; align-items: center; gap: 10px; }
-.sb-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark)); color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
-.sb-user-name  { font-size: 13px; font-weight: 700; color: var(--ink); }
-.sb-user-email { font-size: 11px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 150px; }
-.sb-logout { margin-top: 10px; display: block; font-size: 12px; color: var(--muted); text-decoration: none; padding: 6px 0; text-align: center; border-top: 1px solid var(--blush-mid); transition: color 0.2s; }
-.sb-logout:hover { color: var(--crimson); }
-
-.main { margin-left: 260px; flex: 1; padding: 32px; max-width: 900px; }
-
-
-
-/* ── REQUEST DETAIL CARD ── */
-.detail-card {
-  background: white; border-radius: 20px; padding: 32px;
-  border: 1px solid rgba(192,21,42,0.06);
-  box-shadow: 0 2px 16px rgba(192,21,42,0.05);
-  margin-bottom: 24px;
+/* Mobile: stack vertically */
+@media (max-width: 960px) {
+  .tracking-split { grid-template-columns: 1fr; }
+  .tracking-right { position: static; }
 }
-.card-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 24px; padding-bottom: 20px;
-  border-bottom: 1px solid var(--blush-mid);
+
+/* ── REQUEST CARD ── */
+.status-card {
+  background: white; border-radius: 22px; padding: 24px;
+  box-shadow: 0 4px 28px rgba(192,21,42,0.09);
+  border: 1px solid rgba(192,21,42,0.07);
 }
-.blood-badge {
-  font-family: 'DM Serif Display', serif; font-size: 32px;
-  color: var(--crimson); background: var(--blush);
-  padding: 12px 24px; border-radius: 16px;
-  border: 2px solid var(--blush-mid);
-  line-height: 1;
-}
-.card-header-info { text-align: right; }
-.card-header-info .units {
-  font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--ink);
-}
-.urgency-pill {
-  display: inline-block; font-size: 12px; font-weight: 700;
-  padding: 5px 14px; border-radius: 999px; margin-top: 6px;
-}
-.urg-critical { background: var(--blush); color: var(--crimson); }
-.urg-urgent   { background: var(--orange-bg); color: var(--orange); }
+
+.sc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
+.sc-blood { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--crimson); background: var(--blush); padding: 10px 20px; border-radius: 14px; }
+.sc-urgency { font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 999px; }
 .urg-normal   { background: #F3F4F6; color: #374151; }
+.urg-urgent   { background: var(--orange-bg); color: var(--orange); }
+.urg-critical { background: var(--blush); color: var(--crimson); }
 
-.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-.detail-item {
-  display: flex; align-items: flex-start; gap: 12px;
-  padding: 16px; background: var(--blush); border-radius: 12px;
-}
-.detail-icon {
-  width: 40px; height: 40px; border-radius: 10px;
-  background: white; display: flex; align-items: center; justify-content: center;
-  font-size: 18px; flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(192,21,42,0.08);
-}
+.detail-rows { display: flex; flex-direction: column; gap: 12px; }
+.detail-row { display: flex; align-items: flex-start; gap: 12px; }
+.detail-icon { width: 36px; height: 36px; background: var(--blush); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
 .detail-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; }
-.detail-value { font-size: 14px; font-weight: 700; color: var(--ink); margin-top: 2px; }
-.detail-sub   { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.detail-value { font-size: 14px; font-weight: 600; color: var(--ink); margin-top: 2px; }
 
-/* ── ACTION BUTTONS ── */
-.action-row {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-  margin-bottom: 24px;
+/* ── CONTACT BUTTONS ── */
+.contact-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+.contact-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px; border-radius: 12px; text-decoration: none;
+  font-size: 14px; font-weight: 700; transition: all 0.2s;
 }
-.action-btn {
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
-  padding: 18px 12px; border-radius: 14px; background: white;
-  border: 1.5px solid var(--blush-mid); cursor: pointer;
-  text-decoration: none; transition: all 0.2s;
-  font-family: 'DM Sans', sans-serif;
-}
-.action-btn:hover { border-color: var(--crimson); background: var(--blush); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(192,21,42,0.1); }
-.action-icon {
-  width: 44px; height: 44px; border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
-}
-.action-icon.call-req  { background: var(--blush); }
-.action-icon.call-hosp { background: var(--blue-bg); }
-.action-label { font-size: 13px; font-weight: 700; color: var(--ink); }
-.action-sub   { font-size: 11px; color: var(--muted); }
+.contact-btn.call { background: var(--green); color: white; }
+.contact-btn.call:hover { background: #15803D; transform: translateY(-2px); }
+.contact-btn.whatsapp { background: #25D366; color: white; }
+.contact-btn.whatsapp:hover { background: #1DA851; transform: translateY(-2px); }
 
 /* ── LIVE LOCATION CARD ── */
 .live-loc-card {
-  background: white; border-radius: 20px; padding: 24px 28px;
-  border: 1px solid rgba(192,21,42,0.06);
-  box-shadow: 0 2px 16px rgba(192,21,42,0.05);
-  margin-bottom: 24px;
+  background: white; border-radius: 22px; padding: 24px;
+  box-shadow: 0 4px 28px rgba(192,21,42,0.09);
+  border: 1px solid rgba(192,21,42,0.07);
 }
-.live-loc-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 12px;
-}
-.live-loc-title {
-  font-family: 'DM Serif Display', serif; font-size: 18px;
-  color: var(--ink); display: flex; align-items: center; gap: 8px;
-}
-.live-loc-toggle {
-  width: 52px; height: 28px; border-radius: 999px;
-  background: #E5E7EB; cursor: pointer; position: relative; transition: background 0.25s;
-}
+.live-loc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.live-loc-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+.live-loc-toggle { width: 52px; height: 28px; border-radius: 999px; background: #E5E7EB; cursor: pointer; position: relative; transition: background 0.25s; }
 .live-loc-toggle.on { background: var(--green); }
-.live-loc-knob {
-  width: 22px; height: 22px; border-radius: 50%; background: white;
-  position: absolute; top: 3px; left: 3px; transition: left 0.25s;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
+.live-loc-knob { width: 22px; height: 22px; border-radius: 50%; background: white; position: absolute; top: 3px; left: 3px; transition: left 0.25s; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
 .live-loc-toggle.on .live-loc-knob { left: 27px; }
 .live-loc-info { font-size: 13px; color: var(--muted); line-height: 1.6; }
-.live-loc-info strong { color: var(--ink); }
-.live-loc-status {
-  display: flex; align-items: center; gap: 8px;
-  margin-top: 14px; padding: 12px 16px;
-  border-radius: 10px; font-size: 13px; font-weight: 600;
-}
-.live-loc-status.active {
-  background: var(--green-bg); color: var(--green); border: 1px solid var(--green-light);
-}
-.live-loc-status.inactive {
-  background: #F9FAFB; color: var(--muted); border: 1px solid #E5E7EB;
-}
-.live-pulse {
-  width: 8px; height: 8px; border-radius: 50%; background: var(--green);
-  animation: pulse 1.5s ease-in-out infinite;
-}
+.live-loc-status { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; }
+.live-loc-status.active { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-light); }
+.live-loc-status.inactive { background: #F9FAFB; color: var(--muted); border: 1px solid #E5E7EB; }
+.live-pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 1.5s ease-in-out infinite; }
 
-/* ── ROUTE MAP CARD ── */
-.route-map-card {
-  background: white; border-radius: 22px; overflow: hidden;
-  box-shadow: 0 8px 40px rgba(192,21,42,0.15);
-  border: 2px solid rgba(192,21,42,0.12);
-  margin-bottom: 28px;
-}
-.route-map-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 22px 28px;
-  background: linear-gradient(135deg, var(--blush) 0%, white 100%);
-  border-bottom: 2px solid var(--blush-mid);
-}
-.route-map-title {
-  font-family: 'DM Serif Display', serif; font-size: 22px;
-  color: var(--ink); display: flex; align-items: center; gap: 10px;
-}
-#donorRouteMap {
-  width: 100%; height: 450px;
-}
-.route-eta-bar {
-  display: flex; align-items: center; justify-content: space-around;
-  padding: 24px 28px; background: linear-gradient(135deg, var(--blush) 0%, white 100%);
-  border-top: 2px solid var(--blush-mid);
-}
-.route-eta-item { text-align: center; }
-.route-eta-val {
-  font-family: 'DM Serif Display', serif; font-size: 32px;
-  color: var(--crimson); line-height: 1;
-}
-.route-eta-label {
-  font-size: 11px; color: var(--muted); font-weight: 600; margin-top: 6px;
-  text-transform: uppercase; letter-spacing: 0.5px;
-}
-
-/* ── PRE-DONATION CHECKLIST ── */
+/* ── CHECKLIST ── */
 .checklist-card {
-  background: white; border-radius: 20px; padding: 28px;
-  border: 1px solid rgba(192,21,42,0.06);
-  box-shadow: 0 2px 16px rgba(192,21,42,0.05);
-  margin-bottom: 24px;
+  background: white; border-radius: 22px; padding: 24px;
+  box-shadow: 0 4px 28px rgba(192,21,42,0.09);
+  border: 1px solid rgba(192,21,42,0.07);
 }
-.checklist-title {
-  font-family: 'DM Serif Display', serif; font-size: 18px;
-  color: var(--ink); margin-bottom: 6px;
-}
-.checklist-sub { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
-
-.check-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 16px; border-radius: 10px; margin-bottom: 6px;
-  background: var(--blush); transition: all 0.2s; cursor: pointer;
-  user-select: none;
-}
+.checklist-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--ink); margin-bottom: 6px; }
+.checklist-sub { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+.check-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 10px; margin-bottom: 6px; background: var(--blush); transition: all 0.2s; cursor: pointer; }
 .check-item:hover { background: #FFE8E8; }
 .check-item.checked { background: var(--green-bg); }
-.check-box {
-  width: 22px; height: 22px; border-radius: 6px;
-  border: 2px solid var(--blush-mid); background: white;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; transition: all 0.25s;
-}
+.check-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--blush-mid); background: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.25s; }
 .check-item.checked .check-box { background: var(--green); border-color: var(--green); }
 .check-box svg { width: 14px; height: 14px; stroke: white; stroke-width: 2.5; fill: none; opacity: 0; transform: scale(0.5); transition: all 0.2s; }
 .check-item.checked .check-box svg { opacity: 1; transform: scale(1); }
-.check-text { font-size: 14px; font-weight: 500; color: var(--ink-mid); }
+.check-text { font-size: 13px; font-weight: 500; color: var(--ink-mid); }
 .check-item.checked .check-text { color: var(--ink); font-weight: 600; }
 
-
-
-/* ── BOTTOM BAR: CANCEL + SOS ── */
-.bottom-bar {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 32px;
-}
-.cancel-btn {
-  flex: 1; padding: 14px; border: 1.5px solid var(--blush-mid);
-  border-radius: 12px; background: white; font-family: 'DM Sans', sans-serif;
-  font-size: 14px; font-weight: 600; color: var(--muted); cursor: pointer;
-  transition: all 0.2s;
-}
+/* ── ACTION BUTTONS ── */
+.action-btns { display: flex; gap: 12px; }
+.cancel-btn { flex: 1; padding: 14px; border: 1.5px solid var(--blush-mid); border-radius: 12px; background: white; font-family: 'DM Sans'; font-size: 14px; font-weight: 600; color: var(--muted); cursor: pointer; transition: all 0.2s; }
 .cancel-btn:hover { border-color: var(--crimson); color: var(--crimson); }
-.sos-btn {
-  padding: 14px 28px; border: 2px solid #DC2626; border-radius: 12px;
-  background: #FEF2F2; font-family: 'DM Sans', sans-serif;
-  font-size: 14px; font-weight: 700; color: #DC2626; cursor: pointer;
-  transition: all 0.2s;
-}
+.sos-btn { padding: 14px 24px; border: 2px solid #DC2626; border-radius: 12px; background: #FEF2F2; font-family: 'DM Sans'; font-size: 14px; font-weight: 700; color: #DC2626; cursor: pointer; transition: all 0.2s; }
 .sos-btn:hover { background: #DC2626; color: white; }
 
-/* ── CANCEL MODAL ── */
-.modal-overlay {
-  display: none; position: fixed; inset: 0; z-index: 999;
-  background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-  align-items: center; justify-content: center;
+/* ── MAP CARD (Right side) ── */
+.map-card {
+  background: white; border-radius: 22px; overflow: hidden;
+  box-shadow: 0 8px 40px rgba(192,21,42,0.12);
+  border: 2px solid rgba(192,21,42,0.1);
 }
-.modal-overlay.show { display: flex; }
-.modal {
-  background: white; border-radius: 24px; padding: 36px;
-  max-width: 440px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-  animation: modalIn 0.3s ease;
+.map-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px; background: linear-gradient(135deg, var(--blush) 0%, white 100%);
+  border-bottom: 1px solid var(--blush-mid);
 }
-@keyframes modalIn { from { transform: scale(0.9) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+.map-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--ink); display: flex; align-items: center; gap: 10px; }
+.live-badge { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--green); background: var(--green-bg); padding: 5px 12px; border-radius: 999px; }
+.live-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; }
 
-.modal h3 { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--ink); margin-bottom: 6px; }
-.modal p  { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
-.reason-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
-.reason-item {
-  padding: 14px 18px; border-radius: 10px; border: 1.5px solid var(--blush-mid);
-  font-size: 14px; font-weight: 500; color: var(--ink-mid); cursor: pointer;
-  transition: all 0.2s;
+#donorRouteMap { width: 100%; height: 450px; }
+
+.map-eta-bar {
+  display: flex; align-items: center; justify-content: space-around;
+  padding: 20px 24px; background: linear-gradient(135deg, var(--blush) 0%, white 100%);
+  border-top: 1px solid var(--blush-mid);
 }
+.eta-item { text-align: center; }
+.eta-val { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--crimson); line-height: 1; }
+.eta-label { font-size: 11px; color: var(--muted); font-weight: 600; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ── QUICK MESSAGES ── */
+.quick-msgs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+.qm-btn { padding: 8px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--crimson); background: var(--blush); border: 1px solid var(--blush-mid); cursor: pointer; transition: all 0.2s; font-family: 'DM Sans'; }
+.qm-btn:hover { background: var(--crimson); color: white; border-color: var(--crimson); }
+.qm-btn.sent { background: var(--green-bg); color: var(--green); border-color: var(--green-light); pointer-events: none; }
+
+/* ── MODALS ── */
+.modal-overlay { display: none; position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); align-items: center; justify-content: center; }
+.modal-overlay.show { display: flex; }
+.modal { background: white; border-radius: 24px; padding: 36px; max-width: 440px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.2); animation: modalIn 0.3s ease; }
+@keyframes modalIn { from { transform: scale(0.9) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+.modal h3 { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--ink); margin-bottom: 6px; }
+.modal p { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+.reason-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+.reason-item { padding: 14px 18px; border-radius: 10px; border: 1.5px solid var(--blush-mid); font-size: 14px; font-weight: 500; color: var(--ink-mid); cursor: pointer; transition: all 0.2s; }
 .reason-item:hover { border-color: var(--crimson); color: var(--crimson); }
 .reason-item.selected { border-color: var(--crimson); background: var(--blush); color: var(--crimson); font-weight: 700; }
 .modal-actions { display: flex; gap: 12px; }
-.modal-actions button {
-  flex: 1; padding: 14px; border-radius: 10px; font-family: 'DM Sans', sans-serif;
-  font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; border: none;
-}
+.modal-actions button { flex: 1; padding: 14px; border-radius: 10px; font-family: 'DM Sans'; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; border: none; }
 .modal-cancel-btn { background: #F3F4F6; color: #374151; }
-.modal-cancel-btn:hover { background: #E5E7EB; }
 .modal-confirm-btn { background: var(--crimson); color: white; }
-.modal-confirm-btn:hover { background: var(--crimson-dark); }
 .modal-confirm-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ── COMPLETION OVERLAY ── */
-.completion-overlay {
-  display: none; position: fixed; inset: 0; z-index: 1000;
-  background: linear-gradient(135deg, #F0FDF4, #DCFCE7);
-  align-items: center; justify-content: center; flex-direction: column;
-}
+.completion-overlay { display: none; position: fixed; inset: 0; z-index: 1000; background: linear-gradient(135deg, #F0FDF4, #DCFCE7); align-items: center; justify-content: center; flex-direction: column; }
 .completion-overlay.show { display: flex; }
-.completion-card {
-  text-align: center; padding: 48px; max-width: 460px;
-  animation: celebrateIn 0.6s ease;
-}
+.completion-card { text-align: center; padding: 48px; max-width: 460px; animation: celebrateIn 0.6s ease; }
 @keyframes celebrateIn { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
 .celebrate-icon { font-size: 72px; margin-bottom: 20px; animation: bounce 1s ease infinite; }
 @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 .completion-card h2 { font-family: 'DM Serif Display', serif; font-size: 36px; color: var(--ink); margin-bottom: 8px; }
 .completion-card .impact { font-size: 16px; color: var(--green); font-weight: 700; margin-bottom: 28px; }
-.completion-stats {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px;
-}
-.comp-stat {
-  padding: 20px; background: white; border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(22,163,74,0.1);
-}
+.completion-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+.comp-stat { padding: 20px; background: white; border-radius: 16px; box-shadow: 0 4px 16px rgba(22,163,74,0.1); }
 .comp-stat-val { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--green); }
 .comp-stat-label { font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 4px; }
 .completion-actions { display: flex; gap: 12px; justify-content: center; }
-.comp-btn {
-  padding: 14px 28px; border-radius: 12px; font-family: 'DM Sans', sans-serif;
-  font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; border: none;
-}
-.comp-btn.primary { background: var(--green); color: white; box-shadow: 0 6px 18px rgba(22,163,74,0.3); }
-.comp-btn.primary:hover { transform: translateY(-2px); }
+.comp-btn { padding: 14px 28px; border-radius: 12px; font-family: 'DM Sans'; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; border: none; }
+.comp-btn.primary { background: var(--green); color: white; }
 .comp-btn.secondary { background: white; color: var(--ink); border: 1.5px solid #E5E7EB; }
-.comp-btn.secondary:hover { border-color: var(--green); color: var(--green); }
-
-
-
-/* ── QUICK MESSAGES ── */
-.quick-msgs {
-  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;
-}
-.qm-btn {
-  padding: 8px 16px; border-radius: 999px; font-size: 12px; font-weight: 600;
-  color: var(--crimson); background: var(--blush); border: 1px solid var(--blush-mid);
-  cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
-}
-.qm-btn:hover { background: var(--crimson); color: white; border-color: var(--crimson); }
-.qm-btn.sent { background: var(--green-bg); color: var(--green); border-color: var(--green-light); pointer-events: none; }
 
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.85)} }
 
 /* ── MOBILE RESPONSIVE ── */
-.sidebar-toggle { display: none; position: fixed; top: 16px; left: 16px; z-index: 100; width: 44px; height: 44px; background: white; border: 1px solid var(--blush-mid); border-radius: 12px; cursor: pointer; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-.sidebar-toggle span { width: 20px; height: 2px; background: var(--ink); border-radius: 2px; }
-.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 40; }
-
-@media (max-width: 900px) {
-  .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
-  .sidebar.open { transform: translateX(0); }
-  .sidebar-toggle { display: flex; }
-  .sidebar-overlay.open { display: block; }
-  .main { margin-left: 0; padding: 80px 20px 24px; }
-}
-
 @media (max-width: 768px) {
-  .main { padding: 70px 16px 20px; }
-  .topbar { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .topbar h2 { font-size: 22px; }
-  .status-grid { grid-template-columns: 1fr; }
-  .panel { padding: 20px; }
-  .journey-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  nav { padding: 14px 20px; }
+  .page { padding: 20px 16px; }
+  .status-card, .live-loc-card, .checklist-card { padding: 20px; }
+  .map-card #donorRouteMap { height: 350px; }
+  .eta-val { font-size: 24px; }
+  .contact-btns { grid-template-columns: 1fr; }
 }
-
 @media (max-width: 480px) {
-  .main { padding: 65px 12px 16px; }
-  .panel { padding: 16px; }
-  .panel-title { font-size: 16px; }
-  .jt-item { padding: 14px 0; }
-  .jt-icon { width: 36px; height: 36px; font-size: 14px; }
+  nav { padding: 12px 16px; }
+  .logo-text { font-size: 17px; }
+  .page { padding: 16px 12px; }
+  .sc-blood { font-size: 24px; padding: 8px 16px; }
+  .map-card #donorRouteMap { height: 280px; }
+  .action-btns { flex-direction: column; }
 }
 </style>
 </head>
 <body>
 
-<div class="layout">
-  <!-- Mobile Sidebar Toggle -->
-  <button class="sidebar-toggle" onclick="toggleSidebar()">
-    <span></span><span></span><span></span>
-  </button>
-  <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
-  
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <a href="index.html" class="sb-logo">
-      <div class="logo-icon"></div>
-      <span class="logo-name">Saarthi</span>
-    </a>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon"></div>
+    <span class="logo-text">Saarthi</span>
+  </a>
+  <a href="dashboard.html" class="nav-back">← Back to Dashboard</a>
+</nav>
 
-    <div class="sb-section-label">Main</div>
-    <nav class="sb-nav">
-      <a href="dashboard.html" class="sb-link">
-        <span class="icon">🏠</span> Dashboard
-      </a>
-      <a href="post-request.html" class="sb-link">
-        <span class="icon">🩸</span> Post Request
-      </a>
-      <a href="request-status.html" class="sb-link">
-        <span class="icon">📋</span> My Requests
-      </a>
-    </nav>
-
-    <div class="sb-section-label">Account</div>
-    <nav class="sb-nav">
-      <a href="complete-profile.html" class="sb-link">
-        <span class="icon">👤</span> Profile
-      </a>
-      <a href="about.html" class="sb-link">
-        <span class="icon">ℹ️</span> About
-      </a>
-    </nav>
-
-    <div class="sb-user">
-      <div class="sb-user-row">
-        <div class="sb-avatar" id="sidebarAvatar">?</div>
-        <div>
-          <div class="sb-user-name"  id="sidebarName">Loading...</div>
-          <div class="sb-user-email" id="sidebarEmail"></div>
-        </div>
-      </div>
-      <a href="#" class="sb-logout" id="logoutBtn">Sign out →</a>
-    </div>
-  </aside>
-
-  <!-- MAIN CONTENT -->
-  <main class="main">
-
-    <!-- ROUTE MAP TO REQUESTER (HERO SECTION) -->
-    <div class="route-map-card" id="routeMapCard">
-      <div class="route-map-header">
-        <div class="route-map-title">🗺️ Route to Requester</div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--green);background:var(--green-bg);padding:5px 12px;border-radius:999px;">
-          <span style="width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 1.5s ease-in-out infinite;"></span>
-          Live Route
-        </div>
-      </div>
-      <div id="donorRouteMap"></div>
-      <div class="route-eta-bar">
-        <div class="route-eta-item">
-          <div class="route-eta-val" id="routeDistance">—</div>
-          <div class="route-eta-label">Distance</div>
-        </div>
-        <div class="route-eta-item">
-          <div class="route-eta-val" id="routeDuration">—</div>
-          <div class="route-eta-label">Est. Time</div>
-        </div>
-        <div class="route-eta-item">
-          <div class="route-eta-val" id="routeSteps">—</div>
-          <div class="route-eta-label">Directions</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- REQUEST DETAIL CARD -->
-    <div class="detail-card">
-      <div class="card-header">
-        <div class="blood-badge" id="bloodBadge">B+</div>
-        <div class="card-header-info">
-          <div class="units" id="unitsBadge">2 Units Needed</div>
-          <div class="urgency-pill urg-critical" id="urgencyBadge">Critical</div>
-        </div>
-      </div>
-
-      <div class="detail-grid">
-        <div class="detail-item">
-          <div class="detail-icon">🏥</div>
+<div class="page">
+  <div class="tracking-split">
+    
+    <!-- LEFT: Info Cards -->
+    <div class="tracking-left">
+      
+      <!-- Request Details Card -->
+      <div class="status-card">
+        <div class="sc-header">
+          <div class="sc-blood" id="bloodBadge">B+</div>
           <div>
-            <div class="detail-label">Hospital</div>
-            <div class="detail-value" id="hospitalName">Loading...</div>
-            <div class="detail-sub" id="hospitalAddress">—</div>
+            <span class="sc-urgency urg-critical" id="urgencyBadge">Critical</span>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;" id="unitsBadge">2 Units</div>
           </div>
         </div>
-        <div class="detail-item">
-          <div class="detail-icon">👤</div>
-          <div>
-            <div class="detail-label">Requested By</div>
-            <div class="detail-value" id="requesterName">Loading...</div>
-            <div class="detail-sub" id="requestTime">—</div>
+        
+        <div class="detail-rows">
+          <div class="detail-row">
+            <div class="detail-icon">🏥</div>
+            <div>
+              <div class="detail-label">Hospital</div>
+              <div class="detail-value" id="hospitalName">Loading...</div>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-icon">👤</div>
+            <div>
+              <div class="detail-label">Requester</div>
+              <div class="detail-value" id="requesterName">Loading...</div>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-icon">📝</div>
+            <div>
+              <div class="detail-label">Notes</div>
+              <div class="detail-value" id="additionalNotes">—</div>
+            </div>
           </div>
         </div>
-        <div class="detail-item">
-          <div class="detail-icon">📝</div>
-          <div>
-            <div class="detail-label">Additional Notes</div>
-            <div class="detail-value" id="additionalNotes">—</div>
+        
+        <div class="contact-btns">
+          <a href="#" class="contact-btn call" id="callRequester">📞 Call Requester</a>
+          <a href="#" class="contact-btn whatsapp" id="whatsappRequester">💬 WhatsApp</a>
+        </div>
+        
+        <div class="quick-msgs" id="quickMsgs">
+          <button class="qm-btn" data-msg="On my way!">🚗 On my way!</button>
+          <button class="qm-btn" data-msg="Running 10 mins late">⏰ Running late</button>
+          <button class="qm-btn" data-msg="I've arrived">🏥 Arrived</button>
+        </div>
+      </div>
+      
+      <!-- Live Location Card -->
+      <div class="live-loc-card">
+        <div class="live-loc-header">
+          <div class="live-loc-title">📡 Live Location</div>
+          <div class="live-loc-toggle" id="liveLocToggle">
+            <div class="live-loc-knob"></div>
+          </div>
+        </div>
+        <p class="live-loc-info">Share your real-time location so the requester can track your arrival.</p>
+        <div class="live-loc-status inactive" id="liveLocStatus">📍 Location sharing is off</div>
+      </div>
+      
+      <!-- Pre-Donation Checklist -->
+      <div class="checklist-card">
+        <div class="checklist-title">Pre-Donation Checklist</div>
+        <p class="checklist-sub">Make sure you're prepared</p>
+        <div id="checklistItems">
+          <div class="check-item" data-check="hydrate">
+            <div class="check-box"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
+            <span class="check-text">💧 Well hydrated</span>
+          </div>
+          <div class="check-item" data-check="eaten">
+            <div class="check-box"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
+            <span class="check-text">🍎 Eaten recently</span>
+          </div>
+          <div class="check-item" data-check="id">
+            <div class="check-box"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
+            <span class="check-text">🪪 Carrying valid ID</span>
+          </div>
+          <div class="check-item" data-check="sleep">
+            <div class="check-box"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
+            <span class="check-text">😴 Had 6+ hours sleep</span>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- LIVE LOCATION SHARING -->
-    <div class="live-loc-card">
-      <div class="live-loc-header">
-        <div class="live-loc-title">📡 Live Location Sharing</div>
-        <div class="live-loc-toggle" id="liveLocToggle">
-          <div class="live-loc-knob"></div>
-        </div>
+      
+      <!-- Action Buttons -->
+      <div class="action-btns">
+        <button class="cancel-btn" id="cancelBtn">✕ Cancel Donation</button>
+        <button class="sos-btn" id="sosBtn">🆘 SOS</button>
       </div>
-      <p class="live-loc-info">
-        <strong>Share your real-time location</strong> so the requester can track your arrival — just like Blinkit delivery tracking.
-        Your location helps our system match you with the nearest patients.
-      </p>
-      <div class="live-loc-status inactive" id="liveLocStatus">
-        📍 Location sharing is off
-      </div>
+      
     </div>
-
-    <!-- CONTACT BUTTONS -->
-    <div class="action-row">
-      <a href="#" class="action-btn" id="callRequester">
-        <div class="action-icon call-req">📞</div>
-        <span class="action-label">Call Requester</span>
-        <span class="action-sub" id="reqPhone">—</span>
-      </a>
-      <a href="#" class="action-btn" id="callHospital">
-        <div class="action-icon call-hosp">🏥</div>
-        <span class="action-label">Call Hospital</span>
-        <span class="action-sub">Front desk</span>
-      </a>
-    </div>
-
-    <!-- QUICK MESSAGES -->
-    <div class="quick-msgs" id="quickMsgs">
-      <button class="qm-btn" data-msg="On my way!">💬 On my way!</button>
-      <button class="qm-btn" data-msg="Running 10 mins late">⏰ Running late</button>
-      <button class="qm-btn" data-msg="I've arrived at the hospital">🏥 I've arrived</button>
-      <button class="qm-btn" data-msg="Which ward/room?">📍 Which ward?</button>
-      <button class="qm-btn" data-msg="Please share building/gate details">🚪 Gate details?</button>
-    </div>
-
-    <!-- PRE-DONATION CHECKLIST -->
-    <div class="checklist-card">
-      <div class="checklist-title">Pre-Donation Checklist</div>
-      <p class="checklist-sub">Make sure you're prepared before heading out</p>
-      <div id="checklistItems">
-        <div class="check-item" data-check="hydrate">
-          <div class="check-box"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
-          <span class="check-text">💧 I'm well hydrated (drank water in last 2 hours)</span>
+    
+    <!-- RIGHT: Route Map -->
+    <div class="tracking-right">
+      <div class="map-card" id="routeMapCard">
+        <div class="map-header">
+          <div class="map-title">🗺️ Route to Requester</div>
+          <div class="live-badge">
+            <span class="live-dot"></span>
+            Live Route
+          </div>
         </div>
-        <div class="check-item" data-check="eaten">
-          <div class="check-box"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
-          <span class="check-text">🍎 I've eaten a light meal recently</span>
-        </div>
-        <div class="check-item" data-check="id">
-          <div class="check-box"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
-          <span class="check-text">🪪 I'm carrying a valid photo ID (Aadhaar/PAN/Driving License)</span>
-        </div>
-        <div class="check-item" data-check="sleep">
-          <div class="check-box"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
-          <span class="check-text">😴 I had adequate sleep last night (6+ hours)</span>
-        </div>
-        <div class="check-item" data-check="noalcohol">
-          <div class="check-box"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
-          <span class="check-text">🚫 No alcohol in the last 24 hours</span>
+        <div id="donorRouteMap"></div>
+        <div class="map-eta-bar">
+          <div class="eta-item">
+            <div class="eta-val" id="routeDistance">—</div>
+            <div class="eta-label">Distance</div>
+          </div>
+          <div class="eta-item">
+            <div class="eta-val" id="routeDuration">—</div>
+            <div class="eta-label">Est. Time</div>
+          </div>
+          <div class="eta-item">
+            <div class="eta-val" id="routeSteps">—</div>
+            <div class="eta-label">Steps</div>
+          </div>
         </div>
       </div>
     </div>
-
-
-
-    <!-- CANCEL + SOS -->
-    <div class="bottom-bar">
-      <button class="cancel-btn" id="cancelBtn">✕ Cancel Donation</button>
-      <button class="sos-btn" id="sosBtn">🆘 SOS</button>
-    </div>
-  </main>
+    
+  </div>
 </div>
 
 <!-- CANCEL MODAL -->
@@ -620,46 +397,22 @@ body { font-family: 'DM Sans', sans-serif; background: #F8F4F4; min-height: 100v
 const API    = 'https://saarthi-backend-ahto.onrender.com';
 const userId = localStorage.getItem('userId');
 const userName = localStorage.getItem('userName');
-const userEmail = localStorage.getItem('userEmail');
 
 if (!userId) window.location.href = 'login.html';
-
-// ── SIDEBAR ──
-const initials = (userName || '?').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-document.getElementById('sidebarAvatar').textContent = initials;
-document.getElementById('sidebarName').textContent   = userName || 'Donor';
-document.getElementById('sidebarEmail').textContent  = userEmail || '';
-
-document.getElementById('logoutBtn').addEventListener('click', e => {
-  e.preventDefault();
-  localStorage.clear();
-  window.location.href = 'index.html';
-});
 
 // ── LOAD REQUEST DATA ──
 const params  = new URLSearchParams(window.location.search);
 const reqId   = params.get('id');
 let requestData = null;
-let currentStep = 0;
-let startTime   = Date.now();
 let selectedReason = '';
-
-// Restore from localStorage if revisiting
-const savedState = JSON.parse(localStorage.getItem('activeDonation_' + reqId) || 'null');
-if (savedState) {
-  currentStep = savedState.step || 0;
-  startTime   = savedState.startTime || Date.now();
-}
 
 async function loadRequestDetails() {
   if (!reqId) {
-    // No request ID — check if demo mode (show example data)
     showDemoData();
     return;
   }
 
   try {
-    // Fetch specific request details directly (works for both pending and accepted)
     const res  = await fetch(API + '/request-details/' + reqId + '?t=' + Date.now(), { cache: 'no-store' });
     const data = await res.json();
 
@@ -672,7 +425,6 @@ async function loadRequestDetails() {
     console.log('Load error:', e);
   }
 
-  // Fallback: show demo data
   showDemoData();
 }
 
@@ -687,7 +439,7 @@ function showDemoData() {
     phone: '9876543210',
     created_at: new Date(Date.now() - 35 * 60000).toISOString(),
     notes: 'Patient in ICU, Ward 3B, 2nd Floor',
-    latitude: 23.0225,  // Apollo Hospital Ahmedabad
+    latitude: 23.0225,
     longitude: 72.5714
   };
   fillRequestData(requestData);
@@ -695,50 +447,31 @@ function showDemoData() {
 
 function fillRequestData(req) {
   document.getElementById('bloodBadge').textContent      = req.blood_group;
-  document.getElementById('unitsBadge').textContent      = req.units + ' Units Needed';
-  document.getElementById('hospitalName').textContent    = extractHospital(req.location);
-  document.getElementById('hospitalAddress').textContent = req.location;
+  document.getElementById('unitsBadge').textContent      = req.units + ' Units';
+  document.getElementById('hospitalName').textContent    = req.location;
   document.getElementById('requesterName').textContent   = req.requester_name;
   document.getElementById('additionalNotes').textContent = req.notes || 'No additional notes';
-  document.getElementById('reqPhone').textContent        = req.phone;
 
   // Urgency badge
   const urgEl = document.getElementById('urgencyBadge');
   urgEl.textContent = req.urgency;
-  urgEl.className = 'urgency-pill urg-' + (req.urgency || 'Normal').toLowerCase();
-
-  // Time since posted
-  if (req.created_at) {
-    const mins = Math.floor((Date.now() - new Date(req.created_at)) / 60000);
-    document.getElementById('requestTime').textContent = mins + ' minutes ago';
-  }
+  urgEl.className = 'sc-urgency urg-' + (req.urgency || 'Normal').toLowerCase();
 
   // Contact links
   document.getElementById('callRequester').href = 'tel:' + req.phone;
-  document.getElementById('callHospital').href  = 'tel:' + req.phone;
+  document.getElementById('whatsappRequester').href = 'https://wa.me/91' + req.phone.replace(/\D/g, '');
 
-  // Initialize route map if coordinates available
+  // Initialize route map
   if (req.latitude && req.longitude) {
     setTimeout(() => initDonorRouteMap(req.latitude, req.longitude), 500);
-  } else {
-    document.getElementById('routeMapCard').style.display = 'none';
   }
-
 }
 
-function extractHospital(location) {
-  if (!location) return '—';
-  return location.split(',')[0].trim();
-}
-
-// ── ROUTE MAP: Show route from donor to REQUESTER ──
+// ── ROUTE MAP (Donor View) ──
+// Shows: "You are here" (donor/green) → "Requester is here" (red)
 function initDonorRouteMap(destLat, destLng) {
-  console.log('🗺️ Initializing route map to requester:', destLat, destLng);
-  
-  // Get donor's current location
   if (!navigator.geolocation) {
-    console.log('Geolocation not supported');
-    document.getElementById('routeMapCard').style.display = 'none';
+    document.getElementById('routeMapCard').innerHTML = '<div style="padding:60px;text-align:center;color:var(--muted);">📍 Enable location to see route</div>';
     return;
   }
 
@@ -746,86 +479,72 @@ function initDonorRouteMap(destLat, destLng) {
     (position) => {
       const donorLat = position.coords.latitude;
       const donorLng = position.coords.longitude;
-      
-      // Create map centered between donor and destination
       const centerLat = (donorLat + destLat) / 2;
       const centerLng = (donorLng + destLng) / 2;
       
       const map = L.map('donorRouteMap').setView([centerLat, centerLng], 13);
       
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
+        attribution: '© OpenStreetMap'
       }).addTo(map);
 
-      // Donor marker (green - you are here)
-      const donorIcon = L.divIcon({
-        html: '<div style="background:#16A34A;width:40px;height:40px;border-radius:50%;border:4px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;">🚗</div>',
-        className: '',
-        iconSize: [40, 40],
-        iconAnchor: [20, 20]
+      // YOUR LOCATION marker (Donor - Green with car icon)
+      const youIcon = L.divIcon({
+        html: '<div style="background:#16A34A;width:44px;height:44px;border-radius:50%;border:4px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;">🚗</div>',
+        className: '', iconSize: [44, 44], iconAnchor: [22, 22]
       });
-      L.marker([donorLat, donorLng], { icon: donorIcon })
-        .bindPopup('<b>📍 You are here</b><br>Starting point')
+      L.marker([donorLat, donorLng], { icon: youIcon })
+        .bindPopup('<b>📍 You are here</b><br><span style="color:#666;font-size:12px;">Start your journey</span>')
         .addTo(map);
 
-      // Requester marker (red - destination)
+      // REQUESTER LOCATION marker (Red with person icon)
       const requesterIcon = L.divIcon({
-        html: '<div style="background:#C0152A;width:44px;height:44px;border-radius:50%;border:4px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:22px;">🏥</div>',
-        className: '',
-        iconSize: [44, 44],
-        iconAnchor: [22, 22]
+        html: '<div style="background:#C0152A;width:44px;height:44px;border-radius:50%;border:4px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>',
+        className: '', iconSize: [44, 44], iconAnchor: [22, 22]
       });
       L.marker([destLat, destLng], { icon: requesterIcon })
-        .bindPopup('<b>🎯 Requester Location</b><br>Hospital destination')
+        .bindPopup('<b>🎯 Requester is here</b><br><span style="color:#666;font-size:12px;">' + (requestData?.location || 'Hospital') + '</span>')
         .addTo(map);
 
-      // Add routing
+      // Draw Route
       const routing = L.Routing.control({
-        waypoints: [
-          L.latLng(donorLat, donorLng),
-          L.latLng(destLat, destLng)
-        ],
+        waypoints: [L.latLng(donorLat, donorLng), L.latLng(destLat, destLng)],
         routeWhileDragging: false,
         addWaypoints: false,
-        lineOptions: {
-          styles: [{ color: '#C0152A', weight: 6, opacity: 0.8 }]
-        },
-        createMarker: () => null // Hide default markers (we added custom ones)
+        showAlternatives: false,
+        fitSelectedRoutes: true,
+        lineOptions: { styles: [{ color: '#C0152A', weight: 6, opacity: 0.8 }] },
+        createMarker: () => null
       }).addTo(map);
 
-      // Update ETA info when route is calculated
       routing.on('routesfound', (e) => {
         const route = e.routes[0];
-        const distanceKm = (route.summary.totalDistance / 1000).toFixed(1);
-        const durationMin = Math.round(route.summary.totalTime / 60);
-        
-        document.getElementById('routeDistance').textContent = distanceKm + ' km';
-        document.getElementById('routeDuration').textContent = '~' + durationMin + ' min';
+        document.getElementById('routeDistance').textContent = (route.summary.totalDistance / 1000).toFixed(1) + ' km';
+        document.getElementById('routeDuration').textContent = '~' + Math.round(route.summary.totalTime / 60) + ' min';
         document.getElementById('routeSteps').textContent = route.instructions.length;
+        
+        // Fit map to show entire route
+        const bounds = L.latLngBounds([
+          [donorLat, donorLng],
+          [destLat, destLng]
+        ]);
+        map.fitBounds(bounds, { padding: [50, 50] });
       });
-
     },
     (error) => {
-      console.log('Geolocation error:', error);
-      // Fallback: show only destination
+      // Fallback: Show just destination
       const map = L.map('donorRouteMap').setView([destLat, destLng], 14);
-      
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(map);
-
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
       const requesterIcon = L.divIcon({
-        html: '<div style="background:#C0152A;width:44px;height:44px;border-radius:50%;border:4px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:22px;">🏥</div>',
-        className: '',
-        iconSize: [44, 44],
-        iconAnchor: [22, 22]
+        html: '<div style="background:#C0152A;width:44px;height:44px;border-radius:50%;border:4px solid white;display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>',
+        className: '', iconSize: [44, 44], iconAnchor: [22, 22]
       });
       L.marker([destLat, destLng], { icon: requesterIcon })
-        .bindPopup('<b>🎯 Requester Location</b><br>Hospital destination')
+        .bindPopup('<b>🎯 Requester is here</b>')
         .addTo(map);
-        
+      
       document.getElementById('routeDistance').textContent = '—';
-      document.getElementById('routeDuration').textContent = '—';
+      document.getElementById('routeDuration').textContent = 'Enable GPS';
       document.getElementById('routeSteps').textContent = '—';
     }
   );
@@ -833,9 +552,7 @@ function initDonorRouteMap(destLat, destLng) {
 
 // ── CHECKLIST ──
 document.querySelectorAll('.check-item').forEach(item => {
-  item.addEventListener('click', () => {
-    item.classList.toggle('checked');
-  });
+  item.addEventListener('click', () => item.classList.toggle('checked'));
 });
 
 // ── QUICK MESSAGES ──
@@ -843,33 +560,62 @@ document.querySelectorAll('.qm-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     if (btn.classList.contains('sent')) return;
     const msg = btn.dataset.msg;
-
-    // Send via WhatsApp to requester
     if (requestData && requestData.phone) {
       const phone = '91' + requestData.phone.replace(/\D/g, '');
-      const url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
-      window.open(url, '_blank');
+      window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(msg), '_blank');
+      btn.classList.add('sent');
+      btn.textContent = '✓ Sent';
     }
-
-    btn.classList.add('sent');
-    btn.textContent = '✓ Sent';
   });
 });
+
+// ── LIVE LOCATION TOGGLE ──
+const liveLocToggle = document.getElementById('liveLocToggle');
+const liveLocStatus = document.getElementById('liveLocStatus');
+let locationWatchId = null;
+
+liveLocToggle.addEventListener('click', () => {
+  liveLocToggle.classList.toggle('on');
+  if (liveLocToggle.classList.contains('on')) {
+    liveLocStatus.className = 'live-loc-status active';
+    liveLocStatus.innerHTML = '<span class="live-pulse"></span> Sharing your location';
+    startLocationSharing();
+  } else {
+    liveLocStatus.className = 'live-loc-status inactive';
+    liveLocStatus.textContent = '📍 Location sharing is off';
+    stopLocationSharing();
+  }
+});
+
+function startLocationSharing() {
+  if (navigator.geolocation) {
+    locationWatchId = navigator.geolocation.watchPosition(
+      (pos) => console.log('📍 Location:', pos.coords.latitude, pos.coords.longitude),
+      (err) => console.log('Location error:', err),
+      { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
+    );
+  }
+}
+
+function stopLocationSharing() {
+  if (locationWatchId) {
+    navigator.geolocation.clearWatch(locationWatchId);
+    locationWatchId = null;
+  }
+}
 
 // ── CANCEL MODAL ──
 document.getElementById('cancelBtn').addEventListener('click', () => {
   document.getElementById('cancelModal').classList.add('show');
 });
+
 document.getElementById('modalGoBack').addEventListener('click', () => {
   document.getElementById('cancelModal').classList.remove('show');
-  selectedReason = '';
-  document.querySelectorAll('.reason-item').forEach(r => r.classList.remove('selected'));
-  document.getElementById('modalConfirm').disabled = true;
 });
 
 document.querySelectorAll('.reason-item').forEach(item => {
   item.addEventListener('click', () => {
-    document.querySelectorAll('.reason-item').forEach(r => r.classList.remove('selected'));
+    document.querySelectorAll('.reason-item').forEach(i => i.classList.remove('selected'));
     item.classList.add('selected');
     selectedReason = item.dataset.reason;
     document.getElementById('modalConfirm').disabled = false;
@@ -877,157 +623,29 @@ document.querySelectorAll('.reason-item').forEach(item => {
 });
 
 document.getElementById('modalConfirm').addEventListener('click', async () => {
-  const btn = document.getElementById('modalConfirm');
-  btn.textContent = 'Cancelling…'; btn.disabled = true;
-
-  // Clear saved state
-  localStorage.removeItem('activeDonation_' + (reqId || 'demo'));
-
-  // Navigate back to dashboard
-  setTimeout(() => {
-    window.location.href = 'dashboard.html';
-  }, 600);
+  if (!selectedReason) return;
+  try {
+    await fetch(API + '/cancel-acceptance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requestId: reqId, donorId: userId, reason: selectedReason })
+    });
+  } catch(e) {}
+  window.location.href = 'dashboard.html';
 });
 
 // ── SOS ──
 document.getElementById('sosBtn').addEventListener('click', () => {
-  if (confirm('This will call emergency services (112). Continue?')) {
-    window.location.href = 'tel:112';
-  }
+  window.location.href = 'tel:112';
 });
 
 // ── COMPLETION ──
-function showCompletion() {
-  // Update stats
-  const donations = Number(localStorage.getItem('totalDonations') || 0) + 1;
-  localStorage.setItem('totalDonations', donations);
-  document.getElementById('compDonations').textContent = donations;
-  document.getElementById('compPoints').textContent = (donations * 10) + '+';
-
-  setTimeout(() => {
-    document.getElementById('completionOverlay').classList.add('show');
-  }, 500);
-}
-
 document.getElementById('compDashboard').addEventListener('click', () => {
-  localStorage.removeItem('activeDonation_' + (reqId || 'demo'));
   window.location.href = 'dashboard.html';
 });
 
-document.getElementById('compShare').addEventListener('click', () => {
-  const text = '🩸 I just donated blood through Saarthi and may have saved up to 3 lives! Join the movement — become a donor today.';
-  if (navigator.share) {
-    navigator.share({ title: 'Saarthi — Blood Donation', text: text });
-  } else {
-    const url = 'https://wa.me/?text=' + encodeURIComponent(text);
-    window.open(url, '_blank');
-  }
-});
-
-// ── LIVE LOCATION SHARING ──
-let watchId = null;
-let locationInterval = null;
-const locToggle = document.getElementById('liveLocToggle');
-const locStatus = document.getElementById('liveLocStatus');
-
-locToggle.addEventListener('click', () => {
-  locToggle.classList.toggle('on');
-  const isOn = locToggle.classList.contains('on');
-
-  if (isOn) {
-    startLocationSharing();
-  } else {
-    stopLocationSharing();
-  }
-});
-
-// Auto-start if location sharing was already enabled in dashboard
-if (localStorage.getItem('locationSharing') === 'true') {
-  locToggle.classList.add('on');
-  startLocationSharing();
-}
-
-function startLocationSharing() {
-  if (!navigator.geolocation) {
-    alert('Your browser does not support location sharing.');
-    locToggle.classList.remove('on');
-    return;
-  }
-
-  locStatus.className = 'live-loc-status active';
-  locStatus.innerHTML = '<span class="live-pulse"></span> Sharing live location…';
-
-  // Watch position continuously
-  watchId = navigator.geolocation.watchPosition(
-    (pos) => {
-      const { latitude, longitude } = pos.coords;
-      sendLocationToServer(latitude, longitude);
-    },
-    (err) => {
-      console.log('Location error:', err);
-      locStatus.className = 'live-loc-status inactive';
-      locStatus.innerHTML = '⚠️ Location access denied — please enable in browser settings';
-      locToggle.classList.remove('on');
-    },
-    { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
-  );
-
-  // Also send location every 15 seconds as a heartbeat
-  locationInterval = setInterval(() => {
-    navigator.geolocation.getCurrentPosition(
-      (pos) => sendLocationToServer(pos.coords.latitude, pos.coords.longitude),
-      () => {},
-      { enableHighAccuracy: true, maximumAge: 10000 }
-    );
-  }, 15000);
-}
-
-function stopLocationSharing() {
-  if (watchId !== null) {
-    navigator.geolocation.clearWatch(watchId);
-    watchId = null;
-  }
-  if (locationInterval) {
-    clearInterval(locationInterval);
-    locationInterval = null;
-  }
-  locStatus.className = 'live-loc-status inactive';
-  locStatus.innerHTML = '📍 Location sharing is off';
-
-  // Notify server that location sharing stopped
-  fetch(API + '/update-donor-location', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ donorId: Number(userId), requestId: Number(reqId), sharing: false })
-  }).catch(() => {});
-}
-
-function sendLocationToServer(lat, lng) {
-  fetch(API + '/update-donor-location', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      donorId: Number(userId),
-      requestId: Number(reqId),
-      latitude: lat,
-      longitude: lng,
-      sharing: true,
-      timestamp: Date.now()
-    })
-  }).catch(e => console.log('Location send error:', e));
-}
-
-// Stop sharing on page unload
-window.addEventListener('beforeunload', stopLocationSharing);
-
-// ── LOAD DATA ──
+// Load data
 loadRequestDetails();
-
-// Mobile sidebar toggle
-function toggleSidebar() {
-  document.querySelector('.sidebar').classList.toggle('open');
-  document.querySelector('.sidebar-overlay').classList.toggle('open');
-}
 </script>
 </body>
 </html>

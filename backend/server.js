@@ -50,7 +50,10 @@ function verifyAdminToken(req, res, next) {
 app.post("/admin-login", (req, res) => {
   const { username, password } = req.body;
   
-  if (username === ADMIN_USER && password === ADMIN_PASS) {
+  // Accept both "admin" and "admin@gmail.com" as username
+  const validUsername = (username === "admin" || username === "admin@gmail.com");
+  
+  if (validUsername && password === ADMIN_PASS) {
     const token = generateAdminToken();
     console.log("✅ Admin logged in successfully");
     return res.json({ success: true, token });

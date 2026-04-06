@@ -405,6 +405,8 @@ const params  = new URLSearchParams(window.location.search);
 const reqId   = params.get('id');
 let requestData = null;
 let selectedReason = '';
+let donorMap = null; // Global map instance
+let routingControl = null; // Global routing instance
 
 async function loadRequestDetails() {
   if (!reqId) {
@@ -463,15 +465,18 @@ function fillRequestData(req) {
 
   // Initialize route map
   if (req.latitude && req.longitude) {
-    setTimeout(() => initDonorRouteMap(req.latitude, req.longitude), 500);
+    setTimeout(() => initDonorRouteMap(parseFloat(req.latitude), parseFloat(req.longitude)), 500);
   }
 }
 
 // ── ROUTE MAP (Donor View) ──
 // Shows: "You are here" (donor/green) → "Requester is here" (red)
 function initDonorRouteMap(destLat, destLng) {
+  const mapEl = document.getElementById('donorRouteMap');
+  if (!mapEl) return;
+
   if (!navigator.geolocation) {
-    document.getElementById('routeMapCard').innerHTML = '<div style="padding:60px;text-align:center;color:var(--muted);">📍 Enable location to see route</div>';
+    mapEl.innerHTML = '<div style="padding:60px;text-align:center;color:var(--muted);">📍 Enable location to see route</div>';
     return;
   }
 
@@ -479,14 +484,28 @@ function initDonorRouteMap(destLat, destLng) {
     (position) => {
       const donorLat = position.coords.latitude;
       const donorLng = position.coords.longitude;
-      const centerLat = (donorLat + destLat) / 2;
-      const centerLng = (donorLng + destLng) / 2;
       
-      const map = L.map('donorRouteMap').setView([centerLat, centerLng], 13);
+      // Use parseFloat to ensure no string concatenation
+      const dLat = parseFloat(destLat);
+      const dLng = parseFloat(destLng);
       
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap'
-      }).addTo(map);
+      const centerLat = (donorLat + dLat) / 2;
+      const centerLng = (donorLng + dLng) / 2;
+      
+      // If map already exists, just update it
+      if (donorMap) {
+        donorMap.setView([centerLat, centerLng], 13);
+      } else {
+        donorMap = L.map('donorRouteMap').setView([centerLat, centerLng], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap'
+        }).addTo(donorMap);
+      }
+
+      // Clear existing markers if any (optional, but good for clean re-renders)
+      donorMap.eachLayer((layer) => {
+        if (layer instanceof L.Marker) donorMap.removeLayer(layer);
+      });
 
       // YOUR LOCATION marker (Donor - Green with car icon)
       const youIcon = L.divIcon({
@@ -495,53 +514,65 @@ function initDonorRouteMap(destLat, destLng) {
       });
       L.marker([donorLat, donorLng], { icon: youIcon })
         .bindPopup('<b>📍 You are here</b><br><span style="color:#666;font-size:12px;">Start your journey</span>')
-        .addTo(map);
+        .addTo(donorMap);
 
       // REQUESTER LOCATION marker (Red with person icon)
       const requesterIcon = L.divIcon({
         html: '<div style="background:#C0152A;width:44px;height:44px;border-radius:50%;border:4px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>',
         className: '', iconSize: [44, 44], iconAnchor: [22, 22]
       });
-      L.marker([destLat, destLng], { icon: requesterIcon })
+      L.marker([dLat, dLng], { icon: requesterIcon })
         .bindPopup('<b>🎯 Requester is here</b><br><span style="color:#666;font-size:12px;">' + (requestData?.location || 'Hospital') + '</span>')
-        .addTo(map);
+        .addTo(donorMap);
 
       // Draw Route
-      const routing = L.Routing.control({
-        waypoints: [L.latLng(donorLat, donorLng), L.latLng(destLat, destLng)],
+      if (routingControl) {
+        donorMap.removeControl(routingControl);
+      }
+      
+      routingControl = L.Routing.control({
+        waypoints: [L.latLng(donorLat, donorLng), L.latLng(dLat, dLng)],
         routeWhileDragging: false,
         addWaypoints: false,
         showAlternatives: false,
         fitSelectedRoutes: true,
         lineOptions: { styles: [{ color: '#C0152A', weight: 6, opacity: 0.8 }] },
         createMarker: () => null
-      }).addTo(map);
+      }).addTo(donorMap);
 
-      routing.on('routesfound', (e) => {
+      routingControl.on('routesfound', (e) => {
         const route = e.routes[0];
         document.getElementById('routeDistance').textContent = (route.summary.totalDistance / 1000).toFixed(1) + ' km';
         document.getElementById('routeDuration').textContent = '~' + Math.round(route.summary.totalTime / 60) + ' min';
         document.getElementById('routeSteps').textContent = route.instructions.length;
         
         // Fit map to show entire route
-        const bounds = L.latLngBounds([
-          [donorLat, donorLng],
-          [destLat, destLng]
-        ]);
-        map.fitBounds(bounds, { padding: [50, 50] });
+        const bounds = L.latLngBounds([[donorLat, donorLng], [dLat, dLng]]);
+        donorMap.fitBounds(bounds, { padding: [50, 50] });
       });
+
+      // Fix for grey tiles / rendering issues
+      setTimeout(() => donorMap.invalidateSize(), 500);
     },
     (error) => {
       // Fallback: Show just destination
-      const map = L.map('donorRouteMap').setView([destLat, destLng], 14);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+      const dLat = parseFloat(destLat);
+      const dLng = parseFloat(destLng);
+      
+      if (donorMap) {
+        donorMap.setView([dLat, dLng], 14);
+      } else {
+        donorMap = L.map('donorRouteMap').setView([dLat, dLng], 14);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(donorMap);
+      }
+      
       const requesterIcon = L.divIcon({
         html: '<div style="background:#C0152A;width:44px;height:44px;border-radius:50%;border:4px solid white;display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>',
         className: '', iconSize: [44, 44], iconAnchor: [22, 22]
       });
-      L.marker([destLat, destLng], { icon: requesterIcon })
+      L.marker([dLat, dLng], { icon: requesterIcon })
         .bindPopup('<b>🎯 Requester is here</b>')
-        .addTo(map);
+        .addTo(donorMap);
       
       document.getElementById('routeDistance').textContent = '—';
       document.getElementById('routeDuration').textContent = 'Enable GPS';

@@ -376,7 +376,9 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 </div>
 
 <script>
-const API       = 'https://saarthi-backend-ahto.onrender.com';
+const API = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' || window.location.protocol === 'file:'
+  ? 'https://saarthi-backend-ahto.onrender.com' 
+  : '';
 const userId    = localStorage.getItem('userId');
 const userName  = localStorage.getItem('userName');
 const params    = new URLSearchParams(window.location.search);

@@ -268,6 +268,10 @@ nav {
 </div>
 
 <script>
+const API = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' || window.location.protocol === 'file:'
+  ? 'https://saarthi-backend-ahto.onrender.com' 
+  : '';
+
 /* ── AUTH GUARD ── */
 if (!localStorage.getItem("userId")) {
   alert("Please log in first to post a blood request.");
@@ -445,7 +449,7 @@ document.getElementById('postBtn').addEventListener('click', async () => {
 
   // Call ML model with location for better matching
   try {
-    const res  = await fetch('https://saarthi-backend-ahto.onrender.com/match-donors', {
+    const res  = await fetch(API + '/match-donors', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
         blood_group: request.blood, 
@@ -465,7 +469,7 @@ document.getElementById('postBtn').addEventListener('click', async () => {
 
   // ── SAVE TO DATABASE so matched donors see it on their dashboard ──
   try {
-    const dbRes  = await fetch('https://saarthi-backend-ahto.onrender.com/save-request', {
+    const dbRes  = await fetch(API + '/save-request', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(request)
     });

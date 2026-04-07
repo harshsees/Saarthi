@@ -338,7 +338,9 @@ body { font-family: 'DM Sans', sans-serif; background: #F8F4F4; min-height: 100v
 </div>
 
 <script>
-const API    = 'https://saarthi-backend-ahto.onrender.com';
+const API = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' || window.location.protocol === 'file:'
+  ? 'https://saarthi-backend-ahto.onrender.com' 
+  : '';
 const userId   = localStorage.getItem('userId');
 const userName = localStorage.getItem('userName');
 const userEmail= localStorage.getItem('userEmail');

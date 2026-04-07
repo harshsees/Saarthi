@@ -248,7 +248,9 @@ nav {
 </div>
 
 <script>
-const API = 'https://saarthi-backend-ahto.onrender.com';
+const API = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' || window.location.protocol === 'file:'
+  ? 'https://saarthi-backend-ahto.onrender.com' 
+  : '';
 
 /* ── HELPERS ── */
 function showError(inputId, errId, msg) {

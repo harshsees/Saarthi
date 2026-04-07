@@ -11,12 +11,21 @@ const {trainKNN, findBestDonors} = require("./ml-model");
 const { OAuth2Client } = require("google-auth-library");
 const googleClient = new OAuth2Client("177488391434-ticsuprf45ut64tphnfg62ba33c65lvp.apps.googleusercontent.com");
 const { sendSMS } = require("./fast2sms"); // SMS only - cost optimized
+const path = require("path");
 
 // 2️⃣ Create App
 const app = express();
 // 3️⃣ Middleware
 app.use(express.json());
 app.use(cors());
+
+// 4️⃣ Static Files (Serve Frontend from Project Root)
+app.use(express.static(path.join(__dirname, "..")));
+
+// Home Route
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "index.html"));
+});
 
 // ══════════════════════════════════════════════════════════════════════════════
 // ADMIN AUTH — Hardcoded credentials (no DB table needed)

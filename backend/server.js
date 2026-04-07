@@ -20,12 +20,16 @@ app.use(express.json());
 app.use(cors());
 
 // 4️⃣ Static Files (Serve Frontend from Project Root)
-app.use(express.static(path.join(__dirname, "..")));
+// We add extensions: ['html'] to support clean URLs (e.g., /register -> register.html)
+app.use(express.static(path.join(__dirname, ".."), { extensions: ['html'] }));
 
 // Home Route
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "index.html"));
 });
+
+// Silence favicon.ico 404s
+app.get("/favicon.ico", (req, res) => res.status(204).end());
 
 // ══════════════════════════════════════════════════════════════════════════════
 // ADMIN AUTH — Hardcoded credentials (no DB table needed)

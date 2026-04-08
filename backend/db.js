@@ -31,13 +31,6 @@ function cleanHost(rawHost) {
     console.log("📍 Stripped port from hostname:", host);
   }
 
-  // 3. Aiven-specific fix for the ".d." segment
-  // Some Aiven hostnames provided in the URI have an extra '.d.' which is for internal use.
-  if (host.includes(".d.aivencloud.com")) {
-    host = host.replace(".d.aivencloud.com", ".aivencloud.com");
-    console.log("🛠️  Auto-fixed Aiven Hostname: Stripped '.d.' prefix ->", host);
-  }
-
   return host;
 }
 

@@ -338,7 +338,7 @@ const PORT = process.env.PORT || 5000;
 
 // ── BREVO EMAIL API HELPER ──
 async function sendEmailViaAPI(to, subject, htmlContent) {
-  const apiKey = process.env.EMAIL_PASS;
+  const apiKey = (process.env.EMAIL_PASS || "").trim();
   const senderEmail = "shah001harsh@gmail.com";
   const senderName = "Saarthi";
 

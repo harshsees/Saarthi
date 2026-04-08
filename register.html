@@ -378,6 +378,10 @@ document.getElementById('sendOtpBtn').addEventListener('click', async () => {
   const btn = document.getElementById('sendOtpBtn');
   btn.textContent = 'Sending OTP…'; btn.disabled = true;
 
+  // Add a 15-second timeout to the request
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
+
   try {
     const res  = await fetch(API + '/register', {
       method:  'POST',
@@ -386,8 +390,11 @@ document.getElementById('sendOtpBtn').addEventListener('click', async () => {
         name:     document.getElementById('nameInput').value.trim(),
         email:    document.getElementById('emailInput').value.trim(),
         password: document.getElementById('passwordInput').value
-      })
+      }),
+      signal: controller.signal
     });
+    
+    clearTimeout(timeoutId);
     const data = await res.json();
 
     if (data.success) {
@@ -402,7 +409,12 @@ document.getElementById('sendOtpBtn').addEventListener('click', async () => {
         showError('emailInput','emailError', data.message || 'Registration failed. Please try again.');
     }
   } catch(e) {
-    showError('emailInput','emailError','Cannot connect to server. Is the backend running?');
+    clearTimeout(timeoutId);
+    if (e.name === 'AbortError') {
+      showError('emailInput','emailError','Request timed out. The email server is taking too long to respond. Please try again.');
+    } else {
+      showError('emailInput','emailError','Cannot connect to server. Is the backend running?');
+    }
   }
 
   btn.textContent = 'Send Verification OTP →'; btn.disabled = false;

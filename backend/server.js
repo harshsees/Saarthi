@@ -340,11 +340,14 @@ const PORT = process.env.PORT || 5000;
 const transporter = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
   port: 587,
-  secure: false,
+  secure: false, // true for 465, false for other ports
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
-  }
+  },
+  connectionTimeout: 10000, // 10 seconds
+  greetingTimeout: 10000,
+  socketTimeout: 10000
 });
 
 
@@ -373,12 +376,15 @@ app.post("/register", (req, res) => {
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000);
-
     tempUsers[email] = { name, password, otp };
 
-    console.log("SENDING FROM:", process.env.EMAIL_USER);
+    console.log(`📩 Attempting to send Registration OTP to: ${email}`);
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.log("❌ ERROR: EMAIL_USER or EMAIL_PASS is not set in environment variables!");
+      return res.json({ success: false, message: "Server email configuration missing" });
+    }
     
-// Send OTP email transporter 
+    // Send OTP email
     try {
     await transporter.sendMail({
       from: '"Saarthi" <shah001harsh@gmail.com>',
@@ -767,8 +773,14 @@ app.post("/forgot-password", (req, res) => {
     if (result.length === 0) return res.json({ success: false, message: "No account found with this email" });
 
     const otp = Math.floor(100000 + Math.random() * 900000);
-    const expiry = Date.now() + 10 * 60 * 1000; // OTP valid for 10 minutes
+    const expiry = Date.now() + 10 * 60 * 1000;
     resetOtps[email] = { otp, expiry };
+
+    console.log(`📩 Attempting to send Reset OTP to: ${email}`);
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.log("❌ ERROR: EMAIL_USER or EMAIL_PASS is not set!");
+      return res.json({ success: false, message: "Server email configuration missing" });
+    }
 
     try {
       await transporter.sendMail({

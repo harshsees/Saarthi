@@ -705,9 +705,9 @@ tr.clickable-row:hover td { background: var(--blush); }
 // ═══════════════════════════════════════════════════════════════════════════════
 // CONFIG & STATE
 // ═══════════════════════════════════════════════════════════════════════════════
-const API = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' || window.location.protocol === 'file:'
-  ? 'https://saarthi-backend-ahto.onrender.com' 
-  : '';
+const API = window.location.hostname === 'saarthi-backend-ahto.onrender.com' 
+  ? '' 
+  : 'https://saarthi-backend-ahto.onrender.com';
 let adminToken = null;
 let allRequests = [];
 let lastRefresh = Date.now();

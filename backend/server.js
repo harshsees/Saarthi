@@ -28,6 +28,10 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "index.html"));
 });
 
+// Health check and connectivity routes
+app.get("/health", (req, res) => res.json({ status: "ok", port: PORT }));
+app.get("/ping", (req, res) => res.send("pong"));
+
 // Silence favicon.ico 404s
 app.get("/favicon.ico", (req, res) => res.status(204).end());
 
@@ -329,7 +333,7 @@ app.get("/admin/chart-data", verifyAdminToken, (req, res) => {
 });
 
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 
 // Configure Gmail transporter

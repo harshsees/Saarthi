@@ -1030,31 +1030,36 @@ app.post("/accept-request", async (req, res) => {
               // ── NO SMS TO REQUESTER (Cost Optimization) ──
               // Requester already knows via app notification & email
               // This saves SMS costs - only donors get SMS alerts
-
-              // Send email notification via API
-              const emailResult = await sendEmailViaAPI(
-                emailResult[0].email,
-                '🩸 Saarthi — Your Blood Request Has Been Accepted!',
-                `
-                        <div style="font-family:sans-serif;max-width:500px;margin:auto;padding:24px;">
-                          <h2 style="color:#C0152A;">Your blood request was accepted!</h2>
-                          <p>Great news — a donor has accepted your <strong>${request.blood_group}</strong> blood request.</p>
-                          <div style="background:#FFF1F1;border-radius:12px;padding:18px;margin:20px 0;">
-                            <p><strong>Donor Name:</strong> ${donor.name}</p>
-                            <p><strong>Contact:</strong> ${donor.phone}</p>
-                            <p><strong>City:</strong> ${donor.city}</p>
-                            <p><strong>Blood Group:</strong> ${donor.blood_group}</p>
-                          </div>
-                          <p>Please contact the donor immediately to coordinate. <strong>Call them now!</strong></p>
-                          <p style="color:#8A6A6A;font-size:12px;">— Team Saarthi</p>
-                        </div>`
-              );
-              
-              if (emailResult.success) {
-                console.log("✅ Acceptance email sent to requester");
-              } else {
-                console.log("❌ Acceptance email failed");
-              }
+              // Send email notification to the requester
+              db.query("SELECT email FROM users WHERE id=(SELECT requester_id FROM blood_requests WHERE id=?)", [requestId], async (err, reqEmailResult) => {
+                if (!err && reqEmailResult.length) {
+                  const requesterEmail = reqEmailResult[0].email;
+                  
+                  const emailResult = await sendEmailViaAPI(
+                    requesterEmail,
+                    '🩸 Saarthi — Your Blood Request Has Been Accepted!',
+                    `
+                            <div style="font-family:sans-serif;max-width:500px;margin:auto;padding:24px;">
+                              <h2 style="color:#C0152A;">Your blood request was accepted!</h2>
+                              <p>Great news — a donor has accepted your <strong>${request.blood_group}</strong> blood request.</p>
+                              <div style="background:#FFF1F1;border-radius:12px;padding:18px;margin:20px 0;">
+                                <p><strong>Donor Name:</strong> ${donor.name}</p>
+                                <p><strong>Contact:</strong> ${donor.phone}</p>
+                                <p><strong>City:</strong> ${donor.city}</p>
+                                <p><strong>Blood Group:</strong> ${donor.blood_group}</p>
+                              </div>
+                              <p>Please contact the donor immediately to coordinate. <strong>Call them now!</strong></p>
+                              <p style="color:#8A6A6A;font-size:12px;">— Team Saarthi</p>
+                            </div>`
+                  );
+                  
+                  if (emailResult.success) {
+                    console.log(`✅ Acceptance email sent to requester: ${requesterEmail}`);
+                  } else {
+                    console.log("❌ Acceptance email failed");
+                  }
+                }
+              });
 
               res.json({ success: true, donor });
             }

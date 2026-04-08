@@ -339,15 +339,27 @@ const PORT = process.env.PORT || 5000;
 // Configure Gmail transporter
 const transporter = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
-  port: 587,
-  secure: false, // true for 465, false for other ports
+  port: 465,
+  secure: true, // Port 465 requires secure: true
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
   },
-  connectionTimeout: 10000, // 10 seconds
-  greetingTimeout: 10000,
-  socketTimeout: 10000
+  tls: {
+    rejectUnauthorized: false // Helps in some restricted environments
+  },
+  connectionTimeout: 15000, 
+  greetingTimeout: 15000,
+  socketTimeout: 15000
+});
+
+// Verify connection on startup
+transporter.verify((error, success) => {
+  if (error) {
+    console.log("❌ SMTP CONNECTION FAILED:", error.message);
+  } else {
+    console.log("✅ SMTP Transporter is ready to send emails");
+  }
 });
 
 

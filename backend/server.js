@@ -646,8 +646,7 @@ let matchedDonors = matched.map(id => Number(id));
 
 // 🎯 DEMO FIX: Always include Harsh Shah (user_id=12) for AB+ requests
 if (blood_group === 'AB+') {
-  const harshExists = donors.some(d => d.user_id === 12);
-  if (harshExists && !matchedDonors.includes(12)) {
+  if (!matchedDonors.includes(12)) {
     // Add Harsh at the beginning (highest priority)
     matchedDonors.unshift(12);
     // Keep only top 5

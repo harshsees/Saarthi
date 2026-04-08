@@ -418,7 +418,8 @@ app.post("/register", (req, res) => {
     if (emailResult.success) {
       res.json({ success: true });
     } else {
-      res.json({ success: false, message: "Email delivery failed via API" });
+      const errMsg = emailResult.error?.message || "Email delivery failed via API";
+      res.json({ success: false, message: errMsg });
     }
   });
 });
@@ -818,7 +819,8 @@ app.post("/forgot-password", (req, res) => {
     if (emailResult.success) {
       res.json({ success: true });
     } else {
-      res.json({ success: false, message: "Failed to send reset email" });
+      const errMsg = emailResult.error?.message || "Failed to send reset email";
+      res.json({ success: false, message: errMsg });
     }
   });
 });

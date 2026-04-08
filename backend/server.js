@@ -336,31 +336,43 @@ app.get("/admin/chart-data", verifyAdminToken, (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 
-// Configure Gmail transporter
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 465,
-  secure: true, // Port 465 requires secure: true
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
-  tls: {
-    rejectUnauthorized: false // Helps in some restricted environments
-  },
-  connectionTimeout: 15000, 
-  greetingTimeout: 15000,
-  socketTimeout: 15000
-});
+// ── BREVO EMAIL API HELPER ──
+async function sendEmailViaAPI(to, subject, htmlContent) {
+  const apiKey = process.env.EMAIL_PASS;
+  const senderEmail = "shah001harsh@gmail.com";
+  const senderName = "Saarthi";
 
-// Verify connection on startup
-transporter.verify((error, success) => {
-  if (error) {
-    console.log("❌ SMTP CONNECTION FAILED:", error.message);
-  } else {
-    console.log("✅ SMTP Transporter is ready to send emails");
+  console.log(`📡 Sending API Email to: ${to} | Subject: ${subject}`);
+
+  try {
+    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "accept": "application/json",
+        "api-key": apiKey,
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({
+        sender: { name: senderName, email: senderEmail },
+        to: [{ email: to }],
+        subject: subject,
+        htmlContent: htmlContent
+      })
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      console.log(`✅ Email sent via API. ID: ${result.messageId}`);
+      return { success: true, messageId: result.messageId };
+    } else {
+      console.log(`❌ Brevo API Error:`, result);
+      return { success: false, error: result };
+    }
+  } catch (error) {
+    console.log(`❌ Network error calling Brevo API:`, error.message);
+    return { success: false, error: error.message };
   }
-});
+}
 
 
 
@@ -397,19 +409,16 @@ app.post("/register", (req, res) => {
     }
     
     // Send OTP email
-    try {
-    await transporter.sendMail({
-      from: '"Saarthi" <shah001harsh@gmail.com>',
-      to: email,
-      subject: "Verify Your Account",
-      html: `<h2>Your OTP is ${otp}</h2>`
-    });
-    console.log("OTP EMAIL SENT TO:", email);
-    res.json({ success: true });
+    const emailResult = await sendEmailViaAPI(
+      email,
+      "Verify Your Account — Saarthi",
+      `<h2>Your OTP is ${otp}</h2><p>This OTP is for your registration on Saarthi. It will expire in 10 minutes.</p>`
+    );
 
-    } catch (error) {
-  console.log("EMAIL SEND ERROR:", error);
-  res.json({ success: false, message: "Email sending failed" });
+    if (emailResult.success) {
+      res.json({ success: true });
+    } else {
+      res.json({ success: false, message: "Email delivery failed via API" });
     }
   });
 });
@@ -794,23 +803,22 @@ app.post("/forgot-password", (req, res) => {
       return res.json({ success: false, message: "Server email configuration missing" });
     }
 
-    try {
-      await transporter.sendMail({
-        from: '"Saarthi" <shah001harsh@gmail.com>',
-        to: email,
-        subject: "Saarthi — Password Reset OTP",
-        html: `
+    const emailResult = await sendEmailViaAPI(
+      email,
+      "Saarthi — Password Reset OTP",
+      `
           <h2>Password Reset Request</h2>
           <p>Your OTP to reset your Saarthi password is:</p>
           <h1 style="color:#C0152A;letter-spacing:8px;">${otp}</h1>
           <p>This OTP expires in <strong>10 minutes</strong>.</p>
           <p>If you did not request this, ignore this email.</p>
         `
-      });
+    );
+
+    if (emailResult.success) {
       res.json({ success: true });
-    } catch (error) {
-      console.log("Reset OTP email error:", error);
-      res.json({ success: false, message: "Failed to send OTP email" });
+    } else {
+      res.json({ success: false, message: "Failed to send reset email" });
     }
   });
 });
@@ -1022,15 +1030,11 @@ app.post("/accept-request", async (req, res) => {
               // Requester already knows via app notification & email
               // This saves SMS costs - only donors get SMS alerts
 
-              // Send email notification via existing transporter
-              try {
-                db.query("SELECT email FROM users WHERE id=(SELECT requester_id FROM blood_requests WHERE id=?)", [requestId], async (err, emailResult) => {
-                  if (!err && emailResult.length) {
-                    await transporter.sendMail({
-                      from: '"Saarthi" <shah001harsh@gmail.com>',
-                      to: emailResult[0].email,
-                      subject: '🩸 Saarthi — Your Blood Request Has Been Accepted!',
-                      html: `
+              // Send email notification via API
+              const emailResult = await sendEmailViaAPI(
+                emailResult[0].email,
+                '🩸 Saarthi — Your Blood Request Has Been Accepted!',
+                `
                         <div style="font-family:sans-serif;max-width:500px;margin:auto;padding:24px;">
                           <h2 style="color:#C0152A;">Your blood request was accepted!</h2>
                           <p>Great news — a donor has accepted your <strong>${request.blood_group}</strong> blood request.</p>
@@ -1043,10 +1047,13 @@ app.post("/accept-request", async (req, res) => {
                           <p>Please contact the donor immediately to coordinate. <strong>Call them now!</strong></p>
                           <p style="color:#8A6A6A;font-size:12px;">— Team Saarthi</p>
                         </div>`
-                    });
-                  }
-                });
-              } catch(e) { console.log('Email error:', e.message); }
+              );
+              
+              if (emailResult.success) {
+                console.log("✅ Acceptance email sent to requester");
+              } else {
+                console.log("❌ Acceptance email failed");
+              }
 
               res.json({ success: true, donor });
             }

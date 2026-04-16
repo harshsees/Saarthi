@@ -12,39 +12,72 @@
   --ink: #1A0A0A; --ink-mid: #3D1A1A; --muted: #8A6A6A; --white: #FFFFFF;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'DM Sans', sans-serif; background: white; color: var(--ink); line-height: 1.6; }
+body { font-family: 'DM Sans', sans-serif; background: #fdfdfd; color: var(--ink); line-height: 1.7; }
 
-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 60px; background: white; border-bottom: 1px solid var(--blush-mid); position: sticky; top: 0; z-index: 50; }
+/* ── NAVBAR ── */
+nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 60px; background: white; border-bottom: 1px solid var(--blush-mid); position: sticky; top: 0; z-index: 100; transition: all 0.3s; }
 .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
 .logo-icon { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark)); position: relative; }
 .logo-icon::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:2px; height:20px; background:white; border-radius:2px; }
 .logo-icon::after { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:20px; height:2px; background:white; border-radius:2px; }
-.logo-text { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--ink); }
+.logo-text { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--ink); }
 
-.content-page { max-width: 800px; margin: 80px auto; padding: 0 24px; }
-h1 { font-family: 'DM Serif Display', serif; font-size: 48px; margin-bottom: 24px; color: var(--ink); }
-h2 { font-family: 'DM Serif Display', serif; font-size: 28px; margin: 40px 0 16px; color: var(--ink); }
-p { margin-bottom: 16px; color: var(--muted); }
+.nav-links { display: flex; align-items: center; gap: 32px; }
+.nav-links a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover { color: var(--crimson); }
+.nav-cta { background: var(--crimson); color: white !important; padding: 12px 24px; border-radius: 10px; font-weight: 600; box-shadow: 0 4px 15px rgba(192,21,42,0.2); }
+.nav-cta:hover { background: var(--crimson-dark); transform: translateY(-1px); }
 
-/* ── FOOTER REDESIGN ── */
-.site-footer { padding: 60px 20px 40px; background: #fcfcfc; border-top: 1px solid rgba(0,0,0,0.05); text-align: center; }
+.nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+.nav-toggle span { width: 24px; height: 2px; background: var(--ink); border-radius: 2px; }
+
+/* ── HERO HEADER ── */
+.policy-hero { padding: 80px 20px 60px; background: linear-gradient(135deg, var(--blush), white); border-bottom: 1px solid var(--blush-mid); text-align: center; }
+.policy-tag { display: inline-block; padding: 6px 14px; background: white; border: 1px solid var(--blush-mid); border-radius: 100px; font-size: 12px; font-weight: 700; color: var(--crimson); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+.policy-hero h1 { font-family: 'DM Serif Display', serif; font-size: 48px; color: var(--ink); margin-bottom: 16px; letter-spacing: -1px; }
+.policy-hero p { color: var(--muted); font-size: 15px; font-weight: 500; }
+
+/* ── CONTENT ── */
+.content-wrapper { max-width: 850px; margin: 0 auto; padding: 80px 24px; }
+.content-card { background: white; padding: 60px; border-radius: 24px; border: 1px solid rgba(0,0,0,0.04); box-shadow: 0 10px 40px rgba(0,0,0,0.02); }
+h2 { font-family: 'DM Serif Display', serif; font-size: 28px; margin: 48px 0 20px; color: var(--ink); letter-spacing: -0.5px; }
+h2:first-of-type { margin-top: 0; }
+p { margin-bottom: 20px; color: var(--ink-mid); font-size: 16px; }
+ul { margin-bottom: 32px; padding-left: 20px; }
+li { margin-bottom: 12px; color: var(--ink-mid); }
+
+/* ── FOOTER ── */
+.site-footer { padding: 80px 20px 60px; background: white; border-top: 1px solid rgba(0,0,0,0.05); text-align: center; }
 .footer-inner { max-width: 1100px; margin: 0 auto; }
-.footer-top { display: flex; flex-direction: column; align-items: center; gap: 40px; margin-bottom: 40px; }
-.subscribe-box label { display: block; font-size: 14px; color: var(--muted); margin-bottom: 12px; }
-.subscribe-form { display: flex; gap: 0; background: white; border: 1px solid #eee; border-radius: 8px; overflow: hidden; max-width: 400px; margin: 0 auto; }
-.subscribe-form input { flex: 1; padding: 12px 16px; border: none; outline: none; font-size: 14px; }
-.subscribe-form button { background: #111; color: white; border: none; padding: 0 24px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.footer-top { display: flex; flex-direction: column; align-items: center; gap: 48px; margin-bottom: 60px; }
+.subscribe-box label { display: block; font-size: 14px; color: var(--muted); margin-bottom: 16px; font-weight: 500; }
+.subscribe-form { display: flex; gap: 0; background: white; border: 1px solid #eee; border-radius: 12px; overflow: hidden; max-width: 440px; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+.subscribe-form input { flex: 1; padding: 16px 20px; border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 15px; }
+.subscribe-form button { background: #111; color: white; border: none; padding: 0 32px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 15px; }
 .subscribe-form button:hover { background: #333; }
-.social-box h3 { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 20px; }
-.social-icons { display: flex; gap: 12px; justify-content: center; }
-.social-icons a { width: 42px; height: 42px; border: 1px solid #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #555; transition: all 0.2s; background: white; text-decoration: none; }
-.social-icons a:hover { border-color: var(--crimson); color: var(--crimson); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-.footer-line { border: none; border-top: 1px solid #eee; margin-bottom: 30px; }
-.footer-nav { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
-.footer-nav a { font-size: 14px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.social-box h3 { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--ink); margin-bottom: 24px; }
+.social-icons { display: flex; gap: 16px; justify-content: center; }
+.social-icons a { width: 48px; height: 48px; border: 1px solid #f0f0f0; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #555; transition: all 0.3s ease; background: white; text-decoration: none; }
+.social-icons a:hover { border-color: var(--crimson); color: var(--crimson); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(192,21,42,0.12); }
+.footer-line { border: none; border-top: 1px solid #f0f0f0; margin-bottom: 40px; }
+.footer-nav { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+.footer-nav a { font-size: 15px; color: var(--muted); text-decoration: none; transition: color 0.2s; font-weight: 500; }
 .footer-nav a:hover { color: var(--crimson); }
 
-@media (max-width: 900px) { nav { padding: 14px 24px; } .content-page { margin: 40px auto; } h1 { font-size: 32px; } }
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  nav { padding: 16px 24px; }
+  .nav-links { position: fixed; top: 68px; left: 0; right: 0; flex-direction: column; gap: 0; background: white; border-bottom: 1px solid var(--blush-mid); max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+  .nav-links.active { max-height: 300px; }
+  .nav-links a { padding: 16px 24px; border-bottom: 1px solid rgba(0,0,0,0.05); width: 100%; text-align: left; }
+  .nav-cta { margin: 16px 24px !important; text-align: center; }
+  .nav-toggle { display: flex; }
+  
+  .policy-hero { padding: 60px 20px; }
+  .policy-hero h1 { font-size: 36px; }
+  .content-card { padding: 40px 24px; border-radius: 0; border: none; box-shadow: none; }
+  .content-wrapper { padding: 0; }
+}
 </style>
 </head>
 <body>
@@ -54,19 +87,36 @@ p { margin-bottom: 16px; color: var(--muted); }
     <div class="logo-icon"></div>
     <span class="logo-text">Saarthi</span>
   </a>
+  <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('active')">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="login.html">Login</a>
+    <a href="post-request.html" class="nav-cta">Request Blood</a>
+  </div>
 </nav>
 
-<div class="content-page">
+<section class="policy-hero">
+  <div class="policy-tag">Contributions & Refunds</div>
   <h1>Return Policy</h1>
   <p>Last updated: April 16, 2026</p>
-  
-  <p>Saarthi is a non-profit donor connection platform. We do not sell products or services, and therefore do not have a standard commercial return policy.</p>
-  
-  <h2>Donations</h2>
-  <p>Blood donations are voluntary and cannot be "returned" once the procedure is complete. If you have concerns about a donation experience, please contact the hospital where the donation took place.</p>
-  
-  <h2>Monetary Contributions</h2>
-  <p>If you have made a voluntary contribution to support our technology costs and would like to request a refund, please contact us within 7 days of the transaction.</p>
+</section>
+
+<div class="content-wrapper">
+  <div class="content-card">
+    <p>Saarthi operates as a dedicated non-profit connection platform. Our mission is to facilitate lifesaving blood donations between volunteers and patients. Because we do not sell physical products or commercial services, our return policy is governed by the specialized nature of our work.</p>
+    
+    <h2>Blood Donations</h2>
+    <p>Blood donations are acts of voluntary goodwill and medical necessity. Once a donation procedure has been completed at a medical facility, it cannot be "returned" or "refunded." If you have any concerns regarding the safety, hygiene, or conduct during a donation session, we advise you to contact the hospital or blood bank where the procedure took place immediately.</p>
+    
+    <h2>Monetary Contributions</h2>
+    <p>We deeply appreciate individuals who provide voluntary monetary contributions to help maintain our AI matching technology and server costs. Should you need to request a refund for a contribution made in error, please contact us at <strong>support@saarthi.org</strong> within 7 calendar days of the transaction.</p>
+    
+    <h2>Non-Commercial Nature</h2>
+    <p>Saarthi does not charge patients for blood or charge donors for their service. Any attempt to solicit funds in exchange for blood on our platform is a violation of our Terms of Service and should be reported immediately.</p>
+  </div>
 </div>
 
 <footer class="site-footer">

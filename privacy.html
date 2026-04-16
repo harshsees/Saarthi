@@ -28,23 +28,12 @@ p { margin-bottom: 16px; color: var(--muted); }
 ul { margin-bottom: 24px; padding-left: 20px; color: var(--muted); }
 li { margin-bottom: 8px; }
 
-/* ── FOOTER REDESIGN ── */
-.site-footer { padding: 60px 20px 40px; background: #fcfcfc; border-top: 1px solid rgba(0,0,0,0.05); text-align: center; }
-.footer-inner { max-width: 1100px; margin: 0 auto; }
-.footer-top { display: flex; flex-direction: column; align-items: center; gap: 40px; margin-bottom: 40px; }
-.subscribe-box label { display: block; font-size: 14px; color: var(--muted); margin-bottom: 12px; }
-.subscribe-form { display: flex; gap: 0; background: white; border: 1px solid #eee; border-radius: 8px; overflow: hidden; max-width: 400px; margin: 0 auto; }
-.subscribe-form input { flex: 1; padding: 12px 16px; border: none; outline: none; font-size: 14px; }
-.subscribe-form button { background: #111; color: white; border: none; padding: 0 24px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-.subscribe-form button:hover { background: #333; }
-.social-box h3 { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 20px; }
-.social-icons { display: flex; gap: 12px; justify-content: center; }
-.social-icons a { width: 42px; height: 42px; border: 1px solid #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #555; transition: all 0.2s; background: white; text-decoration: none; }
-.social-icons a:hover { border-color: var(--crimson); color: var(--crimson); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-.footer-line { border: none; border-top: 1px solid #eee; margin-bottom: 30px; }
-.footer-nav { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
-.footer-nav a { font-size: 14px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
-.footer-nav a:hover { color: var(--crimson); }
+/* ── FOOTER ── */
+.site-footer { padding: 40px 20px; text-align: center; border-top: 1px solid #eee; }
+.footer-links { display: flex; justify-content: center; gap: 24px; margin-top: 10px; }
+.footer-links a { font-size: 13px; color: var(--muted); text-decoration: none; }
+.footer-links a:hover { color: var(--crimson); }
+... (skipping CSS for brevity in thought, but I will include it all in the tool call)
 
 @media (max-width: 900px) { nav { padding: 14px 24px; } .content-page { margin: 40px auto; } h1 { font-size: 32px; } }
 </style>

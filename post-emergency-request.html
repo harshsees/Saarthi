@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saarthi — Post Blood Request</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --crimson: #C0152A; --crimson-dark: #8B0000; --crimson-light: #FF3547;
+  --blush: #FFF1F1; --blush-mid: #FFE0E0;
+  --ink: #1A0A0A; --ink-mid: #3D1A1A; --muted: #8A6A6A; --white: #FFFFFF;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; background: #F8F4F4; min-height: 100vh; display: flex; flex-direction: column; }
+.post-main { flex: 1; min-height: calc(100vh - 80px - 300px); }
+
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 60px; background: white;
+  border-bottom: 1px solid var(--blush-mid); position: sticky; top: 0; z-index: 50;
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo-icon { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark)); position: relative; }
+.logo-icon::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:2px; height:20px; background:white; border-radius:2px; }
+.logo-icon::after  { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:20px; height:2px; background:white; border-radius:2px; }
+.logo-text { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--ink); }
+.nav-back { font-size: 13px; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 6px; }
+.nav-back:hover { color: var(--crimson); }
+
+.page-wrap {
+  max-width: 1100px; margin: 0 auto; padding: 40px 24px;
+  display: grid; grid-template-columns: 1fr 340px; gap: 24px;
+  align-items: start;
+}
+
+.form-card {
+  background: white; border-radius: 24px; padding: 44px;
+  box-shadow: 0 4px 30px rgba(192,21,42,0.07);
+  border: 1px solid rgba(192,21,42,0.06);
+}
+
+.card-head { margin-bottom: 36px; }
+.urgency-banner {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--blush); border: 1px solid var(--blush-mid);
+  padding: 10px 16px; border-radius: 10px; margin-bottom: 20px;
+  font-size: 13px; font-weight: 600; color: var(--crimson);
+}
+.card-head h1 { font-family: 'DM Serif Display', serif; font-size: 32px; color: var(--ink); letter-spacing: -0.6px; margin-bottom: 8px; }
+.card-head p  { font-size: 14px; color: var(--muted); }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.form-grid .full { grid-column: span 2; }
+
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field label { font-size: 11px; font-weight: 700; color: var(--ink-mid); letter-spacing: 0.5px; text-transform: uppercase; }
+.field input, .field select, .field textarea {
+  padding: 13px 16px; border: 1.5px solid var(--blush-mid);
+  border-radius: 10px; font-family: 'DM Sans', sans-serif;
+  font-size: 14px; color: var(--ink); background: white;
+  outline: none; transition: all 0.2s; appearance: none;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: var(--crimson); box-shadow: 0 0 0 3px rgba(192,21,42,0.08);
+}
+.field input.err, .field select.err { border-color: var(--crimson); background: var(--blush); }
+.field textarea { height: 90px; resize: none; }
+
+.error-msg { display: none; font-size: 11px; color: var(--crimson); padding: 5px 10px; background: var(--blush); border-radius: 6px; }
+.error-msg.show { display: block; }
+
+.urgency-pills { display: flex; gap: 10px; }
+.urg-pill {
+  flex: 1; padding: 12px 8px; border-radius: 10px; border: 1.5px solid var(--blush-mid);
+  text-align: center; font-size: 13px; font-weight: 700; cursor: pointer;
+  transition: all 0.2s; color: var(--muted); background: white;
+}
+.urg-pill:hover { border-color: var(--crimson); }
+.urg-pill.selected-normal   { background: #F3F4F6; border-color: #D1D5DB; color: #374151; }
+.urg-pill.selected-urgent   { background: #FFF7ED; border-color: #F97316; color: #C2410C; }
+.urg-pill.selected-critical { background: var(--blush); border-color: var(--crimson); color: var(--crimson); }
+.urg-pill span { display: block; font-size: 16px; margin-bottom: 4px; }
+
+.blood-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.blood-pill {
+  padding: 10px 14px; border-radius: 8px; border: 1.5px solid var(--blush-mid);
+  font-family: 'DM Serif Display', serif; font-size: 15px; cursor: pointer;
+  transition: all 0.2s; color: var(--ink-mid); background: white;
+}
+.blood-pill:hover  { border-color: var(--crimson); color: var(--crimson); }
+.blood-pill.selected { background: var(--crimson); border-color: var(--crimson); color: white; }
+
+.btn-row { display: flex; gap: 12px; margin-top: 32px; }
+.btn-post {
+  flex: 1; padding: 15px; background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark));
+  color: white; border: none; border-radius: 12px;
+  font-family: 'DM Sans'; font-size: 16px; font-weight: 700;
+  cursor: pointer; box-shadow: 0 8px 24px rgba(192,21,42,0.28); transition: all 0.2s;
+}
+.btn-post:hover { transform: translateY(-1px); box-shadow: 0 12px 30px rgba(192,21,42,0.36); }
+.btn-post:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+.btn-cancel {
+  padding: 15px 22px; background: white;
+  border: 1.5px solid var(--blush-mid); border-radius: 12px;
+  font-family: 'DM Sans'; font-size: 14px; font-weight: 700;
+  color: var(--muted); cursor: pointer; transition: all 0.2s;
+}
+.btn-cancel:hover { border-color: var(--crimson); color: var(--crimson); }
+
+.side-col { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 80px; }
+.side-card {
+  background: white; border-radius: 20px; padding: 24px;
+  box-shadow: 0 2px 16px rgba(192,21,42,0.06);
+  border: 1px solid rgba(192,21,42,0.06);
+}
+.sc-title { font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--ink); margin-bottom: 16px; }
+.preview-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--blush); }
+.preview-item:last-child { border-bottom: none; }
+.pi-label { font-size: 12px; color: var(--muted); font-weight: 600; }
+.pi-value { font-size: 13px; font-weight: 700; color: var(--ink); }
+.pi-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
+.badge-normal   { background: #F3F4F6; color: #374151; }
+.badge-urgent   { background: #FFF7ED; color: #EA580C; }
+.badge-critical { background: var(--blush); color: var(--crimson); }
+.tips-list { display: flex; flex-direction: column; gap: 10px; }
+.tip-item { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: var(--muted); line-height: 1.55; }
+.tip-num { width: 20px; height: 20px; background: var(--blush); border-radius: 50%; color: var(--crimson); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+
+.matching-status { padding: 16px; background: var(--blush); border-radius: 12px; text-align: center; display: none; margin-top: 20px; }
+.matching-status.show { display: block; }
+.ms-spinner { font-size: 24px; animation: spin 1s linear infinite; display: block; margin-bottom: 8px; }
+.ms-text { font-size: 13px; font-weight: 700; color: var(--crimson); }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width: 900px) {
+  nav { padding: 14px 20px; }
+  .page-wrap { grid-template-columns: 1fr; padding: 24px 16px; margin: 0; }
+  .form-card { padding: 28px 20px; border-radius: 20px; }
+  .side-col { display: none; }
+}
+
+@media (max-width: 600px) {
+  nav { padding: 12px 16px; }
+  .logo-text { font-size: 18px; }
+  .card-head h1 { font-size: 26px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-grid .full { grid-column: span 1; }
+  .urgency-pills { flex-direction: column; }
+  .urg-pill { padding: 14px; }
+  .blood-pills { justify-content: center; }
+  .btn-row { flex-direction: column; }
+  .btn-cancel { order: 2; }
+}
+
+@media (max-width: 400px) {
+  .form-card { padding: 20px 16px; }
+  .card-head h1 { font-size: 22px; }
+  .card-head p { font-size: 13px; }
+  .field input, .field select, .field textarea { padding: 11px 14px; }
+}
+
+/* FOOTER */
+.site-footer {
+  padding: 80px 60px 40px;
+  background: white; border-top: 1px solid var(--blush-mid);
+  margin-top: auto;
+}
+.footer-inner { max-width: 1100px; margin: 0 auto; }
+.footer-top {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 60px; gap: 40px;
+}
+.subscribe-box label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
+.subscribe-form { display: flex; gap: 0; background: white; border: 1px solid #eee; border-radius: 12px; overflow: hidden; max-width: 400px; }
+.subscribe-form input { flex: 1; padding: 14px 18px; border: none; outline: none; font-size: 14px; }
+.subscribe-form button { background: #111; color: white; border: none; padding: 0 24px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+.subscribe-form button:hover { background: #333; }
+.social-box h3 { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 20px; }
+.social-icons { display: flex; gap: 15px; }
+.social-icons a {
+  width: 44px; height: 44px; border: 1px solid #eee; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: #555; transition: all 0.2s; background: white;
+}
+.social-icons a:hover { border-color: var(--crimson); color: var(--crimson); transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.06); }
+.footer-line { border: none; border-top: 1px solid #eee; margin-bottom: 30px; }
+.footer-bottom { display: flex; justify-content: center; }
+.footer-nav { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; }
+.footer-nav a { font-size: 14px; color: var(--muted); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.footer-nav a:hover { color: var(--crimson); }
+@media (max-width: 768px) {
+  .footer-top { flex-direction: column; align-items: center; text-align: center; }
+  .subscribe-form { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon"></div>
+    <span class="logo-text">Saarthi</span>
+  </a>
+  <a href="javascript:history.back()" class="nav-back">← Back</a>
+</nav>
+
+<div class="post-main">
+  <div class="page-wrap">
+    <div class="form-card">
+      <div class="card-head">
+        <div class="urgency-banner">
+          <span>🔔</span> Urgent requests notify donors within 5km immediately.
+        </div>
+        <h1>Post Blood Request</h1>
+        <p>Fill in the medical details. Our AI will notify the best-matched donors near the hospital.</p>
+      </div>
+
+      <div class="form-grid">
+        <!-- Guest Name Field -->
+        <div class="field full" id="guestNameField">
+          <label>Your Full Name</label>
+          <input type="text" id="requesterName" placeholder="Enter your full name">
+          <div class="error-msg" id="nameError"></div>
+        </div>
+
+        <div class="field full">
+          <label>Blood Group Required</label>
+          <input type="hidden" id="bloodGroup">
+          <div class="blood-pills">
+            <div class="blood-pill" data-val="A+">A+</div>
+            <div class="blood-pill" data-val="A-">A-</div>
+            <div class="blood-pill" data-val="B+">B+</div>
+            <div class="blood-pill" data-val="B-">B-</div>
+            <div class="blood-pill" data-val="AB+">AB+</div>
+            <div class="blood-pill" data-val="AB-">AB-</div>
+            <div class="blood-pill" data-val="O+">O+</div>
+            <div class="blood-pill" data-val="O-">O-</div>
+          </div>
+          <div class="error-msg" id="bloodGroupError"></div>
+        </div>
+
+        <div class="field">
+          <label>Units Required</label>
+          <input type="number" id="units" placeholder="e.g. 2" min="1" max="10">
+          <div class="error-msg" id="unitsError"></div>
+        </div>
+
+        <div class="field">
+          <label>Urgency Level</label>
+          <input type="hidden" id="urgency" value="Normal">
+          <div class="urgency-pills">
+            <div class="urg-pill selected-normal" data-val="Normal">
+              <span>🧘</span> Normal
+            </div>
+            <div class="urg-pill" data-val="Urgent">
+              <span>⚡</span> Urgent
+            </div>
+            <div class="urg-pill" data-val="Critical">
+              <span>🚨</span> Critical
+            </div>
+          </div>
+        </div>
+
+        <div class="field full">
+          <label>Hospital / Location</label>
+          <input type="text" id="location" placeholder="e.g. Apollo Hospital, Ahmedabad">
+          <div class="error-msg" id="locationError"></div>
+        </div>
+
+        <div class="field">
+          <label>Contact Phone</label>
+          <input type="tel" id="phone" placeholder="98765 43210" maxlength="10">
+          <div class="error-msg" id="phoneError"></div>
+        </div>
+
+        <div class="field full">
+          <label>Additional Notes (Optional)</label>
+          <textarea id="notes" placeholder="e.g. Please bring ID proof, patient is in ICU..."></textarea>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-cancel" onclick="history.back()">Cancel</button>
+        <button class="btn-post" id="postBtn">Post Request</button>
+      </div>
+
+      <div class="matching-status" id="matchingStatus">
+        <span class="ms-spinner">🔍</span>
+        <div class="ms-text">Finding nearby donors...</div>
+      </div>
+    </div>
+
+    <div class="side-col">
+      <div class="side-card">
+        <div class="sc-title">Request Summary</div>
+        <div class="preview-item">
+          <span class="pi-label">Blood Group</span>
+          <span class="pi-value" id="pBlood">—</span>
+        </div>
+        <div class="preview-item">
+          <span class="pi-label">Quantity</span>
+          <span class="pi-value" id="pUnits">—</span>
+        </div>
+        <div class="preview-item">
+          <span class="pi-label">Urgency</span>
+          <span class="pi-value" id="pUrgency">
+            <span class="pi-badge badge-normal">Normal</span>
+          </span>
+        </div>
+        <div class="preview-item">
+          <span class="pi-label">Location</span>
+          <span class="pi-value" id="pLocation">—</span>
+        </div>
+        <div class="preview-item">
+          <span class="pi-label">Contact</span>
+          <span class="pi-value" id="pPhone">—</span>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <div class="sc-title">Quick Tips</div>
+        <div class="tips-list">
+          <div class="tip-item">
+            <div class="tip-num">1</div>
+            <div>Be specific about the hospital branch and room number if possible.</div>
+          </div>
+          <div class="tip-item">
+            <div class="tip-num">2</div>
+            <div>Ensure the contact person's phone is reachable.</div>
+          </div>
+          <div class="tip-item">
+            <div class="tip-num">3</div>
+            <div>Our matching algorithm prioritizes donors within a 5km radius.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="subscribe-box">
+        <label>Newsletter</label>
+        <div class="subscribe-form">
+          <input type="email" placeholder="Email address">
+          <button>Join</button>
+        </div>
+      </div>
+      <div class="social-box">
+        <h3>Connect with us</h3>
+        <div class="social-icons">
+          <a href="#"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+          <a href="#"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a>
+          <a href="#"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+        </div>
+      </div>
+    </div>
+    <hr class="footer-line">
+    <div class="footer-bottom">
+      <div class="footer-nav">
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+        <a href="return.html">Return Policy</a>
+        <a href="admin.html">Admin</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const API = window.location.hostname === 'saarthi-backend-ahto.onrender.com' 
+  ? '' 
+  : 'https://saarthi-backend-ahto.onrender.com';
+
+/* ── PRE-FILL & UI INIT ── */
+const userId = localStorage.getItem('userId');
+const userName = localStorage.getItem('userName');
+
+if (userId && userName) {
+  const nameInput = document.getElementById('requesterName');
+  if (nameInput) nameInput.value = userName;
+}
+
+/* ── BLOOD PILLS ── */
+document.querySelectorAll('.blood-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.blood-pill').forEach(p => p.classList.remove('selected'));
+    pill.classList.add('selected');
+    document.getElementById('bloodGroup').value = pill.dataset.val;
+    clearError('bloodGroupError');
+    updatePreview();
+  });
+});
+
+/* ── URGENCY PILLS ── */
+document.querySelectorAll('.urg-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.urg-pill').forEach(p => { p.className = 'urg-pill'; });
+    const v = pill.dataset.val;
+    if (v === 'Normal')   pill.classList.add('selected-normal');
+    else if (v === 'Urgent')   pill.classList.add('selected-urgent');
+    else                       pill.classList.add('selected-critical');
+    document.getElementById('urgency').value = v;
+    updatePreview();
+  });
+});
+
+/* ── LIVE PREVIEW ── */
+function updatePreview() {
+  const b   = document.getElementById('bloodGroup').value;
+  const u   = document.getElementById('units').value;
+  const urg = document.getElementById('urgency').value;
+  const loc = document.getElementById('location').value;
+  const ph  = document.getElementById('phone').value;
+  document.getElementById('pBlood').textContent   = b || '—';
+  document.getElementById('pUnits').textContent   = u ? u + ' unit' + (u > 1 ? 's' : '') : '—';
+  document.getElementById('pLocation').textContent = loc || '—';
+  document.getElementById('pPhone').textContent   = ph || '—';
+  const urgMap = {
+    Normal:   ['badge-normal',   'Normal'],
+    Urgent:   ['badge-urgent',   'Urgent'],
+    Critical: ['badge-critical', 'Critical']
+  };
+  const [cls, lbl] = urgMap[urg] || urgMap['Normal'];
+  document.getElementById('pUrgency').innerHTML = `<span class="pi-badge ${cls}">${lbl}</span>`;
+}
+
+['units','location','phone'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', updatePreview);
+});
+
+/* ── HELPERS ── */
+function showError(id, msg) {
+  const e = document.getElementById(id); 
+  if (e) { e.textContent = '✱ ' + msg; e.classList.add('show'); }
+}
+function clearError(id) { 
+  const e = document.getElementById(id);
+  if (e) e.classList.remove('show'); 
+}
+function markErr(id) { 
+  const e = document.getElementById(id);
+  if (e) e.classList.add('err'); 
+}
+function clearErr(id) { 
+  const e = document.getElementById(id);
+  if (e) e.classList.remove('err'); 
+}
+
+/* ── INDIVIDUAL VALIDATORS ── */
+function validateName() {
+  const v = document.getElementById('requesterName').value.trim();
+  clearError('nameError'); clearErr('requesterName');
+  if (v.length < 2) {
+    showError('nameError', 'Please enter your full name'); markErr('requesterName'); return false;
+  }
+  return true;
+}
+
+function validateBlood() {
+  clearError('bloodGroupError');
+  if (!document.getElementById('bloodGroup').value) {
+    showError('bloodGroupError', 'Please select a blood group'); return false;
+  }
+  return true;
+}
+
+function validateUnits() {
+  const v = document.getElementById('units').value;
+  clearError('unitsError'); clearErr('units');
+  if (!v || Number(v) <= 0 || Number(v) > 10) {
+    showError('unitsError', 'Enter units between 1 and 10'); markErr('units'); return false;
+  }
+  return true;
+}
+
+function validateLocation() {
+  const v = document.getElementById('location').value.trim();
+  clearError('locationError'); clearErr('location');
+  if (v.length < 3) {
+    showError('locationError', 'Hospital or location is required'); markErr('location'); return false;
+  }
+  return true;
+}
+
+function validatePhone() {
+  const v = document.getElementById('phone').value.trim();
+  clearError('phoneError'); clearErr('phone');
+  if (!/^[6-9]\d{9}$/.test(v)) {
+    showError('phoneError', 'Enter a valid 10-digit mobile number'); markErr('phone'); return false;
+  }
+  return true;
+}
+
+function validate() {
+  const n = validateName();
+  const b = validateBlood();
+  const u = validateUnits();
+  const l = validateLocation();
+  const p = validatePhone();
+  return n && b && u && l && p;
+}
+
+/* ── POST REQUEST ── */
+document.getElementById('postBtn').addEventListener('click', async () => {
+  if (!validate()) return;
+
+  const btn = document.getElementById('postBtn');
+  btn.textContent = 'Processing...'; btn.disabled = true;
+  document.getElementById('matchingStatus').classList.add('show');
+
+  // Use userId if available, otherwise 0 for Guest
+  const rId = localStorage.getItem('userId');
+  const requesterId = rId ? parseInt(rId) : 0;
+  const requesterName = document.getElementById('requesterName').value.trim();
+
+  let latitude = null;
+  let longitude = null;
+  
+  try {
+    const position = await new Promise((resolve, reject) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 8000 });
+      } else {
+        reject(new Error('No geo support'));
+      }
+    });
+    latitude = position.coords.latitude;
+    longitude = position.coords.longitude;
+  } catch (e) {
+    console.log('Location access denied or timed out');
+  }
+
+  const request = {
+    id:            Date.now(),
+    requesterId:   requesterId,
+    requesterName: requesterName,
+    blood:         document.getElementById('bloodGroup').value,
+    units:         document.getElementById('units').value,
+    urgency:       document.getElementById('urgency').value,
+    location:      document.getElementById('location').value.trim(),
+    phone:         document.getElementById('phone').value.trim(),
+    notes:         document.getElementById('notes').value.trim(),
+    latitude:      latitude,
+    longitude:     longitude,
+    status:        'pending'
+  };
+
+  try {
+    // 1. Match donors
+    const matchRes = await fetch(API + '/match-donors', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ blood_group: request.blood, city: request.location, latitude: latitude, longitude: longitude })
+    });
+    const matchData = await matchRes.json();
+    request.matchedDonors = matchData.donors ? matchData.donors.map(d =\u003e d.user_id) : [];
+
+    // 2. Save request
+    const saveRes = await fetch(API + '/save-request', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request)
+    });
+    const saveData = await saveRes.json();
+
+    if (saveData.success) {
+      window.location.href = `tracking.html?id=${saveData.requestId}`;
+    } else {
+      throw new Error(saveData.message || 'Failed to post');
+    }
+  } catch (e) {
+    alert('Error: ' + e.message);
+    btn.textContent = 'Post Request'; btn.disabled = false;
+    document.getElementById('matchingStatus').classList.remove('show');
+  }
+});
+</script>
+</body>
+</html>

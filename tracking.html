@@ -404,7 +404,9 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
     <div class="logo-icon"></div>
     <span class="logo-text">Saarthi</span>
   </a>
-  <a href="request-status.html" class="nav-back">← My Requests</a>
+  ${userId ? 
+    `<a href="request-status.html" class="nav-back">← My Requests</a>` : 
+    `<a href="index.html" class="nav-back">← Back to Home</a>`}
 </nav>
 
 <div class="tracking-main">
@@ -462,7 +464,7 @@ const userName  = localStorage.getItem('userName');
 const params    = new URLSearchParams(window.location.search);
 const requestId = params.get('id');
 
-if (!userId) window.location.href = 'login.html';
+// if (!userId) window.location.href = 'login.html'; // Allow guests to track requests
 if (!requestId) window.location.href = 'request-status.html';
 
 let pollInterval = null;
@@ -487,7 +489,9 @@ async function loadTracking() {
       <div style="text-align:center;padding:60px;color:var(--muted);">
         <div style="font-size:36px;margin-bottom:16px;">⚠️</div>
         <div style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:8px;">Request not found</div>
-        <a href="request-status.html" style="color:var(--crimson);font-weight:700;text-decoration:none;">← Back to My Requests</a>
+        ${userId ? 
+          `<a href="request-status.html" style="color:var(--crimson);font-weight:700;text-decoration:none;">← Back to My Requests</a>` :
+          `<a href="index.html" style="color:var(--crimson);font-weight:700;text-decoration:none;">← Back to Home</a>`}
       </div>`;
   }
 }
@@ -688,7 +692,7 @@ function render(req) {
       <div class="detail-row"><div class="detail-icon">🏥</div><span>Location: <span class="detail-val">${req.location}</span></span></div>
       <div class="detail-row"><div class="detail-icon">📱</div><span>Your Contact: <span class="detail-val">${req.phone}</span></span></div>
       ${req.notes ? `<div class="detail-row"><div class="detail-icon">📝</div><span>Notes: <span class="detail-val">${req.notes}</span></span></div>` : ''}
-      ${req.status === 'pending' ? `<button class="btn-cancel" onclick="cancelRequest()">Cancel This Request</button>` : ''}
+      ${req.status === 'pending' && userId && req.requester_id == userId ? `<button class="btn-cancel" onclick="cancelRequest()">Cancel This Request</button>` : ''}
     </div>`;
 
   // ══════════════════════════════════════════════════════

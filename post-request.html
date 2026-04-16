@@ -13,7 +13,7 @@
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'DM Sans', sans-serif; background: #F8F4F4; min-height: 100vh; display: flex; flex-direction: column; }
-.post-main { flex: 1; }
+.post-main { flex: 1; min-height: calc(100vh - 80px - 300px); }
 
 nav {
   display: flex; align-items: center; justify-content: space-between;
@@ -138,7 +138,7 @@ nav {
   nav { padding: 14px 20px; }
   .page-wrap { grid-template-columns: 1fr; padding: 24px 16px; margin: 0; }
   .form-card { padding: 28px 20px; border-radius: 20px; }
-  .side-panel { display: none; }
+  .side-col { display: none; }
 }
 
 @media (max-width: 600px) {
@@ -160,6 +160,40 @@ nav {
   .card-head p { font-size: 13px; }
   .field input, .field select, .field textarea { padding: 11px 14px; }
 }
+
+/* FOOTER */
+.site-footer {
+  padding: 80px 60px 40px;
+  background: white; border-top: 1px solid var(--blush-mid);
+  margin-top: auto;
+}
+.footer-inner { max-width: 1100px; margin: 0 auto; }
+.footer-top {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 60px; gap: 40px;
+}
+.subscribe-box label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
+.subscribe-form { display: flex; gap: 0; background: white; border: 1px solid #eee; border-radius: 12px; overflow: hidden; max-width: 400px; }
+.subscribe-form input { flex: 1; padding: 14px 18px; border: none; outline: none; font-size: 14px; }
+.subscribe-form button { background: #111; color: white; border: none; padding: 0 24px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+.subscribe-form button:hover { background: #333; }
+.social-box h3 { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 20px; }
+.social-icons { display: flex; gap: 15px; }
+.social-icons a {
+  width: 44px; height: 44px; border: 1px solid #eee; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: #555; transition: all 0.2s; background: white;
+}
+.social-icons a:hover { border-color: var(--crimson); color: var(--crimson); transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.06); }
+.footer-line { border: none; border-top: 1px solid #eee; margin-bottom: 30px; }
+.footer-bottom { display: flex; justify-content: center; }
+.footer-nav { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; }
+.footer-nav a { font-size: 14px; color: var(--muted); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.footer-nav a:hover { color: var(--crimson); }
+@media (max-width: 768px) {
+  .footer-top { flex-direction: column; align-items: center; text-align: center; }
+  .subscribe-form { max-width: 100%; }
+}
 </style>
 </head>
 <body>
@@ -172,30 +206,156 @@ nav {
   <a href="javascript:history.back()" class="nav-back">← Back</a>
 </nav>
 
+<div class="post-main">
+  <div class="page-wrap">
+    <div class="form-card">
+      <div class="card-head">
+        <div class="urgency-banner">
+          <span>🔔</span> Urgent requests notify donors within 5km immediately.
+        </div>
+        <h1>Post Blood Request</h1>
+        <p>Fill in the medical details. Our AI will notify the best-matched donors near the hospital.</p>
+      </div>
+
+      <div class="form-grid">
+        <!-- Guest Name Field -->
+        <div class="field full" id="guestNameField">
+          <label>Your Full Name</label>
+          <input type="text" id="requesterName" placeholder="Enter your full name">
+          <div class="error-msg" id="nameError"></div>
+        </div>
+
+        <div class="field full">
+          <label>Blood Group Required</label>
+          <input type="hidden" id="bloodGroup">
+          <div class="blood-pills">
+            <div class="blood-pill" data-val="A+">A+</div>
+            <div class="blood-pill" data-val="A-">A-</div>
+            <div class="blood-pill" data-val="B+">B+</div>
+            <div class="blood-pill" data-val="B-">B-</div>
+            <div class="blood-pill" data-val="AB+">AB+</div>
+            <div class="blood-pill" data-val="AB-">AB-</div>
+            <div class="blood-pill" data-val="O+">O+</div>
+            <div class="blood-pill" data-val="O-">O-</div>
+          </div>
+          <div class="error-msg" id="bloodGroupError"></div>
+        </div>
+
+        <div class="field">
+          <label>Units Required</label>
+          <input type="number" id="units" placeholder="e.g. 2" min="1" max="10">
+          <div class="error-msg" id="unitsError"></div>
+        </div>
+
+        <div class="field">
+          <label>Urgency Level</label>
+          <input type="hidden" id="urgency" value="Normal">
+          <div class="urgency-pills">
+            <div class="urg-pill selected-normal" data-val="Normal">
+              <span>🧘</span> Normal
+            </div>
+            <div class="urg-pill" data-val="Urgent">
+              <span>⚡</span> Urgent
+            </div>
+            <div class="urg-pill" data-val="Critical">
+              <span>🚨</span> Critical
+            </div>
+          </div>
+        </div>
+
+        <div class="field full">
+          <label>Hospital / Location</label>
+          <input type="text" id="location" placeholder="e.g. Apollo Hospital, Ahmedabad">
+          <div class="error-msg" id="locationError"></div>
+        </div>
+
+        <div class="field">
+          <label>Contact Phone</label>
+          <input type="tel" id="phone" placeholder="98765 43210" maxlength="10">
+          <div class="error-msg" id="phoneError"></div>
+        </div>
+
+        <div class="field full">
+          <label>Additional Notes (Optional)</label>
+          <textarea id="notes" placeholder="e.g. Please bring ID proof, patient is in ICU..."></textarea>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-cancel" onclick="history.back()">Cancel</button>
+        <button class="btn-post" id="postBtn">Post Request</button>
+      </div>
+
+      <div class="matching-status" id="matchingStatus">
+        <span class="ms-spinner">🔍</span>
+        <div class="ms-text">Finding nearby donors...</div>
+      </div>
+    </div>
+
+    <div class="side-col">
+      <div class="side-card">
+        <div class="sc-title">Request Summary</div>
+        <div class="preview-item">
+          <span class="pi-label">Blood Group</span>
+          <span class="pi-value" id="pBlood">—</span>
+        </div>
+        <div class="preview-item">
+          <span class="pi-label">Quantity</span>
+          <span class="pi-value" id="pUnits">—</span>
+        </div>
+        <div class="preview-item">
+          <span class="pi-label">Urgency</span>
+          <span class="pi-value" id="pUrgency">
+            <span class="pi-badge badge-normal">Normal</span>
+          </span>
+        </div>
+        <div class="preview-item">
+          <span class="pi-label">Location</span>
+          <span class="pi-value" id="pLocation">—</span>
+        </div>
+        <div class="preview-item">
+          <span class="pi-label">Contact</span>
+          <span class="pi-value" id="pPhone">—</span>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <div class="sc-title">Quick Tips</div>
+        <div class="tips-list">
+          <div class="tip-item">
+            <div class="tip-num">1</div>
+            <div>Be specific about the hospital branch and room number if possible.</div>
+          </div>
+          <div class="tip-item">
+            <div class="tip-num">2</div>
+            <div>Ensure the contact person's phone is reachable.</div>
+          </div>
+          <div class="tip-item">
+            <div class="tip-num">3</div>
+            <div>Our matching algorithm prioritizes donors within a 5km radius.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-top">
       <div class="subscribe-box">
-        <label>Your email</label>
+        <label>Newsletter</label>
         <div class="subscribe-form">
           <input type="email" placeholder="Email address">
-          <button>Subscribe</button>
+          <button>Join</button>
         </div>
       </div>
       <div class="social-box">
-        <h3>Follow Us</h3>
+        <h3>Connect with us</h3>
         <div class="social-icons">
-          <a href="#">
-            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-          </a>
-          <a href="#">
-            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
-          </a>
-          <a href="#">
-            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-          </a>
+          <a href="#"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+          <a href="#"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a>
+          <a href="#"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
         </div>
       </div>
     </div>
@@ -216,10 +376,13 @@ const API = window.location.hostname === 'saarthi-backend-ahto.onrender.com'
   ? '' 
   : 'https://saarthi-backend-ahto.onrender.com';
 
-/* ── AUTH GUARD ── */
-if (!localStorage.getItem("userId")) {
-  alert("Please log in first to post a blood request.");
-  window.location.href = "login.html";
+/* ── PRE-FILL & UI INIT ── */
+const userId = localStorage.getItem('userId');
+const userName = localStorage.getItem('userName');
+
+if (userId && userName) {
+  const nameInput = document.getElementById('requesterName');
+  if (nameInput) nameInput.value = userName;
 }
 
 /* ── BLOOD PILLS ── */
@@ -228,7 +391,7 @@ document.querySelectorAll('.blood-pill').forEach(pill => {
     document.querySelectorAll('.blood-pill').forEach(p => p.classList.remove('selected'));
     pill.classList.add('selected');
     document.getElementById('bloodGroup').value = pill.dataset.val;
-    clearError('bloodGroupError'); // clear error immediately on selection
+    clearError('bloodGroupError');
     updatePreview();
   });
 });
@@ -266,19 +429,39 @@ function updatePreview() {
   document.getElementById('pUrgency').innerHTML = `<span class="pi-badge ${cls}">${lbl}</span>`;
 }
 
-['units','location','phone'].forEach(id =>
-  document.getElementById(id).addEventListener('input', updatePreview)
-);
+['units','location','phone'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', updatePreview);
+});
 
 /* ── HELPERS ── */
 function showError(id, msg) {
-  const e = document.getElementById(id); e.textContent = '✱ ' + msg; e.classList.add('show');
+  const e = document.getElementById(id); 
+  if (e) { e.textContent = '✱ ' + msg; e.classList.add('show'); }
 }
-function clearError(id) { document.getElementById(id).classList.remove('show'); }
-function markErr(id)    { document.getElementById(id).classList.add('err'); }
-function clearErr(id)   { document.getElementById(id).classList.remove('err'); }
+function clearError(id) { 
+  const e = document.getElementById(id);
+  if (e) e.classList.remove('show'); 
+}
+function markErr(id) { 
+  const e = document.getElementById(id);
+  if (e) e.classList.add('err'); 
+}
+function clearErr(id) { 
+  const e = document.getElementById(id);
+  if (e) e.classList.remove('err'); 
+}
 
 /* ── INDIVIDUAL VALIDATORS ── */
+function validateName() {
+  const v = document.getElementById('requesterName').value.trim();
+  clearError('nameError'); clearErr('requesterName');
+  if (v.length < 2) {
+    showError('nameError', 'Please enter your full name'); markErr('requesterName'); return false;
+  }
+  return true;
+}
+
 function validateBlood() {
   clearError('bloodGroupError');
   if (!document.getElementById('bloodGroup').value) {
@@ -292,9 +475,6 @@ function validateUnits() {
   clearError('unitsError'); clearErr('units');
   if (!v || Number(v) <= 0 || Number(v) > 10) {
     showError('unitsError', 'Enter units between 1 and 10'); markErr('units'); return false;
-  }
-  if (!Number.isInteger(Number(v))) {
-    showError('unitsError', 'Must be a whole number'); markErr('units'); return false;
   }
   return true;
 }
@@ -312,73 +492,54 @@ function validatePhone() {
   const v = document.getElementById('phone').value.trim();
   clearError('phoneError'); clearErr('phone');
   if (!/^[6-9]\d{9}$/.test(v)) {
-    showError('phoneError', 'Enter a valid 10-digit Indian mobile number'); markErr('phone'); return false;
+    showError('phoneError', 'Enter a valid 10-digit mobile number'); markErr('phone'); return false;
   }
   return true;
 }
 
 function validate() {
+  const n = validateName();
   const b = validateBlood();
   const u = validateUnits();
   const l = validateLocation();
   const p = validatePhone();
-  return b && u && l && p;
+  return n && b && u && l && p;
 }
-
-/* ── BLUR — show error when user leaves the field ── */
-document.getElementById('units').addEventListener('blur',    validateUnits);
-document.getElementById('location').addEventListener('blur', validateLocation);
-document.getElementById('phone').addEventListener('blur',    validatePhone);
-
-/* ── FIX AS YOU TYPE — clears error once user starts correcting ── */
-document.getElementById('units').addEventListener('input',    () => { if (document.getElementById('units').classList.contains('err'))    validateUnits(); });
-document.getElementById('location').addEventListener('input', () => { if (document.getElementById('location').classList.contains('err')) validateLocation(); });
-document.getElementById('phone').addEventListener('input',    () => { if (document.getElementById('phone').classList.contains('err'))    validatePhone(); });
 
 /* ── POST REQUEST ── */
 document.getElementById('postBtn').addEventListener('click', async () => {
   if (!validate()) return;
 
   const btn = document.getElementById('postBtn');
-  btn.textContent = 'Getting location...'; btn.disabled = true;
+  btn.textContent = 'Processing...'; btn.disabled = true;
   document.getElementById('matchingStatus').classList.add('show');
 
-  const requesterId = localStorage.getItem('userId');
-  if (!requesterId) {
-    alert('Session expired. Please log in again.');
-    window.location.href = 'login.html';
-    return;
-  }
+  // Use userId if available, otherwise 0 for Guest
+  const rId = localStorage.getItem('userId');
+  const requesterId = rId ? parseInt(rId) : 0;
+  const requesterName = document.getElementById('requesterName').value.trim();
 
-  // Get requester's geolocation for better donor matching
   let latitude = null;
   let longitude = null;
   
   try {
     const position = await new Promise((resolve, reject) => {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(resolve, reject, {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 60000
-        });
+        navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 8000 });
       } else {
-        reject(new Error('Geolocation not supported'));
+        reject(new Error('No geo support'));
       }
     });
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;
-    console.log('📍 Requester location:', latitude, longitude);
   } catch (e) {
-    console.log('⚠️ Could not get location, using city-based matching:', e.message);
+    console.log('Location access denied or timed out');
   }
-
-  btn.textContent = 'Finding donors...';
 
   const request = {
     id:            Date.now(),
     requesterId:   requesterId,
-    requesterName: localStorage.getItem('userName') || 'Anonymous',
+    requesterName: requesterName,
     blood:         document.getElementById('bloodGroup').value,
     units:         document.getElementById('units').value,
     urgency:       document.getElementById('urgency').value,
@@ -387,74 +548,36 @@ document.getElementById('postBtn').addEventListener('click', async () => {
     notes:         document.getElementById('notes').value.trim(),
     latitude:      latitude,
     longitude:     longitude,
-    status:        'pending',
-    matchedDonors: []
+    status:        'pending'
   };
 
-  // Call ML model with location for better matching
   try {
-    const res  = await fetch(API + '/match-donors', {
+    // 1. Match donors
+    const matchRes = await fetch(API + '/match-donors', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        blood_group: request.blood, 
-        city: request.location,
-        latitude: latitude,
-        longitude: longitude
-      })
+      body: JSON.stringify({ blood_group: request.blood, city: request.location, latitude: latitude, longitude: longitude })
     });
-    const data = await res.json();
-    request.matchedDonors = (data.donors || []).map(Number);
-    console.log('🧠 ML matched donors:', request.matchedDonors);
-  } catch(e) {
-    request.matchedDonors = [];
-  }
+    const matchData = await matchRes.json();
+    request.matchedDonors = matchData.donors ? matchData.donors.map(d =\u003e d.user_id) : [];
 
-  btn.textContent = 'Saving request...';
-
-  // ── SAVE TO DATABASE so matched donors see it on their dashboard ──
-  try {
-    const dbRes  = await fetch(API + '/save-request', {
+    // 2. Save request
+    const saveRes = await fetch(API + '/save-request', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(request)
     });
-    const dbData = await dbRes.json();
-    if (dbData.success) request.id = dbData.requestId;
-  } catch(e) {
-    console.log('DB save error:', e);
+    const saveData = await saveRes.json();
+
+    if (saveData.success) {
+      window.location.href = `tracking.html?id=${saveData.requestId}`;
+    } else {
+      throw new Error(saveData.message || 'Failed to post');
+    }
+  } catch (e) {
+    alert('Error: ' + e.message);
+    btn.textContent = 'Post Request'; btn.disabled = false;
+    document.getElementById('matchingStatus').classList.remove('show');
   }
-
-  // Also keep in localStorage for requester's own status page
-  const requests = JSON.parse(localStorage.getItem('requests')) || [];
-  requests.push(request);
-  localStorage.setItem('requests',       JSON.stringify(requests));
-  localStorage.setItem('currentRequest', JSON.stringify(request));
-
-  document.getElementById('matchingStatus').classList.remove('show');
-  btn.textContent = 'Post Request & Notify Donors →'; btn.disabled = false;
-  // Redirect to live tracking page with the DB request ID
-  window.location.href = 'tracking.html?id=' + (request.id || '');
 });
-
-/* ── RESET ── */
-function resetForm() {
-  document.querySelectorAll('.blood-pill').forEach(p => p.classList.remove('selected'));
-  document.getElementById('bloodGroup').value = '';
-  document.getElementById('units').value      = '';
-  document.getElementById('location').value   = '';
-  document.getElementById('phone').value      = '';
-  document.getElementById('notes').value      = '';
-  document.querySelectorAll('.urg-pill').forEach((p, i) => {
-    p.className = 'urg-pill';
-    if (i === 0) p.classList.add('selected-normal');
-  });
-  document.getElementById('urgency').value = 'Normal';
-  clearError('bloodGroupError'); clearError('unitsError');
-  clearError('locationError');   clearError('phoneError');
-  clearErr('units'); clearErr('location'); clearErr('phone');
-  updatePreview();
-}
-
-updatePreview();
 </script>
 </body>
 </html>

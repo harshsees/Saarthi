@@ -404,17 +404,22 @@ nav {
 }
 .btn-white:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.3); }
 
+/* ── FOOTER REDESIGN ── */
 /* ── FOOTER ── */
 footer {
-  padding: 40px 60px;
   display: flex; align-items: center; justify-content: space-between;
-  border-top: 1px solid rgba(192,21,42,0.08);
-  background: white;
+  padding: 40px 60px; background: white; border-top: 1px solid rgba(192,21,42,0.1);
 }
 .footer-text { font-size: 13px; color: var(--muted); }
-.footer-links { display: flex; gap: 24px; }
+.footer-links { display: flex; align-items: center; gap: 18px; }
 .footer-links a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
 .footer-links a:hover { color: var(--crimson); }
+.footer-dot { width: 4px; height: 4px; background: var(--crimson); border-radius: 50%; opacity: 0.6; }
+
+@media (max-width: 768px) {
+  footer { flex-direction: column; gap: 20px; padding: 30px 20px; text-align: center; }
+  .footer-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
+}
 
 /* ── ANIMATIONS ── */
 @keyframes fadeSlideUp {
@@ -707,8 +712,14 @@ footer {
   <div class="footer-text">© 2026 Saarthi — Developed by Harsh & Shreya</div>
   <div class="footer-links">
     <a href="about.html">About</a>
-    <a href="login.html">Login</a>
-    <a href="post-request.html">Post Request</a>
+    <div class="footer-dot"></div>
+    <a href="privacy.html">Privacy Policy</a>
+    <div class="footer-dot"></div>
+    <a href="terms.html">Terms of Service</a>
+    <div class="footer-dot"></div>
+    <a href="return.html">Return Policy</a>
+    <div class="footer-dot"></div>
+    <a href="admin.html">Admin</a>
   </div>
 </footer>
 

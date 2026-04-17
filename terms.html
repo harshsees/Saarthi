@@ -46,25 +46,18 @@ p { margin-bottom: 20px; color: var(--ink-mid); font-size: 16px; }
 ul { margin-bottom: 32px; padding-left: 20px; }
 li { margin-bottom: 12px; color: var(--ink-mid); }
 
-/* ── FOOTER ── */
-.site-footer { padding: 80px 20px 60px; background: white; border-top: 1px solid rgba(0,0,0,0.05); text-align: center; }
-.footer-inner { max-width: 1100px; margin: 0 auto; }
-.footer-top { display: flex; flex-direction: column; align-items: center; gap: 48px; margin-bottom: 60px; }
-.subscribe-box label { display: block; font-size: 14px; color: var(--muted); margin-bottom: 16px; font-weight: 500; }
-.subscribe-form { display: flex; gap: 0; background: white; border: 1px solid #eee; border-radius: 12px; overflow: hidden; max-width: 440px; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
-.subscribe-form input { flex: 1; padding: 16px 20px; border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 15px; }
-.subscribe-form button { background: #111; color: white; border: none; padding: 0 32px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 15px; }
-.subscribe-form button:hover { background: #333; }
-.social-box h3 { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--ink); margin-bottom: 24px; }
-.social-icons { display: flex; gap: 16px; justify-content: center; }
-.social-icons a { width: 48px; height: 48px; border: 1px solid #f0f0f0; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #555; transition: all 0.3s ease; background: white; text-decoration: none; }
-.social-icons a:hover { border-color: var(--crimson); color: var(--crimson); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(192,21,42,0.12); }
-.footer-line { border: none; border-top: 1px solid #f0f0f0; margin-bottom: 40px; }
-.footer-nav { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
-.footer-nav a { font-size: 15px; color: var(--muted); text-decoration: none; transition: color 0.2s; font-weight: 500; }
-.footer-nav a:hover { color: var(--crimson); }
-
 /* ── RESPONSIVE ── */
+
+/* ── FOOTER ── */
+footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 40px 60px; background: white; border-top: 1px solid rgba(192,21,42,0.1);
+  margin-top: 60px;
+}
+.footer-text { font-size: 14px; color: var(--muted); font-weight: 500; }
+.footer-links { display: flex; align-items: center; gap: 24px; }
+.footer-links a { font-size: 14px; color: var(--muted); text-decoration: none; transition: color 0.2s; font-weight: 500; }
+.footer-links a:hover { color: var(--crimson); }
 @media (max-width: 900px) {
   nav { padding: 16px 24px; }
   .nav-links { position: fixed; top: 68px; left: 0; right: 0; flex-direction: column; gap: 0; background: white; border-bottom: 1px solid var(--blush-mid); max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
@@ -127,40 +120,13 @@ li { margin-bottom: 12px; color: var(--ink-mid); }
   </div>
 </div>
 
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="subscribe-box">
-        <label>Your email</label>
-        <div class="subscribe-form">
-          <input type="email" placeholder="Email address">
-          <button>Subscribe</button>
-        </div>
-      </div>
-      <div class="social-box">
-        <h3>Follow Us</h3>
-        <div class="social-icons">
-          <a href="#">
-            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-          </a>
-          <a href="#">
-            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
-          </a>
-          <a href="#">
-            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-          </a>
-        </div>
-      </div>
-    </div>
-    <hr class="footer-line">
-    <div class="footer-bottom">
-      <div class="footer-nav">
-        <a href="privacy.html">Privacy Policy</a>
-        <a href="terms.html">Terms of Service</a>
-        <a href="return.html">Return Policy</a>
-        <a href="admin.html">Admin</a>
-      </div>
-    </div>
+<!-- FOOTER -->
+<footer>
+  <div class="footer-text">© 2026 Saarthi — Developed by Harsh & Shreya</div>
+  <div class="footer-links">
+    <a href="about.html">About</a>
+    <a href="login.html">Login</a>
+    <a href="post-request.html">Post Request</a>
   </div>
 </footer>
 

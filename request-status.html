@@ -146,6 +146,17 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 @keyframes spin  { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
 
 /* ── MOBILE RESPONSIVE ── */
+
+/* ── FOOTER ── */
+footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 40px 60px; background: white; border-top: 1px solid rgba(192,21,42,0.1);
+  margin-top: 60px;
+}
+.footer-text { font-size: 14px; color: var(--muted); font-weight: 500; }
+.footer-links { display: flex; align-items: center; gap: 24px; }
+.footer-links a { font-size: 14px; color: var(--muted); text-decoration: none; transition: color 0.2s; font-weight: 500; }
+.footer-links a:hover { color: var(--crimson); }
 @media (max-width: 768px) {
   nav { padding: 14px 20px; }
   .page-wrap { padding: 24px 16px; }
@@ -165,40 +176,8 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
   .ri-actions .btn-track, .ri-actions .btn-cancel { width: 100%; }
 }
 
-/* ── FOOTER REDESIGN ── */
-.site-footer {
-  padding: 60px 20px 40px;
-  background: white;
-  border-top: 1px solid var(--blush-mid);
-  text-align: center;
-}
-.footer-inner { max-width: 1100px; margin: 0 auto; }
-.footer-top {
-  display: flex; flex-direction: column; align-items: center; gap: 40px; margin-bottom: 40px;
-}
-.subscribe-box label { display: block; font-size: 14px; color: var(--muted); margin-bottom: 12px; }
-.subscribe-form { display: flex; gap: 0; background: white; border: 1px solid #eee; border-radius: 8px; overflow: hidden; max-width: 400px; margin: 0 auto; }
-.subscribe-form input { flex: 1; padding: 12px 16px; border: none; outline: none; font-size: 14px; }
-.subscribe-form button { background: #111; color: white; border: none; padding: 0 24px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-.subscribe-form button:hover { background: #333; }
-
-.social-box h3 { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 20px; }
-.social-icons { display: flex; gap: 12px; justify-content: center; }
-.social-icons a {
-  width: 42px; height: 42px; border: 1px solid #eee; border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  color: #555; transition: all 0.2s; background: white;
-  text-decoration: none;
-}
-.social-icons a:hover { border-color: var(--crimson); color: var(--crimson); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-
-.footer-line { border: none; border-top: 1px solid #eee; margin-bottom: 30px; }
-.footer-nav { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
-.footer-nav a { font-size: 14px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
-.footer-nav a:hover { color: var(--crimson); }
-
 @media (max-width: 600px) {
-  .footer-nav { gap: 15px; }
+  
   .footer-nav a { font-size: 13px; }
 }
 </style>
@@ -254,42 +233,9 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
   </div> <!-- close .page -->
 </div> <!-- close .request-main -->
 
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="subscribe-box">
-        <label>Your email</label>
-        <div class="subscribe-form">
-          <input type="email" placeholder="Email address">
-          <button>Subscribe</button>
-        </div>
-      </div>
-      <div class="social-box">
-        <h3>Follow Us</h3>
-        <div class="social-icons">
-          <a href="#">
-            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-          </a>
-          <a href="#">
-            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
-          </a>
-          <a href="#">
-            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-          </a>
-        </div>
-      </div>
-    </div>
-    <hr class="footer-line">
-    <div class="footer-bottom">
-      <div class="footer-nav">
-        <a href="privacy.html">Privacy Policy</a>
-        <a href="terms.html">Terms of Service</a>
-        <a href="return.html">Return Policy</a>
-        <a href="admin.html">Admin</a>
-      </div>
-    </div>
-  </div>
-</footer>
+
+
+
 
 <script>
 const API = window.location.hostname === 'saarthi-backend-ahto.onrender.com' 
@@ -491,5 +437,16 @@ loadMyRequests();
 // Auto-refresh every 30 seconds for live status
 setInterval(loadMyRequests, 30000);
 </script>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-text">© 2026 Saarthi — Developed by Harsh & Shreya</div>
+  <div class="footer-links">
+    <a href="about.html">About</a>
+    <a href="login.html">Login</a>
+    <a href="post-request.html">Post Request</a>
+  </div>
+</footer>
+
 </body>
 </html>

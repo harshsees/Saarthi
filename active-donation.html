@@ -18,14 +18,17 @@
   --ink: #1A0A0A; --ink-mid: #3D1A1A; --muted: #8A6A6A; --white: #FFFFFF;
   --green: #16A34A; --green-bg: #F0FDF4; --green-light: #86EFAC;
   --orange: #EA580C; --orange-bg: #FFF7ED;
-  --blue: #2563EB; --blue-bg: #EFF6FF;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'DM Sans', sans-serif; background: #F8F4F4; min-height: 100vh; display: flex; flex-direction: column; }
-.page { flex: 1; }
+.page-container { flex: 1; }
 
-/* NAV - Same as tracking.html */
-nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 56px; background: white; border-bottom: 1px solid var(--blush-mid); position: sticky; top: 0; z-index: 50; }
+/* NAV - Unified with tracking.html */
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 56px; background: white;
+  border-bottom: 1px solid var(--blush-mid); position: sticky; top: 0; z-index: 50;
+}
 .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
 .logo-icon { width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(135deg, var(--crimson-light), var(--crimson-dark)); position: relative; }
 .logo-icon::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:2px; height:18px; background:white; border-radius:2px; }
@@ -34,62 +37,55 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 .nav-back { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
 .nav-back:hover { color: var(--crimson); }
 
-/* LAYOUT - Split screen like tracking.html */
+/* LAYOUT - 380px sidebar, unified with tracking.html */
 .page { max-width: 1320px; margin: 0 auto; padding: 32px 24px 60px; }
-
 .tracking-split {
   display: grid;
-  grid-template-columns: 420px 1fr;
+  grid-template-columns: 380px 1fr;
   gap: 24px;
   align-items: start;
 }
 .tracking-left { display: flex; flex-direction: column; gap: 20px; }
 .tracking-right { position: sticky; top: 100px; }
 
-/* Mobile: stack vertically */
 @media (max-width: 960px) {
   .tracking-split { grid-template-columns: 1fr; }
   .tracking-right { position: static; }
 }
 
-/* ── REQUEST CARD ── */
-.status-card {
+/* ── PREMIUM CARDS (Same as tracking.html aesthetics) ── */
+.status-card, .live-loc-card, .checklist-card {
   background: white; border-radius: 22px; padding: 24px;
   box-shadow: 0 4px 28px rgba(192,21,42,0.09);
   border: 1px solid rgba(192,21,42,0.07);
 }
 
 .sc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
-.sc-blood { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--crimson); background: var(--blush); padding: 10px 20px; border-radius: 14px; }
+.sc-blood { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--ink); }
 .sc-urgency { font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 999px; }
 .urg-normal   { background: #F3F4F6; color: #374151; }
 .urg-urgent   { background: var(--orange-bg); color: var(--orange); }
 .urg-critical { background: var(--blush); color: var(--crimson); }
 
-.detail-rows { display: flex; flex-direction: column; gap: 12px; }
+.detail-rows { display: flex; flex-direction: column; gap: 14px; }
 .detail-row { display: flex; align-items: flex-start; gap: 12px; }
-.detail-icon { width: 36px; height: 36px; background: var(--blush); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-.detail-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; }
-.detail-value { font-size: 14px; font-weight: 600; color: var(--ink); margin-top: 2px; }
+.detail-icon { width: 34px; height: 34px; background: var(--blush); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.detail-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.detail-value { font-size: 14px; font-weight: 600; color: var(--ink); margin-top: 2px; line-height: 1.4; }
 
 /* ── CONTACT BUTTONS ── */
-.contact-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+.contact-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
 .contact-btn {
   display: flex; align-items: center; justify-content: center; gap: 8px;
   padding: 14px; border-radius: 12px; text-decoration: none;
   font-size: 14px; font-weight: 700; transition: all 0.2s;
 }
-.contact-btn.call { background: var(--green); color: white; }
-.contact-btn.call:hover { background: #15803D; transform: translateY(-2px); }
-.contact-btn.whatsapp { background: #25D366; color: white; }
-.contact-btn.whatsapp:hover { background: #1DA851; transform: translateY(-2px); }
+.contact-btn.call { background: linear-gradient(135deg, var(--green), #15803D); color: white; box-shadow: 0 4px 12px rgba(22,163,74,0.25); }
+.contact-btn.call:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(22,163,74,0.35); }
+.contact-btn.whatsapp { background: #25D366; color: white; box-shadow: 0 4px 12px rgba(37,211,102,0.25); }
+.contact-btn.whatsapp:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(37,211,102,0.35); }
 
-/* ── LIVE LOCATION CARD ── */
-.live-loc-card {
-  background: white; border-radius: 22px; padding: 24px;
-  box-shadow: 0 4px 28px rgba(192,21,42,0.09);
-  border: 1px solid rgba(192,21,42,0.07);
-}
+/* ── LIVE LOCATION ── */
 .live-loc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .live-loc-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--ink); display: flex; align-items: center; gap: 8px; }
 .live-loc-toggle { width: 52px; height: 28px; border-radius: 999px; background: #E5E7EB; cursor: pointer; position: relative; transition: background 0.25s; }
@@ -97,22 +93,17 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 .live-loc-knob { width: 22px; height: 22px; border-radius: 50%; background: white; position: absolute; top: 3px; left: 3px; transition: left 0.25s; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
 .live-loc-toggle.on .live-loc-knob { left: 27px; }
 .live-loc-info { font-size: 13px; color: var(--muted); line-height: 1.6; }
-.live-loc-status { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; }
+.live-loc-status { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; transition: all 0.3s; }
 .live-loc-status.active { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-light); }
 .live-loc-status.inactive { background: #F9FAFB; color: var(--muted); border: 1px solid #E5E7EB; }
 .live-pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 1.5s ease-in-out infinite; }
 
 /* ── CHECKLIST ── */
-.checklist-card {
-  background: white; border-radius: 22px; padding: 24px;
-  box-shadow: 0 4px 28px rgba(192,21,42,0.09);
-  border: 1px solid rgba(192,21,42,0.07);
-}
 .checklist-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--ink); margin-bottom: 6px; }
 .checklist-sub { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
-.check-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 10px; margin-bottom: 6px; background: var(--blush); transition: all 0.2s; cursor: pointer; }
-.check-item:hover { background: #FFE8E8; }
-.check-item.checked { background: var(--green-bg); }
+.check-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 10px; margin-bottom: 6px; background: var(--blush); transition: all 0.2s; cursor: pointer; border: 1px solid transparent; }
+.check-item:hover { background: #FFE8E8; border-color: var(--blush-mid); }
+.check-item.checked { background: var(--green-bg); border-color: var(--green-light); }
 .check-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--blush-mid); background: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.25s; }
 .check-item.checked .check-box { background: var(--green); border-color: var(--green); }
 .check-box svg { width: 14px; height: 14px; stroke: white; stroke-width: 2.5; fill: none; opacity: 0; transform: scale(0.5); transition: all 0.2s; }
@@ -142,7 +133,7 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 .live-badge { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--green); background: var(--green-bg); padding: 5px 12px; border-radius: 999px; }
 .live-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; }
 
-#donorRouteMap { width: 100%; height: 450px; }
+#donorRouteMap { width: 100%; height: 500px; background: #EEE; }
 
 .map-eta-bar {
   display: flex; align-items: center; justify-content: space-around;
@@ -150,7 +141,7 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
   border-top: 1px solid var(--blush-mid);
 }
 .eta-item { text-align: center; }
-.eta-val { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--crimson); line-height: 1; }
+.eta-val { font-family: 'DM Serif Display', serif; font-size: 32px; color: var(--crimson); line-height: 1; }
 .eta-label { font-size: 11px; color: var(--muted); font-weight: 600; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
 
 /* ── QUICK MESSAGES ── */
@@ -159,7 +150,7 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 .qm-btn:hover { background: var(--crimson); color: white; border-color: var(--crimson); }
 .qm-btn.sent { background: var(--green-bg); color: var(--green); border-color: var(--green-light); pointer-events: none; }
 
-/* ── MODALS ── */
+/* ── MODALS & OVERLAYS ── */
 .modal-overlay { display: none; position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); align-items: center; justify-content: center; }
 .modal-overlay.show { display: flex; }
 .modal { background: white; border-radius: 24px; padding: 36px; max-width: 440px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.2); animation: modalIn 0.3s ease; }
@@ -174,45 +165,8 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 .modal-actions button { flex: 1; padding: 14px; border-radius: 10px; font-family: 'DM Sans'; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; border: none; }
 .modal-cancel-btn { background: #F3F4F6; color: #374151; }
 .modal-confirm-btn { background: var(--crimson); color: white; }
-.modal-confirm-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* ── COMPLETION OVERLAY ── */
-.completion-overlay { display: none; position: fixed; inset: 0; z-index: 1000; background: linear-gradient(135deg, #F0FDF4, #DCFCE7); align-items: center; justify-content: center; flex-direction: column; }
-.completion-overlay.show { display: flex; }
-.completion-card { text-align: center; padding: 48px; max-width: 460px; animation: celebrateIn 0.6s ease; }
-@keyframes celebrateIn { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.celebrate-icon { font-size: 72px; margin-bottom: 20px; animation: bounce 1s ease infinite; }
-@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-.completion-card h2 { font-family: 'DM Serif Display', serif; font-size: 36px; color: var(--ink); margin-bottom: 8px; }
-.completion-card .impact { font-size: 16px; color: var(--green); font-weight: 700; margin-bottom: 28px; }
-.completion-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
-.comp-stat { padding: 20px; background: white; border-radius: 16px; box-shadow: 0 4px 16px rgba(22,163,74,0.1); }
-.comp-stat-val { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--green); }
-.comp-stat-label { font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 4px; }
-.completion-actions { display: flex; gap: 12px; justify-content: center; }
-.comp-btn { padding: 14px 28px; border-radius: 12px; font-family: 'DM Sans'; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; border: none; }
-.comp-btn.primary { background: var(--green); color: white; }
-.comp-btn.secondary { background: white; color: var(--ink); border: 1.5px solid #E5E7EB; }
 
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.85)} }
-
-/* ── MOBILE RESPONSIVE ── */
-@media (max-width: 768px) {
-  nav { padding: 14px 20px; }
-  .page { padding: 20px 16px; }
-  .status-card, .live-loc-card, .checklist-card { padding: 20px; }
-  .map-card #donorRouteMap { height: 350px; }
-  .eta-val { font-size: 24px; }
-  .contact-btns { grid-template-columns: 1fr; }
-}
-@media (max-width: 480px) {
-  nav { padding: 12px 16px; }
-  .logo-text { font-size: 17px; }
-  .page { padding: 16px 12px; }
-  .sc-blood { font-size: 24px; padding: 8px 16px; }
-  .map-card #donorRouteMap { height: 280px; }
-  .action-btns { flex-direction: column; }
-}
 
 /* ── FOOTER ── */
 footer {
@@ -225,6 +179,12 @@ footer {
 .footer-links a { font-size: 14px; color: var(--muted); text-decoration: none; transition: color 0.2s; font-weight: 500; }
 .footer-links a:hover { color: var(--crimson); }
 
+@media (max-width: 768px) {
+  nav { padding: 14px 20px; }
+  .page { padding: 20px 16px; }
+  footer { flex-direction: column; gap: 20px; padding: 30px 20px; text-align: center; }
+  .footer-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
+}
 </style>
 </head>
 <body>
@@ -234,133 +194,127 @@ footer {
     <div class="logo-icon"></div>
     <span class="logo-text">Saarthi</span>
   </a>
-  <a href="dashboard.html" class="nav-back">← Back to Dashboard</a>
+  <div id="navBackContainer"></div>
 </nav>
 
-<div class="page">
-  <div class="tracking-split">
-    
-    <!-- LEFT: Info Cards -->
-    <div class="tracking-left">
+<div class="page-container">
+  <div class="page" id="pageContent">
+    <div class="tracking-split">
       
-      <!-- Request Details Card -->
-      <div class="status-card">
-        <div class="sc-header">
-          <div class="sc-blood" id="bloodBadge">B+</div>
-          <div>
-            <span class="sc-urgency urg-critical" id="urgencyBadge">Critical</span>
-            <div style="font-size:13px;color:var(--muted);margin-top:4px;" id="unitsBadge">2 Units</div>
+      <!-- LEFT: Info Cards -->
+      <div class="tracking-left">
+        
+        <!-- Request Status Card -->
+        <div class="status-card">
+          <div class="sc-header">
+            <div class="sc-blood" id="bloodBadge">—</div>
+            <div>
+              <span class="sc-urgency urg-normal" id="urgencyBadge">Normal</span>
+              <div style="font-size:13px;color:var(--muted);margin-top:4px;" id="unitsBadge">— Units</div>
+            </div>
+          </div>
+          
+          <div class="detail-rows">
+            <div class="detail-row">
+              <div class="detail-icon">🏥</div>
+              <div>
+                <div class="detail-label">Hospital / Destination</div>
+                <div class="detail-value" id="hospitalName">Loading...</div>
+              </div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-icon">👤</div>
+              <div>
+                <div class="detail-label">Requester Name</div>
+                <div class="detail-value" id="requesterName">Loading...</div>
+              </div>
+            </div>
+            <div class="detail-row" id="notesRow">
+              <div class="detail-icon">📝</div>
+              <div>
+                <div class="detail-label">Additional Notes</div>
+                <div class="detail-value" id="additionalNotes">—</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="contact-btns">
+            <a href="#" class="contact-btn call" id="callRequester">📞 Call</a>
+            <a href="#" class="contact-btn whatsapp" id="whatsappRequester">💬 WhatsApp</a>
+          </div>
+          
+          <div class="quick-msgs" id="quickMsgs">
+            <button class="qm-btn" data-msg="I am on my way!">🚗 On my way!</button>
+            <button class="qm-btn" data-msg="I will be there in 15 mins">⏰ 15 mins away</button>
+            <button class="qm-btn" data-msg="I have arrived at the hospital">🏥 I've arrived</button>
           </div>
         </div>
         
-        <div class="detail-rows">
-          <div class="detail-row">
-            <div class="detail-icon">🏥</div>
-            <div>
-              <div class="detail-label">Hospital</div>
-              <div class="detail-value" id="hospitalName">Loading...</div>
+        <!-- Live Location Shield -->
+        <div class="live-loc-card">
+          <div class="live-loc-header">
+            <div class="live-loc-title">📡 Live Location Sharing</div>
+            <div class="live-loc-toggle" id="liveLocToggle">
+              <div class="live-loc-knob"></div>
             </div>
           </div>
-          <div class="detail-row">
-            <div class="detail-icon">👤</div>
-            <div>
-              <div class="detail-label">Requester</div>
-              <div class="detail-value" id="requesterName">Loading...</div>
+          <p class="live-loc-info">Donors who share live location reach the hospital 30% faster on average.</p>
+          <div class="live-loc-status inactive" id="liveLocStatus">📍 sharing is currently off</div>
+        </div>
+        
+        <!-- Checklist Card -->
+        <div class="checklist-card">
+          <div class="checklist-title">Pre-Donation Prep</div>
+          <p class="checklist-sub">Check off these items as you prepare</p>
+          <div id="checklistItems">
+            <div class="check-item" data-id="1">
+              <div class="check-box"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
+              <span class="check-text">Drank at least 500ml of water</span>
             </div>
-          </div>
-          <div class="detail-row">
-            <div class="detail-icon">📝</div>
-            <div>
-              <div class="detail-label">Notes</div>
-              <div class="detail-value" id="additionalNotes">—</div>
+            <div class="check-item" data-id="2">
+              <div class="check-box"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
+              <span class="check-text">Had a healthy meal recently</span>
+            </div>
+            <div class="check-item" data-id="3">
+              <div class="check-box"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
+              <span class="check-text">Carrying a valid Government ID</span>
             </div>
           </div>
         </div>
         
-        <div class="contact-btns">
-          <a href="#" class="contact-btn call" id="callRequester">📞 Call Requester</a>
-          <a href="#" class="contact-btn whatsapp" id="whatsappRequester">💬 WhatsApp</a>
+        <!-- Actions -->
+        <div class="action-btns">
+          <button class="cancel-btn" id="cancelBtn">✕ Cancel Acceptance</button>
+          <button class="sos-btn" onclick="window.location.href='tel:112'">🆘 SOS</button>
         </div>
         
-        <div class="quick-msgs" id="quickMsgs">
-          <button class="qm-btn" data-msg="On my way!">🚗 On my way!</button>
-          <button class="qm-btn" data-msg="Running 10 mins late">⏰ Running late</button>
-          <button class="qm-btn" data-msg="I've arrived">🏥 Arrived</button>
-        </div>
       </div>
       
-      <!-- Live Location Card -->
-      <div class="live-loc-card">
-        <div class="live-loc-header">
-          <div class="live-loc-title">📡 Live Location</div>
-          <div class="live-loc-toggle" id="liveLocToggle">
-            <div class="live-loc-knob"></div>
+      <!-- RIGHT: Hero Map -->
+      <div class="tracking-right">
+        <div class="map-card" id="routeMapCard">
+          <div class="map-header">
+            <div class="map-title">🧭 Live Navigation</div>
+            <div class="live-badge">
+              <span class="live-dot"></span>
+              Synchronized
+            </div>
+          </div>
+          <div id="donorRouteMap"></div>
+          <div class="map-eta-bar">
+            <div class="eta-item">
+              <div class="eta-val" id="routeDistance">—</div>
+              <div class="eta-label">Distance</div>
+            </div>
+            <div class="eta-item">
+              <div class="eta-val" id="routeDuration">—</div>
+              <div class="eta-label">Est. Time</div>
+            </div>
           </div>
         </div>
-        <p class="live-loc-info">Share your real-time location so the requester can track your arrival.</p>
-        <div class="live-loc-status inactive" id="liveLocStatus">📍 Location sharing is off</div>
-      </div>
-      
-      <!-- Pre-Donation Checklist -->
-      <div class="checklist-card">
-        <div class="checklist-title">Pre-Donation Checklist</div>
-        <p class="checklist-sub">Make sure you're prepared</p>
-        <div id="checklistItems">
-          <div class="check-item" data-check="hydrate">
-            <div class="check-box"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
-            <span class="check-text">💧 Well hydrated</span>
-          </div>
-          <div class="check-item" data-check="eaten">
-            <div class="check-box"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
-            <span class="check-text">🍎 Eaten recently</span>
-          </div>
-          <div class="check-item" data-check="id">
-            <div class="check-box"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
-            <span class="check-text">🪪 Carrying valid ID</span>
-          </div>
-          <div class="check-item" data-check="sleep">
-            <div class="check-box"><svg viewBox="0 0 14 14"><polyline points="2 7 5.5 10.5 12 3.5"/></svg></div>
-            <span class="check-text">😴 Had 6+ hours sleep</span>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Action Buttons -->
-      <div class="action-btns">
-        <button class="cancel-btn" id="cancelBtn">✕ Cancel Donation</button>
-        <button class="sos-btn" id="sosBtn">🆘 SOS</button>
       </div>
       
     </div>
-    
-    <!-- RIGHT: Route Map -->
-    <div class="tracking-right">
-      <div class="map-card" id="routeMapCard">
-        <div class="map-header">
-          <div class="map-title">🗺️ Route to Requester</div>
-          <div class="live-badge">
-            <span class="live-dot"></span>
-            Live Route
-          </div>
-        </div>
-        <div id="donorRouteMap"></div>
-        <div class="map-eta-bar">
-          <div class="eta-item">
-            <div class="eta-val" id="routeDistance">—</div>
-            <div class="eta-label">Distance</div>
-          </div>
-          <div class="eta-item">
-            <div class="eta-val" id="routeDuration">—</div>
-            <div class="eta-label">Est. Time</div>
-          </div>
-          <div class="eta-item">
-            <div class="eta-val" id="routeSteps">—</div>
-            <div class="eta-label">Steps</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
   </div>
 </div>
 
@@ -373,45 +327,20 @@ footer {
   </div>
 </footer>
 
-
 <!-- CANCEL MODAL -->
 <div class="modal-overlay" id="cancelModal">
   <div class="modal">
     <h3>Cancel this donation?</h3>
-    <p>Please let us know why, so we can reassign the request quickly.</p>
-    <div class="reason-list" id="reasonList">
-      <div class="reason-item" data-reason="Feeling unwell">🤒 Feeling unwell</div>
-      <div class="reason-item" data-reason="Emergency came up">🚨 Emergency came up</div>
-      <div class="reason-item" data-reason="Can't reach in time">⏰ Can't reach in time</div>
-      <div class="reason-item" data-reason="Hospital too far">📍 Hospital too far</div>
-      <div class="reason-item" data-reason="Other reason">💬 Other reason</div>
+    <p>We'll notify the requester immediately so they can find another donor.</p>
+    <div class="reason-list">
+      <div class="reason-item" data-reason="Emergency">🚨 Personal Emergency</div>
+      <div class="reason-item" data-reason="Traffic">🚦 Stuck in heavy traffic</div>
+      <div class="reason-item" data-reason="Health">🤒 Not feeling well</div>
+      <div class="reason-item" data-reason="Other">💬 Other reason</div>
     </div>
     <div class="modal-actions">
-      <button class="modal-cancel-btn" id="modalGoBack">Go Back</button>
-      <button class="modal-confirm-btn" id="modalConfirm" disabled>Cancel Donation</button>
-    </div>
-  </div>
-</div>
-
-<!-- COMPLETION OVERLAY -->
-<div class="completion-overlay" id="completionOverlay">
-  <div class="completion-card">
-    <div class="celebrate-icon">🎉</div>
-    <h2>Thank you, Hero!</h2>
-    <p class="impact">You may have just saved up to 3 lives 🩸</p>
-    <div class="completion-stats">
-      <div class="comp-stat">
-        <div class="comp-stat-val" id="compDonations">—</div>
-        <div class="comp-stat-label">Lifetime Donations</div>
-      </div>
-      <div class="comp-stat">
-        <div class="comp-stat-val" id="compPoints">—</div>
-        <div class="comp-stat-label">Donor Points</div>
-      </div>
-    </div>
-    <div class="completion-actions">
-      <button class="comp-btn primary" id="compDashboard">Back to Dashboard →</button>
-      <button class="comp-btn secondary" id="compShare">Share 📤</button>
+      <button class="modal-cancel-btn" onclick="closeModal()">Go Back</button>
+      <button class="modal-confirm-btn" id="confirmCancel" disabled>Cancel Now</button>
     </div>
   </div>
 </div>
@@ -420,288 +349,162 @@ footer {
 const API = window.location.hostname === 'saarthi-backend-ahto.onrender.com' 
   ? '' 
   : 'https://saarthi-backend-ahto.onrender.com';
+
 const userId = localStorage.getItem('userId');
-const userName = localStorage.getItem('userName');
+const params = new URLSearchParams(window.location.search);
+const reqId  = params.get('id');
 
 if (!userId) window.location.href = 'login.html';
+if (!reqId) window.location.href = 'dashboard.html';
 
-// ── LOAD REQUEST DATA ──
-const params  = new URLSearchParams(window.location.search);
-const reqId   = params.get('id');
+// Nav back logic
+const navBackContainer = document.getElementById('navBackContainer');
+if (navBackContainer) {
+  navBackContainer.innerHTML = userId ? 
+    `<a href="dashboard.html" class="nav-back">← Dashboard</a>` : 
+    `<a href="index.html" class="nav-back">← Back to Home</a>`;
+}
+
+let map = null;
+let routingControl = null;
 let requestData = null;
-let selectedReason = '';
-let donorMap = null; // Global map instance
-let routingControl = null; // Global routing instance
 
-async function loadRequestDetails() {
-  if (!reqId) {
-    showDemoData();
-    return;
-  }
-
+async function loadData() {
   try {
-    const res  = await fetch(API + '/request-details/' + reqId + '?t=' + Date.now(), { cache: 'no-store' });
+    const res = await fetch(`${API}/track-request/${reqId}`);
     const data = await res.json();
-
-    if (data.success && data.request) {
+    if (data.success) {
       requestData = data.request;
-      fillRequestData(requestData);
-      return;
+      renderUI(requestData);
+      initMap(requestData);
     }
-  } catch(e) {
-    console.log('Load error:', e);
-  }
-
-  showDemoData();
-}
-
-function showDemoData() {
-  requestData = {
-    id: 999,
-    blood_group: 'B+',
-    units: 2,
-    urgency: 'Critical',
-    location: 'Apollo Hospital, SG Highway, Ahmedabad',
-    requester_name: 'Rajesh Patel',
-    phone: '9876543210',
-    created_at: new Date(Date.now() - 35 * 60000).toISOString(),
-    notes: 'Patient in ICU, Ward 3B, 2nd Floor',
-    latitude: 23.0225,
-    longitude: 72.5714
-  };
-  fillRequestData(requestData);
-}
-
-function fillRequestData(req) {
-  document.getElementById('bloodBadge').textContent      = req.blood_group;
-  document.getElementById('unitsBadge').textContent      = req.units + ' Units';
-  document.getElementById('hospitalName').textContent    = req.location;
-  document.getElementById('requesterName').textContent   = req.requester_name;
-  document.getElementById('additionalNotes').textContent = req.notes || 'No additional notes';
-
-  // Urgency badge
-  const urgEl = document.getElementById('urgencyBadge');
-  urgEl.textContent = req.urgency;
-  urgEl.className = 'sc-urgency urg-' + (req.urgency || 'Normal').toLowerCase();
-
-  // Contact links
-  document.getElementById('callRequester').href = 'tel:' + req.phone;
-  document.getElementById('whatsappRequester').href = 'https://wa.me/91' + req.phone.replace(/\D/g, '');
-
-  // Initialize route map
-  if (req.latitude && req.longitude) {
-    setTimeout(() => initDonorRouteMap(parseFloat(req.latitude), parseFloat(req.longitude)), 500);
+  } catch (e) {
+    console.error('Fetch error:', e);
   }
 }
 
-// ── ROUTE MAP (Donor View) ──
-// Shows: "You are here" (donor/green) → "Requester is here" (red)
-function initDonorRouteMap(destLat, destLng) {
-  const mapEl = document.getElementById('donorRouteMap');
-  if (!mapEl) return;
+function renderUI(req) {
+  document.getElementById('bloodBadge').textContent = req.blood_group;
+  document.getElementById('unitsBadge').textContent = `${req.units} Unit${req.units>1?'s':''}`;
+  document.getElementById('hospitalName').textContent = req.location;
+  document.getElementById('requesterName').textContent = req.requester_name || 'Anonymous';
+  document.getElementById('additionalNotes').textContent = req.notes || 'No notes provided.';
+  
+  const urgBadge = document.getElementById('urgencyBadge');
+  urgBadge.textContent = req.urgency;
+  urgBadge.className = `sc-urgency urg-${(req.urgency || 'normal').toLowerCase()}`;
+  
+  document.getElementById('callRequester').href = `tel:${req.phone}`;
+  const waPhone = '91' + req.phone.replace(/\D/g, '');
+  document.getElementById('whatsappRequester').href = `https://wa.me/${waPhone}`;
+}
 
+function initMap(req) {
   if (!navigator.geolocation) {
-    mapEl.innerHTML = '<div style="padding:60px;text-align:center;color:var(--muted);">📍 Enable location to see route</div>';
+    document.getElementById('donorRouteMap').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);">📍 Geolocation is not supported by your browser.</div>';
     return;
   }
 
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const donorLat = position.coords.latitude;
-      const donorLng = position.coords.longitude;
-      
-      // Use parseFloat to ensure no string concatenation
-      const dLat = parseFloat(destLat);
-      const dLng = parseFloat(destLng);
-      
-      const centerLat = (donorLat + dLat) / 2;
-      const centerLng = (donorLng + dLng) / 2;
-      
-      // If map already exists, just update it
-      if (donorMap) {
-        donorMap.setView([centerLat, centerLng], 13);
-      } else {
-        donorMap = L.map('donorRouteMap').setView([centerLat, centerLng], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap'
-        }).addTo(donorMap);
-      }
+  navigator.geolocation.getCurrentPosition(pos => {
+    const donorLat = pos.coords.latitude;
+    const donorLng = pos.coords.longitude;
+    const hospLat  = parseFloat(req.latitude);
+    const hospLng  = parseFloat(req.longitude);
 
-      // Clear existing markers if any (optional, but good for clean re-renders)
-      donorMap.eachLayer((layer) => {
-        if (layer instanceof L.Marker) donorMap.removeLayer(layer);
-      });
+    if (map) map.remove();
+    map = L.map('donorRouteMap').setView([donorLat, donorLng], 14);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-      // YOUR LOCATION marker (Donor - Green with car icon)
-      const youIcon = L.divIcon({
-        html: '<div style="background:#16A34A;width:44px;height:44px;border-radius:50%;border:4px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;">🚗</div>',
-        className: '', iconSize: [44, 44], iconAnchor: [22, 22]
-      });
-      L.marker([donorLat, donorLng], { icon: youIcon })
-        .bindPopup('<b>📍 You are here</b><br><span style="color:#666;font-size:12px;">Start your journey</span>')
-        .addTo(donorMap);
+    const donorIcon = L.divIcon({
+      html: '<div style="background:var(--green);width:40px;height:40px;border-radius:50%;border:4px solid white;box-shadow:0 4px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-size:18px;">🚗</div>',
+      className: '', iconSize: [40,40], iconAnchor:[20,20]
+    });
+    const hospIcon = L.divIcon({
+      html: '<div style="background:var(--crimson);width:40px;height:40px;border-radius:50%;border:4px solid white;box-shadow:0 4px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-size:18px;">🏥</div>',
+      className: '', iconSize: [40,40], iconAnchor:[20,20]
+    });
 
-      // REQUESTER LOCATION marker (Red with person icon)
-      const requesterIcon = L.divIcon({
-        html: '<div style="background:#C0152A;width:44px;height:44px;border-radius:50%;border:4px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>',
-        className: '', iconSize: [44, 44], iconAnchor: [22, 22]
-      });
-      L.marker([dLat, dLng], { icon: requesterIcon })
-        .bindPopup('<b>🎯 Requester is here</b><br><span style="color:#666;font-size:12px;">' + (requestData?.location || 'Hospital') + '</span>')
-        .addTo(donorMap);
+    L.marker([donorLat, donorLng], {icon: donorIcon}).addTo(map);
+    L.marker([hospLat, hospLng], {icon: hospIcon}).addTo(map);
 
-      // Draw Route
-      if (routingControl) {
-        donorMap.removeControl(routingControl);
-      }
-      
-      routingControl = L.Routing.control({
-        waypoints: [L.latLng(donorLat, donorLng), L.latLng(dLat, dLng)],
-        routeWhileDragging: false,
-        addWaypoints: false,
-        showAlternatives: false,
-        fitSelectedRoutes: true,
-        lineOptions: { styles: [{ color: '#C0152A', weight: 6, opacity: 0.8 }] },
-        createMarker: () => null
-      }).addTo(donorMap);
+    if (routingControl) map.removeControl(routingControl);
+    routingControl = L.Routing.control({
+      waypoints: [L.latLng(donorLat, donorLng), L.latLng(hospLat, hospLng)],
+      routeWhileDragging: false,
+      addWaypoints: false,
+      showAlternatives: false,
+      lineOptions: { styles: [{ color: '#C0152A', weight: 6, opacity: 0.8 }] },
+      createMarker: () => null
+    }).addTo(map);
 
-      routingControl.on('routesfound', (e) => {
-        const route = e.routes[0];
-        document.getElementById('routeDistance').textContent = (route.summary.totalDistance / 1000).toFixed(1) + ' km';
-        document.getElementById('routeDuration').textContent = '~' + Math.round(route.summary.totalTime / 60) + ' min';
-        document.getElementById('routeSteps').textContent = route.instructions.length;
-        
-        // Fit map to show entire route
-        const bounds = L.latLngBounds([[donorLat, donorLng], [dLat, dLng]]);
-        donorMap.fitBounds(bounds, { padding: [50, 50] });
-      });
+    routingControl.on('routesfound', e => {
+      const route = e.routes[0];
+      document.getElementById('routeDistance').textContent = (route.summary.totalDistance / 1000).toFixed(1) + ' km';
+      document.getElementById('routeDuration').textContent = Math.round(route.summary.totalTime / 60) + ' min';
+      map.fitBounds(L.latLngBounds([[donorLat, donorLng], [hospLat, hospLng]]), {padding:[50,50]});
+    });
 
-      // Fix for grey tiles / rendering issues
-      setTimeout(() => donorMap.invalidateSize(), 500);
-    },
-    (error) => {
-      // Fallback: Show just destination
-      const dLat = parseFloat(destLat);
-      const dLng = parseFloat(destLng);
-      
-      if (donorMap) {
-        donorMap.setView([dLat, dLng], 14);
-      } else {
-        donorMap = L.map('donorRouteMap').setView([dLat, dLng], 14);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(donorMap);
-      }
-      
-      const requesterIcon = L.divIcon({
-        html: '<div style="background:#C0152A;width:44px;height:44px;border-radius:50%;border:4px solid white;display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>',
-        className: '', iconSize: [44, 44], iconAnchor: [22, 22]
-      });
-      L.marker([dLat, dLng], { icon: requesterIcon })
-        .bindPopup('<b>🎯 Requester is here</b>')
-        .addTo(donorMap);
-      
-      document.getElementById('routeDistance').textContent = '—';
-      document.getElementById('routeDuration').textContent = 'Enable GPS';
-      document.getElementById('routeSteps').textContent = '—';
-    }
-  );
-}
-
-// ── CHECKLIST ──
-document.querySelectorAll('.check-item').forEach(item => {
-  item.addEventListener('click', () => item.classList.toggle('checked'));
-});
-
-// ── QUICK MESSAGES ──
-document.querySelectorAll('.qm-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if (btn.classList.contains('sent')) return;
-    const msg = btn.dataset.msg;
-    if (requestData && requestData.phone) {
-      const phone = '91' + requestData.phone.replace(/\D/g, '');
-      window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(msg), '_blank');
-      btn.classList.add('sent');
-      btn.textContent = '✓ Sent';
-    }
+    setTimeout(() => map.invalidateSize(), 400);
+  }, err => {
+    console.warn('Geolocation Error:', err);
+    document.getElementById('donorRouteMap').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);">📍 Please enable location to view the route.</div>';
   });
-});
+}
 
-// ── LIVE LOCATION TOGGLE ──
-const liveLocToggle = document.getElementById('liveLocToggle');
-const liveLocStatus = document.getElementById('liveLocStatus');
-let locationWatchId = null;
-
-liveLocToggle.addEventListener('click', () => {
-  liveLocToggle.classList.toggle('on');
-  if (liveLocToggle.classList.contains('on')) {
-    liveLocStatus.className = 'live-loc-status active';
-    liveLocStatus.innerHTML = '<span class="live-pulse"></span> Sharing your location';
-    startLocationSharing();
+// Interactivity
+document.getElementById('liveLocToggle').addEventListener('click', function() {
+  this.classList.toggle('on');
+  const status = document.getElementById('liveLocStatus');
+  if (this.classList.contains('on')) {
+    status.className = 'live-loc-status active';
+    status.innerHTML = '<span class="live-pulse"></span> Your location is being shared';
+    // Logic to update backend with live location could go here
   } else {
-    liveLocStatus.className = 'live-loc-status inactive';
-    liveLocStatus.textContent = '📍 Location sharing is off';
-    stopLocationSharing();
+    status.className = 'live-loc-status inactive';
+    status.textContent = '📍 sharing is currently off';
   }
 });
 
-function startLocationSharing() {
-  if (navigator.geolocation) {
-    locationWatchId = navigator.geolocation.watchPosition(
-      (pos) => console.log('📍 Location:', pos.coords.latitude, pos.coords.longitude),
-      (err) => console.log('Location error:', err),
-      { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
-    );
-  }
-}
-
-function stopLocationSharing() {
-  if (locationWatchId) {
-    navigator.geolocation.clearWatch(locationWatchId);
-    locationWatchId = null;
-  }
-}
-
-// ── CANCEL MODAL ──
-document.getElementById('cancelBtn').addEventListener('click', () => {
-  document.getElementById('cancelModal').classList.add('show');
+document.querySelectorAll('.check-item').forEach(item => {
+  item.onclick = () => item.classList.toggle('checked');
 });
 
-document.getElementById('modalGoBack').addEventListener('click', () => {
-  document.getElementById('cancelModal').classList.remove('show');
+document.querySelectorAll('.qm-btn').forEach(btn => {
+  btn.onclick = () => {
+    const waPhone = '91' + requestData.phone.replace(/\D/g, '');
+    window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(btn.dataset.msg)}`, '_blank');
+    btn.classList.add('sent');
+    btn.textContent = '✓ Sent';
+  };
 });
+
+// Modal Logic
+const modal = document.getElementById('cancelModal');
+document.getElementById('cancelBtn').onclick = () => modal.classList.add('show');
+function closeModal() { modal.classList.remove('show'); }
 
 document.querySelectorAll('.reason-item').forEach(item => {
-  item.addEventListener('click', () => {
+  item.onclick = () => {
     document.querySelectorAll('.reason-item').forEach(i => i.classList.remove('selected'));
     item.classList.add('selected');
-    selectedReason = item.dataset.reason;
-    document.getElementById('modalConfirm').disabled = false;
-  });
+    document.getElementById('confirmCancel').disabled = false;
+  };
 });
 
-document.getElementById('modalConfirm').addEventListener('click', async () => {
-  if (!selectedReason) return;
+document.getElementById('confirmCancel').onclick = async () => {
   try {
-    await fetch(API + '/cancel-acceptance', {
+    const res = await fetch(`${API}/cancel-acceptance`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ requestId: reqId, donorId: userId, reason: selectedReason })
+      body: JSON.stringify({ requestId: reqId, donorId: userId })
     });
-  } catch(e) {}
-  window.location.href = 'dashboard.html';
-});
+    if (res.ok) window.location.href = 'dashboard.html';
+  } catch (e) {
+    alert('Failed to cancel. Please try again.');
+  }
+};
 
-// ── SOS ──
-document.getElementById('sosBtn').addEventListener('click', () => {
-  window.location.href = 'tel:112';
-});
-
-// ── COMPLETION ──
-document.getElementById('compDashboard').addEventListener('click', () => {
-  window.location.href = 'dashboard.html';
-});
-
-// Load data
-loadRequestDetails();
+loadData();
 </script>
 </body>
-</html>
+</html>

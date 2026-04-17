@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Saarthi ΓÇö Post Blood Request</title>
+<title>Saarthi — Post Blood Request</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -133,18 +133,12 @@ nav {
 .ms-text { font-size: 13px; font-weight: 700; color: var(--crimson); }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-/* ΓöÇΓöÇ MOBILE RESPONSIVE ΓöÇΓöÇ */
-
-
-.footer-text { font-size: 14px; color: var(--muted); font-weight: 500; }
-.footer-links { display: flex; align-items: center; gap: 24px; }
-.footer-links a { font-size: 14px; color: var(--muted); text-decoration: none; transition: color 0.2s; font-weight: 500; }
-.footer-links a:hover { color: var(--crimson); }
+/* ── MOBILE RESPONSIVE ── */
 @media (max-width: 900px) {
   nav { padding: 14px 20px; }
   .page-wrap { grid-template-columns: 1fr; padding: 24px 16px; margin: 0; }
   .form-card { padding: 28px 20px; border-radius: 20px; }
-  .side-panel { display: none; }
+  .side-col { display: none; }
 }
 
 @media (max-width: 600px) {
@@ -190,37 +184,159 @@ footer {
     <div class="logo-icon"></div>
     <span class="logo-text">Saarthi</span>
   </a>
-  <a href="javascript:history.back()" class="nav-back">ΓåÉ Back</a>
+  <a href="javascript:history.back()" class="nav-back">← Back</a>
 </nav>
 
+<div class="post-main">
+  <div class="page-wrap">
+    <div class="form-card">
+      <div class="card-head">
+        <div class="urgency-banner">
+          <span>🔔</span> Urgent requests notify donors within 5km immediately.
+        </div>
+        <h1>Post Blood Request</h1>
+        <p>Fill in the medical details. Our AI will notify the best-matched donors near the hospital.</p>
+      </div>
+
+      <div class="form-grid">
+        <div class="field full">
+          <label>Blood Group Required</label>
+          <input type="hidden" id="bloodGroup">
+          <div class="blood-pills">
+            <div class="blood-pill" data-val="A+">A+</div>
+            <div class="blood-pill" data-val="A-">A-</div>
+            <div class="blood-pill" data-val="B+">B+</div>
+            <div class="blood-pill" data-val="B-">B-</div>
+            <div class="blood-pill" data-val="AB+">AB+</div>
+            <div class="blood-pill" data-val="AB-">AB-</div>
+            <div class="blood-pill" data-val="O+">O+</div>
+            <div class="blood-pill" data-val="O-">O-</div>
+          </div>
+          <div class="error-msg" id="bloodGroupError"></div>
+        </div>
+
+        <div class="field">
+          <label>Units Required</label>
+          <input type="number" id="units" placeholder="e.g. 2" min="1" max="10">
+          <div class="error-msg" id="unitsError"></div>
+        </div>
+
+        <div class="field">
+          <label>Urgency Level</label>
+          <input type="hidden" id="urgency" value="Normal">
+          <div class="urgency-pills">
+            <div class="urg-pill selected-normal" data-val="Normal">
+              <span>🧘</span> Normal
+            </div>
+            <div class="urg-pill" data-val="Urgent">
+              <span>⚡</span> Urgent
+            </div>
+            <div class="urg-pill" data-val="Critical">
+              <span>🚨</span> Critical
+            </div>
+          </div>
+        </div>
+
+        <div class="field full">
+          <label>Hospital / Location</label>
+          <input type="text" id="location" placeholder="e.g. Apollo Hospital, Ahmedabad">
+          <div class="error-msg" id="locationError"></div>
+        </div>
+
+        <div class="field">
+          <label>Contact Phone</label>
+          <input type="tel" id="phone" placeholder="98765 43210" maxlength="10">
+          <div class="error-msg" id="phoneError"></div>
+        </div>
+
+        <div class="field full">
+          <label>Additional Notes (Optional)</label>
+          <textarea id="notes" placeholder="e.g. Please bring ID proof, patient is in ICU..."></textarea>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-cancel" onclick="resetForm()">Reset</button>
+        <button class="btn-post" id="postBtn">Post Request & Notify Donors →</button>
+      </div>
+
+      <div class="matching-status" id="matchingStatus">
+        <span class="ms-spinner">🔍</span>
+        <div class="ms-text">Finding nearby donors...</div>
+      </div>
+    </div>
+
+    <div class="side-col">
+      <div class="side-card">
+        <div class="sc-title">Request Summary</div>
+        <div class="preview-item">
+          <span class="pi-label">Blood Group</span>
+          <span class="pi-value" id="pBlood">—</span>
+        </div>
+        <div class="preview-item">
+          <span class="pi-label">Quantity</span>
+          <span class="pi-value" id="pUnits">—</span>
+        </div>
+        <div class="preview-item">
+          <span class="pi-label">Urgency</span>
+          <span class="pi-value" id="pUrgency">
+            <span class="pi-badge badge-normal">Normal</span>
+          </span>
+        </div>
+        <div class="preview-item">
+          <span class="pi-label">Location</span>
+          <span class="pi-value" id="pLocation">—</span>
+        </div>
+        <div class="preview-item">
+          <span class="pi-label">Contact</span>
+          <span class="pi-value" id="pPhone">—</span>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <div class="sc-title">Quick Tips</div>
+        <div class="tips-list">
+          <div class="tip-item">
+            <div class="tip-num">1</div>
+            <div>Be specific about the hospital branch and room number if possible.</div>
+          </div>
+          <div class="tip-item">
+            <div class="tip-num">2</div>
+            <div>Ensure the contact person's phone is reachable.</div>
+          </div>
+          <div class="tip-item">
+            <div class="tip-num">3</div>
+            <div>Our matching algorithm prioritizes donors within a 5km radius.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-
-
 
 <script>
 const API = window.location.hostname === 'saarthi-backend-ahto.onrender.com' 
   ? '' 
   : 'https://saarthi-backend-ahto.onrender.com';
 
-/* ΓöÇΓöÇ AUTH GUARD ΓöÇΓöÇ */
+/* ── AUTH GUARD ── */
 if (!localStorage.getItem("userId")) {
   alert("Please log in first to post a blood request.");
   window.location.href = "login.html";
 }
 
-/* ΓöÇΓöÇ BLOOD PILLS ΓöÇΓöÇ */
+/* ── BLOOD PILLS ── */
 document.querySelectorAll('.blood-pill').forEach(pill => {
   pill.addEventListener('click', () => {
     document.querySelectorAll('.blood-pill').forEach(p => p.classList.remove('selected'));
     pill.classList.add('selected');
     document.getElementById('bloodGroup').value = pill.dataset.val;
-    clearError('bloodGroupError'); // clear error immediately on selection
+    clearError('bloodGroupError');
     updatePreview();
   });
 });
 
-/* ΓöÇΓöÇ URGENCY PILLS ΓöÇΓöÇ */
+/* ── URGENCY PILLS ── */
 document.querySelectorAll('.urg-pill').forEach(pill => {
   pill.addEventListener('click', () => {
     document.querySelectorAll('.urg-pill').forEach(p => { p.className = 'urg-pill'; });
@@ -233,17 +349,17 @@ document.querySelectorAll('.urg-pill').forEach(pill => {
   });
 });
 
-/* ΓöÇΓöÇ LIVE PREVIEW ΓöÇΓöÇ */
+/* ── LIVE PREVIEW ── */
 function updatePreview() {
   const b   = document.getElementById('bloodGroup').value;
   const u   = document.getElementById('units').value;
   const urg = document.getElementById('urgency').value;
   const loc = document.getElementById('location').value;
   const ph  = document.getElementById('phone').value;
-  document.getElementById('pBlood').textContent   = b || 'ΓÇö';
-  document.getElementById('pUnits').textContent   = u ? u + ' unit' + (u > 1 ? 's' : '') : 'ΓÇö';
-  document.getElementById('pLocation').textContent = loc || 'ΓÇö';
-  document.getElementById('pPhone').textContent   = ph || 'ΓÇö';
+  document.getElementById('pBlood').textContent   = b || '—';
+  document.getElementById('pUnits').textContent   = u ? u + ' unit' + (u > 1 ? 's' : '') : '—';
+  document.getElementById('pLocation').textContent = loc || '—';
+  document.getElementById('pPhone').textContent   = ph || '—';
   const urgMap = {
     Normal:   ['badge-normal',   'Normal'],
     Urgent:   ['badge-urgent',   'Urgent'],
@@ -253,19 +369,30 @@ function updatePreview() {
   document.getElementById('pUrgency').innerHTML = `<span class="pi-badge ${cls}">${lbl}</span>`;
 }
 
-['units','location','phone'].forEach(id =>
-  document.getElementById(id).addEventListener('input', updatePreview)
-);
+['units','location','phone'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', updatePreview);
+});
 
-/* ΓöÇΓöÇ HELPERS ΓöÇΓöÇ */
+/* ── HELPERS ── */
 function showError(id, msg) {
-  const e = document.getElementById(id); e.textContent = 'Γ£▒ ' + msg; e.classList.add('show');
+  const e = document.getElementById(id); 
+  if (e) { e.textContent = '✱ ' + msg; e.classList.add('show'); }
 }
-function clearError(id) { document.getElementById(id).classList.remove('show'); }
-function markErr(id)    { document.getElementById(id).classList.add('err'); }
-function clearErr(id)   { document.getElementById(id).classList.remove('err'); }
+function clearError(id) { 
+  const e = document.getElementById(id);
+  if (e) e.classList.remove('show'); 
+}
+function markErr(id) { 
+  const e = document.getElementById(id);
+  if (e) e.classList.add('err'); 
+}
+function clearErr(id) { 
+  const e = document.getElementById(id);
+  if (e) e.classList.remove('err'); 
+}
 
-/* ΓöÇΓöÇ INDIVIDUAL VALIDATORS ΓöÇΓöÇ */
+/* ── INDIVIDUAL VALIDATORS ── */
 function validateBlood() {
   clearError('bloodGroupError');
   if (!document.getElementById('bloodGroup').value) {
@@ -299,7 +426,7 @@ function validatePhone() {
   const v = document.getElementById('phone').value.trim();
   clearError('phoneError'); clearErr('phone');
   if (!/^[6-9]\d{9}$/.test(v)) {
-    showError('phoneError', 'Enter a valid 10-digit Indian mobile number'); markErr('phone'); return false;
+    showError('phoneError', 'Enter a valid 10-digit mobile number'); markErr('phone'); return false;
   }
   return true;
 }
@@ -312,22 +439,17 @@ function validate() {
   return b && u && l && p;
 }
 
-/* ΓöÇΓöÇ BLUR ΓÇö show error when user leaves the field ΓöÇΓöÇ */
+/* ── BLUR ── */
 document.getElementById('units').addEventListener('blur',    validateUnits);
 document.getElementById('location').addEventListener('blur', validateLocation);
 document.getElementById('phone').addEventListener('blur',    validatePhone);
 
-/* ΓöÇΓöÇ FIX AS YOU TYPE ΓÇö clears error once user starts correcting ΓöÇΓöÇ */
-document.getElementById('units').addEventListener('input',    () => { if (document.getElementById('units').classList.contains('err'))    validateUnits(); });
-document.getElementById('location').addEventListener('input', () => { if (document.getElementById('location').classList.contains('err')) validateLocation(); });
-document.getElementById('phone').addEventListener('input',    () => { if (document.getElementById('phone').classList.contains('err'))    validatePhone(); });
-
-/* ΓöÇΓöÇ POST REQUEST ΓöÇΓöÇ */
+/* ── POST REQUEST ── */
 document.getElementById('postBtn').addEventListener('click', async () => {
   if (!validate()) return;
 
   const btn = document.getElementById('postBtn');
-  btn.textContent = 'Getting location...'; btn.disabled = true;
+  btn.textContent = 'Processing...'; btn.disabled = true;
   document.getElementById('matchingStatus').classList.add('show');
 
   const requesterId = localStorage.getItem('userId');
@@ -337,7 +459,6 @@ document.getElementById('postBtn').addEventListener('click', async () => {
     return;
   }
 
-  // Get requester's geolocation for better donor matching
   let latitude = null;
   let longitude = null;
   
@@ -355,12 +476,9 @@ document.getElementById('postBtn').addEventListener('click', async () => {
     });
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;
-    console.log('≡ƒôì Requester location:', latitude, longitude);
   } catch (e) {
-    console.log('ΓÜá∩╕Å Could not get location, using city-based matching:', e.message);
+    console.log('Location access denied or timed out');
   }
-
-  btn.textContent = 'Finding donors...';
 
   const request = {
     id:            Date.now(),
@@ -374,13 +492,12 @@ document.getElementById('postBtn').addEventListener('click', async () => {
     notes:         document.getElementById('notes').value.trim(),
     latitude:      latitude,
     longitude:     longitude,
-    status:        'pending',
-    matchedDonors: []
+    status:        'pending'
   };
 
-  // Call ML model with location for better matching
   try {
-    const res  = await fetch(API + '/match-donors', {
+    // 1. Match donors
+    const matchRes = await fetch(API + '/match-donors', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
         blood_group: request.blood, 
@@ -389,40 +506,29 @@ document.getElementById('postBtn').addEventListener('click', async () => {
         longitude: longitude
       })
     });
-    const data = await res.json();
-    request.matchedDonors = (data.donors || []).map(Number);
-    console.log('≡ƒºá ML matched donors:', request.matchedDonors);
-  } catch(e) {
-    request.matchedDonors = [];
-  }
+    const matchData = await matchRes.json();
+    request.matchedDonors = matchData.donors ? matchData.donors.map(Number) : [];
 
-  btn.textContent = 'Saving request...';
-
-  // ΓöÇΓöÇ SAVE TO DATABASE so matched donors see it on their dashboard ΓöÇΓöÇ
-  try {
-    const dbRes  = await fetch(API + '/save-request', {
+    // 2. Save request
+    const saveRes = await fetch(API + '/save-request', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(request)
     });
-    const dbData = await dbRes.json();
-    if (dbData.success) request.id = dbData.requestId;
-  } catch(e) {
-    console.log('DB save error:', e);
+    const saveData = await saveRes.json();
+
+    if (saveData.success) {
+      window.location.href = 'tracking.html?id=' + saveData.requestId;
+    } else {
+      throw new Error(saveData.message || 'Failed to post');
+    }
+  } catch (e) {
+    alert('Error: ' + e.message);
+    btn.textContent = 'Post Request & Notify Donors →'; btn.disabled = false;
+    document.getElementById('matchingStatus').classList.remove('show');
   }
-
-  // Also keep in localStorage for requester's own status page
-  const requests = JSON.parse(localStorage.getItem('requests')) || [];
-  requests.push(request);
-  localStorage.setItem('requests',       JSON.stringify(requests));
-  localStorage.setItem('currentRequest', JSON.stringify(request));
-
-  document.getElementById('matchingStatus').classList.remove('show');
-  btn.textContent = 'Post Request & Notify Donors ΓåÆ'; btn.disabled = false;
-  // Redirect to live tracking page with the DB request ID
-  window.location.href = 'tracking.html?id=' + (request.id || '');
 });
 
-/* ΓöÇΓöÇ RESET ΓöÇΓöÇ */
+/* ── RESET ── */
 function resetForm() {
   document.querySelectorAll('.blood-pill').forEach(p => p.classList.remove('selected'));
   document.getElementById('bloodGroup').value = '';
@@ -435,9 +541,8 @@ function resetForm() {
     if (i === 0) p.classList.add('selected-normal');
   });
   document.getElementById('urgency').value = 'Normal';
-  clearError('bloodGroupError'); clearError('unitsError');
-  clearError('locationError');   clearError('phoneError');
-  clearErr('units'); clearErr('location'); clearErr('phone');
+  ['bloodGroupError','unitsError','locationError','phoneError'].forEach(clearError);
+  ['units','location','phone'].forEach(clearErr);
   updatePreview();
 }
 
@@ -456,3 +561,4 @@ updatePreview();
 
 </body>
 </html>
+

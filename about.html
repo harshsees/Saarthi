@@ -68,20 +68,12 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 .team-role { font-size: 13px; color: var(--crimson); font-weight: 700; margin-bottom: 12px; background: var(--blush); padding: 4px 12px; border-radius: 999px; display: inline-block; }
 .team-bio { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
-/* ── FOOTER ── */
-footer {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 40px 60px; background: white; border-top: 1px solid rgba(192,21,42,0.1);
-  margin-top: 60px;
-}
+
 .footer-text { font-size: 14px; color: var(--muted); font-weight: 500; }
 .footer-links { display: flex; align-items: center; gap: 24px; }
 .footer-links a { font-size: 14px; color: var(--muted); text-decoration: none; transition: color 0.2s; font-weight: 500; }
 .footer-links a:hover { color: var(--crimson); }
-@media (max-width: 600px) {
-  
-  .footer-nav a { font-size: 13px; }
-}
+
 
 /* Hamburger menu */
 .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
@@ -115,7 +107,7 @@ footer {
   .team-section { padding: 60px 20px; }
   .team-grid { grid-template-columns: 1fr; }
   
-  footer { flex-direction: column; gap: 16px; padding: 30px 20px; text-align: center; }
+  
 }
 
 @media (max-width: 600px) {
@@ -125,6 +117,21 @@ footer {
   .section-header h2 { font-size: 26px; }
   .team-name { font-size: 20px; }
   .team-avatar { width: 60px; height: 60px; font-size: 22px; }
+}
+
+/* ── FOOTER ── */
+footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 40px 60px; background: white; border-top: 1px solid rgba(192,21,42,0.1);
+  margin-top: 60px;
+}
+.footer-text { font-size: 14px; color: var(--muted); font-weight: 500; }
+.footer-links { display: flex; align-items: center; gap: 24px; }
+.footer-links a { font-size: 14px; color: var(--muted); text-decoration: none; transition: color 0.2s; font-weight: 500; }
+.footer-links a:hover { color: var(--crimson); }
+@media (max-width: 768px) {
+  footer { flex-direction: column; gap: 20px; padding: 30px 20px; text-align: center; }
+  .footer-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
 }
 </style>
 </head>

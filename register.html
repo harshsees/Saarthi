@@ -132,12 +132,7 @@ nav {
 
 /* ── MOBILE RESPONSIVE ── */
 
-/* ── FOOTER ── */
-footer {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 40px 60px; background: white; border-top: 1px solid rgba(192,21,42,0.1);
-  margin-top: 60px;
-}
+
 .footer-text { font-size: 14px; color: var(--muted); font-weight: 500; }
 .footer-links { display: flex; align-items: center; gap: 24px; }
 .footer-links a { font-size: 14px; color: var(--muted); text-decoration: none; transition: color 0.2s; font-weight: 500; }
@@ -161,12 +156,24 @@ footer {
   .page-wrap { padding: 16px 12px; }
   .form-card { padding: 24px 16px; }
 
-@media (max-width: 600px) {
-  
-  .footer-nav a { font-size: 13px; }
-}
+
   .card-head h1 { font-size: 22px; }
   .field input { padding: 11px 14px; }
+}
+
+/* ── FOOTER ── */
+footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 40px 60px; background: white; border-top: 1px solid rgba(192,21,42,0.1);
+  margin-top: 60px;
+}
+.footer-text { font-size: 14px; color: var(--muted); font-weight: 500; }
+.footer-links { display: flex; align-items: center; gap: 24px; }
+.footer-links a { font-size: 14px; color: var(--muted); text-decoration: none; transition: color 0.2s; font-weight: 500; }
+.footer-links a:hover { color: var(--crimson); }
+@media (max-width: 768px) {
+  footer { flex-direction: column; gap: 20px; padding: 30px 20px; text-align: center; }
+  .footer-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
 }
 </style>
 </head>

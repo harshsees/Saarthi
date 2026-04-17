@@ -569,15 +569,15 @@ footer {
         <span class="bdc-title">Available Donors</span>
         <span class="bdc-live"><span class="live-dot"></span> Live</span>
       </div>
-      <div class="blood-types">
-        <div class="blood-type bt-a">A+<span class="bt-label">12 donors</span></div>
-        <div class="blood-type bt-b">B+<span class="bt-label">8 donors</span></div>
-        <div class="blood-type bt-ab">AB+<span class="bt-label">3 donors</span></div>
-        <div class="blood-type bt-o">O+<span class="bt-label">19 donors</span></div>
-        <div class="blood-type bt-a">A-<span class="bt-label">4 donors</span></div>
-        <div class="blood-type bt-b">B-<span class="bt-label">2 donors</span></div>
-        <div class="blood-type bt-ab">AB-<span class="bt-label">1 donor</span></div>
-        <div class="blood-type bt-o">O-<span class="bt-label">6 donors</span></div>
+      <div class="blood-types" id="bloodTypeCounts">
+        <div class="blood-type bt-a">A+<span class="bt-label" id="cnt-A+">12 donors</span></div>
+        <div class="blood-type bt-b">B+<span class="bt-label" id="cnt-B+">8 donors</span></div>
+        <div class="blood-type bt-ab">AB+<span class="bt-label" id="cnt-AB+">3 donors</span></div>
+        <div class="blood-type bt-o">O+<span class="bt-label" id="cnt-O+">19 donors</span></div>
+        <div class="blood-type bt-a">A-<span class="bt-label" id="cnt-A-">4 donors</span></div>
+        <div class="blood-type bt-b">B-<span class="bt-label" id="cnt-B-">2 donors</span></div>
+        <div class="blood-type bt-ab">AB-<span class="bt-label" id="cnt-AB-">1 donor</span></div>
+        <div class="blood-type bt-o">O-<span class="bt-label" id="cnt-O-">6 donors</span></div>
       </div>
       <div class="donor-list">
         <div class="donor-item">
@@ -604,19 +604,19 @@ footer {
 <!-- STATS STRIP -->
 <div class="stats-strip">
   <div class="stat-item anim">
-    <div class="stat-num">2,847</div>
+    <div class="stat-num" id="stat-donors">2,847</div>
     <div class="stat-label">Registered Donors</div>
   </div>
   <div class="stat-item anim delay-1">
-    <div class="stat-num">1,203</div>
+    <div class="stat-num" id="stat-lives">1,203</div>
     <div class="stat-label">Lives Saved</div>
   </div>
   <div class="stat-item anim delay-2">
-    <div class="stat-num">28 min</div>
+    <div class="stat-num" id="stat-time">28 min</div>
     <div class="stat-label">Avg. Response Time</div>
   </div>
   <div class="stat-item anim delay-3">
-    <div class="stat-num">94%</div>
+    <div class="stat-num" id="stat-fulfillment">94%</div>
     <div class="stat-label">Requests Fulfilled</div>
   </div>
 </div>
@@ -715,5 +715,58 @@ footer {
   </div>
 </footer>
 
+<script>
+  const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000'
+    : 'https://saarthi-backend-ahto.onrender.com';
+
+  async function fetchStats() {
+    try {
+      const response = await fetch(`${API_URL}/api/platform-stats`);
+      const data = await response.json();
+      if (data.success) {
+        animateValue("stat-donors", data.stats.totalDonors);
+        animateValue("stat-lives", data.stats.livesSaved);
+        animateValue("stat-time", data.stats.avgResponseTime, " min");
+        animateValue("stat-fulfillment", data.stats.fulfillmentRate, "%");
+
+        // Update blood group breakdown
+        if (data.stats.bloodGroups) {
+          data.stats.bloodGroups.forEach(bg => {
+            const el = document.getElementById(`cnt-${bg.blood_group}`);
+            if (el) el.innerText = `${bg.count} donors`;
+          });
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch stats:", err);
+    }
+  }
+
+  function animateValue(id, end, suffix = "") {
+    const obj = document.getElementById(id);
+    let start = 0;
+    const duration = 1500;
+    const startTime = performance.now();
+    
+    function update(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out quad
+      const easedProgress = progress * (2 - progress);
+      const current = Math.floor(easedProgress * end);
+      obj.innerText = current.toLocaleString() + suffix;
+      
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      } else {
+        obj.innerText = end.toLocaleString() + suffix;
+      }
+    }
+    requestAnimationFrame(update);
+  }
+
+  document.addEventListener('DOMContentLoaded', fetchStats);
+</script>
 </body>
 </html>

@@ -74,10 +74,10 @@ nav {
 .detail-value { font-size: 14px; font-weight: 600; color: var(--ink); margin-top: 2px; line-height: 1.4; }
 
 /* ── CONTACT BUTTONS ── */
-.contact-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+.contact-btns { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 12px 0; }
 .contact-btn {
   display: flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 14px; border-radius: 12px; text-decoration: none;
+  padding: 16px; border-radius: 12px; text-decoration: none;
   font-size: 14px; font-weight: 700; transition: all 0.2s;
 }
 .contact-btn.call { background: linear-gradient(135deg, var(--green), #15803D); color: white; box-shadow: 0 4px 12px rgba(22,163,74,0.25); }
@@ -239,8 +239,7 @@ footer {
           </div>
           
           <div class="contact-btns">
-            <a href="#" class="contact-btn call" id="callRequester">📞 Call</a>
-            <a href="#" class="contact-btn whatsapp" id="whatsappRequester">💬 WhatsApp</a>
+            <a href="#" class="contact-btn whatsapp" id="whatsappRequester">💬 Message on WhatsApp</a>
           </div>
           
           <div class="quick-msgs" id="quickMsgs">
@@ -394,9 +393,9 @@ function renderUI(req) {
   urgBadge.textContent = req.urgency;
   urgBadge.className = `sc-urgency urg-${(req.urgency || 'normal').toLowerCase()}`;
   
-  document.getElementById('callRequester').href = `tel:${req.phone}`;
   const waPhone = '91' + req.phone.replace(/\D/g, '');
-  document.getElementById('whatsappRequester').href = `https://wa.me/${waPhone}`;
+  const defaultMsg = encodeURIComponent("Hello! I am your Saarthi blood donor. I'm on my way to the hospital now.");
+  document.getElementById('whatsappRequester').href = `https://wa.me/${waPhone}?text=${defaultMsg}`;
 }
 
 function initMap(req) {

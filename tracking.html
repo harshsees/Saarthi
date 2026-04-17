@@ -388,9 +388,7 @@ footer {
     <div class="logo-icon"></div>
     <span class="logo-text">Saarthi</span>
   </a>
-  ${userId ? 
-    `<a href="request-status.html" class="nav-back">← My Requests</a>` : 
-    `<a href="index.html" class="nav-back">← Back to Home</a>`}
+  <div id="navBackContainer"></div>
 </nav>
 
 <div class="tracking-main">
@@ -412,6 +410,14 @@ const API = window.location.hostname === 'saarthi-backend-ahto.onrender.com'
   : 'https://saarthi-backend-ahto.onrender.com';
 const userId    = localStorage.getItem('userId');
 const userName  = localStorage.getItem('userName');
+
+// Update nav back button
+const navBackContainer = document.getElementById('navBackContainer');
+if (navBackContainer) {
+  navBackContainer.innerHTML = userId ? 
+    `<a href="request-status.html" class="nav-back">← My Requests</a>` : 
+    `<a href="index.html" class="nav-back">← Back to Home</a>`;
+}
 const params    = new URLSearchParams(window.location.search);
 const requestId = params.get('id');
 

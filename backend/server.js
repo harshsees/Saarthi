@@ -955,7 +955,7 @@ app.post("/save-request", async (req, res) => {
         try {
           const placeholders = matchedDonors.map(() => '?').join(',');
           db.query(
-            `SELECT donor_profiles.phone, users.name 
+            `SELECT users.id, donor_profiles.phone, users.name 
              FROM donor_profiles 
              JOIN users ON donor_profiles.user_id = users.id 
              WHERE donor_profiles.user_id IN (${placeholders}) 
@@ -968,7 +968,7 @@ app.post("/save-request", async (req, res) => {
               }
 
               const urgencyText = urgency === 'Critical' ? 'CRITICAL' : urgency === 'Urgent' ? 'URGENT' : 'NORMAL';
-              const message = `Saarthi Alert: ${requesterName} needs ${units} unit(s) of ${blood} blood at ${location}. Priority: ${urgencyText}. Contact: ${phone}. Log in to accept.`;
+              const message = `Saarthi Alert: ${requesterName} needs ${units} unit(s) of ${blood} blood at ${location}. Priority: ${urgencyText}. Contact: ${phone}. login to saarthi : https://saarthiii.vercel.app`;
 
               console.log(`📤 Sending SMS to ${donors.length} matched donor(s)...`);
 
@@ -977,6 +977,12 @@ app.post("/save-request", async (req, res) => {
               let failCount = 0;
 
               for (const donor of donors) {
+                // 🎯 DEMO RESTRICTION: Only send real SMS to Harsh Shah (ID 12)
+                if (Number(donor.id) !== 12) {
+                  console.log(`⏭️ [DEMO] Skipping SMS for ${donor.name} (only Harsh Shah gets SMS in demo)`);
+                  continue;
+                }
+
                 const rawPhone = donor.phone.replace(/\D/g, '');
                 
                 if (rawPhone.length !== 10) {

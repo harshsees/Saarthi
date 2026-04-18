@@ -1,10 +1,5 @@
 // Quick test script to check Fast2SMS integration
-// ⚠️ DISABLED TO PREVENT CREDIT DEDUCTION ⚠️
-console.log("❌ This test script is DISABLED to prevent Fast2SMS credit deduction.");
-console.log("💡 Real SMS is still working in your application (server.js).");
-console.log("📌 Only this test file is disabled. Actual donor notifications will still be sent!");
-console.log("\n⚠️  To enable testing again, remove the process.exit(0) line below.\n");
-process.exit(0);
+// Use this file to verify your API connectivity before going live
 
 require("dotenv").config();
 const { sendSMS } = require("./fast2sms");

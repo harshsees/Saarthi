@@ -985,14 +985,7 @@ app.post("/save-request", async (req, res) => {
                 }
 
                 try {
-                  // ═══════════════════════════════════════════════════════════
-                  // 🔴 SMS DISABLED FOR TESTING - Uncomment to enable real SMS
-                  // ═══════════════════════════════════════════════════════════
-                  // const result = await sendSMS(rawPhone, message);
-                  
-                  // MOCK SMS for testing (no actual SMS sent)
-                  const result = { success: true, providerMessageId: 'TEST-' + Date.now() };
-                  console.log(`🧪 [TEST MODE] SMS would be sent to ${donor.name} (${rawPhone})`);
+                  const result = await sendSMS(rawPhone, message);
                   
                   if (result.success) {
                     successCount++;

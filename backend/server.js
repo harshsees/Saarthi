@@ -955,7 +955,7 @@ app.post("/save-request", async (req, res) => {
         try {
           const placeholders = matchedDonors.map(() => '?').join(',');
           db.query(
-            `SELECT users.id, donor_profiles.phone, users.name 
+            `SELECT users.id AS donor_user_id, donor_profiles.phone, users.name 
              FROM donor_profiles 
              JOIN users ON donor_profiles.user_id = users.id 
              WHERE donor_profiles.user_id IN (${placeholders}) 
@@ -967,22 +967,22 @@ app.post("/save-request", async (req, res) => {
                 return;
               }
 
+              // 🎯 STRICT SINGLETON GUARD: Only pick Harsh Shah (ID 12) and slice to exactly ONE
+              const demoDonors = donors.filter(d => Number(d.donor_user_id) === 12);
+              const finalDonors = demoDonors.slice(0, 1);
+              
+              console.log(`📊 SMS Singleton Guard: Found ${demoDonors.length} matches for Harsh Shah. Strictly sending ${finalDonors.length} SMS.`);
+
               const urgencyText = urgency === 'Critical' ? 'CRITICAL' : urgency === 'Urgent' ? 'URGENT' : 'NORMAL';
               const message = `Saarthi Alert: ${requesterName} needs ${units} unit(s) of ${blood} blood at ${location}. Priority: ${urgencyText}. Contact: ${phone}. login to saarthi : https://saarthiii.vercel.app`;
 
-              console.log(`📤 Sending SMS to ${donors.length} matched donor(s)...`);
+              console.log(`📤 Dispatching SMS service...`);
 
-              // Send SMS to each matched donor - ONE SMS PER DONOR
+              // Send SMS to the single filtered donor
               let successCount = 0;
               let failCount = 0;
 
-              for (const donor of donors) {
-                // 🎯 DEMO RESTRICTION: Only send real SMS to Harsh Shah (ID 12)
-                if (Number(donor.id) !== 12) {
-                  console.log(`⏭️ [DEMO] Skipping SMS for ${donor.name} (only Harsh Shah gets SMS in demo)`);
-                  continue;
-                }
-
+              for (const donor of finalDonors) {
                 const rawPhone = donor.phone.replace(/\D/g, '');
                 
                 if (rawPhone.length !== 10) {

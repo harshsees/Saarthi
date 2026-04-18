@@ -332,7 +332,7 @@ async function buildCard(req) {
       const isAcc = req.status === 'accepted';
       return `<div class="donor-chip ${isAcc ? 'accepted-chip' : ''}">
         <div class="donor-chip-av">${init}</div>
-        ${d.name}${d.city ? ' · ' + d.city : ''}
+        ${d.name}
         ${isAcc ? ' ✓' : ''}
       </div>`;
     }).join('');

@@ -521,6 +521,11 @@ footer {
           <div class="kpi-label">Cancelled</div>
           <div class="kpi-val" id="kpiCancelled">-</div>
         </div>
+        <div class="kpi-card">
+          <div class="kpi-icon purple"><i class="fas fa-clock-rotate-left"></i></div>
+          <div class="kpi-label">Avg. Response</div>
+          <div class="kpi-val" id="kpiAvgTime">-</div>
+        </div>
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -856,6 +861,7 @@ async function loadStats() {
       document.getElementById('kpiPending').textContent = data.stats.pendingRequests;
       document.getElementById('kpiAccepted').textContent = data.stats.acceptedRequests;
       document.getElementById('kpiCancelled').textContent = data.stats.cancelledRequests;
+      document.getElementById('kpiAvgTime').textContent = data.stats.avgResponseTime + ' min';
       document.getElementById('pendingBadge').textContent = data.stats.pendingRequests;
     }
   } catch (err) {

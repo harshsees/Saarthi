@@ -18,13 +18,25 @@ const app = express();
 
 // ── DATABASE MIGRATION (Ensure columns exist) ──
 const ensureColumns = () => {
-  const alterAccepted = "ALTER TABLE blood_requests ADD COLUMN IF NOT EXISTS accepted_at TIMESTAMP NULL AFTER matched_donors";
-  const alterCancelled = "ALTER TABLE blood_requests ADD COLUMN IF NOT EXISTS cancelled_at TIMESTAMP NULL AFTER accepted_at";
-  
-  db.query(alterAccepted, (err) => {
-    if (err) console.log("Migration (accepted_at) info/error:", err.message);
-    db.query(alterCancelled, (err) => {
-      if (err) console.log("Migration (cancelled_at) info/error:", err.message);
+  // Use standard ALTER queries. We'll ignore "Duplicate column name" errors (1060).
+  const migrations = [
+    { col: "accepted_at", query: "ALTER TABLE blood_requests ADD COLUMN accepted_at TIMESTAMP NULL" },
+    { col: "cancelled_at", query: "ALTER TABLE blood_requests ADD COLUMN cancelled_at TIMESTAMP NULL" },
+    { col: "accepted_donor_id", query: "ALTER TABLE blood_requests ADD COLUMN accepted_donor_id INT NULL" }
+  ];
+
+  migrations.forEach(m => {
+    db.query(m.query, (err) => {
+      if (err) {
+        // MySQL Error 1060 = Duplicate column name (column already exists)
+        if (err.errno === 1060 || err.code === 'ER_DUP_FIELDNAME') {
+          // console.log(`ℹ️ Column '${m.col}' already exists.`);
+        } else {
+          console.error(`❌ Migration Error for '${m.col}':`, err.message);
+        }
+      } else {
+        console.log(`✅ Database updated: Added column '${m.col}'`);
+      }
     });
   });
 };
@@ -103,7 +115,8 @@ app.get("/admin/stats", verifyAdminToken, (req, res) => {
     totalRequests: "SELECT COUNT(*) as count FROM blood_requests",
     pendingRequests: "SELECT COUNT(*) as count FROM blood_requests WHERE status = 'pending'",
     acceptedRequests: "SELECT COUNT(*) as count FROM blood_requests WHERE status = 'accepted'",
-    cancelledRequests: "SELECT COUNT(*) as count FROM blood_requests WHERE status = 'cancelled'"
+    cancelledRequests: "SELECT COUNT(*) as count FROM blood_requests WHERE status = 'cancelled'",
+    avgResponseTime: "SELECT AVG(TIMESTAMPDIFF(MINUTE, created_at, accepted_at)) as avg FROM blood_requests WHERE status = 'accepted' AND accepted_at IS NOT NULL"
   };
   
   const stats = {};
@@ -116,7 +129,11 @@ app.get("/admin/stats", verifyAdminToken, (req, res) => {
         console.log(`Stats error (${key}):`, err);
         stats[key] = 0;
       } else {
-        stats[key] = result[0].count;
+        if (key === 'avgResponseTime') {
+          stats[key] = result[0].avg ? Math.round(result[0].avg) : 0;
+        } else {
+          stats[key] = result[0].count;
+        }
       }
       completed++;
       if (completed === total) {
